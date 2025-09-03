@@ -49,39 +49,49 @@
     <div class="min-h-screen">
         <!-- Main Content -->
         <div class="px-6 py-8 max-w-4xl mx-auto">
-            <!-- Header with Team Dropdown -->
+            <!-- Header with Team Name and Logout -->
             <div class="flex justify-between items-center mb-8">
-                <div class="relative">
-                    <button id="teamDropdownBtn" onclick="toggleTeamDropdown()" 
-                            class="flex items-center space-x-2 text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors">
-                        <span id="currentTeam">Team XXX</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    
-                    <!-- Team Dropdown -->
-                    <div id="teamDropdown" class="team-dropdown absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 hidden">
-                        <div class="py-2">
-                            <button onclick="selectTeam('Team XXX')" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors">
-                                Team XXX
-                            </button>
-                            <button onclick="selectTeam('Team YYY')" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors">
-                                Team YYY
-                            </button>
-                            <div class="border-t border-gray-200 my-1"></div>
-                            <button onclick="selectTeam('My Page')" class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors text-blue-600">
-                                My Page
-                            </button>
-                        </div>
-                    </div>
+                <!-- Team Name (Top Left) -->
+                <div class="flex flex-col">
+                    <h1 id="teamName" class="text-2xl font-bold text-gray-900">Loading Team...</h1>
+                    <p class="text-sm text-gray-600 mt-1">Manage your team and athletes</p>
                 </div>
                 
-                <button class="p-3 hover:bg-white/50 rounded-full transition-colors duration-200">
-                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7H4a2 2 0 00-2 2v10a2 2 0 002 2h5l5-5V9a2 2 0 00-2-2z"></path>
+                <!-- Logout Button (Top Right) -->
+                <button onclick="logout()" class="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
+                    <span>Logout</span>
                 </button>
+            </div>
+
+            <!-- Welcome Message -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 mb-8 text-white shadow-lg">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 id="welcomeMessage" class="text-2xl font-bold mb-2">Welcome back, Coach!</h2>
+                        <p class="text-blue-100">Ready to lead your team to success today</p>
+                    </div>
+                    <div class="text-6xl opacity-20">
+                        🏆
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player Cards Section -->
+            <div class="mb-10">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Your Athletes</h3>
+                    <button onclick="addNewAthlete()" class="bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:from-green-700 hover:to-green-800 transition-all duration-200 shadow-md">
+                        + Add Athlete
+                    </button>
+                </div>
+                
+                <!-- Player Cards Grid -->
+                <div id="playerCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Player cards will be dynamically loaded here -->
+                </div>
             </div>
 
             <!-- Team Performance Section -->
@@ -465,13 +475,168 @@
             loadPrograms();
         });
 
-        function loadCoachData() {
-            const coachProfile = localStorage.getItem('coachProfile');
-            if (coachProfile) {
-                const profile = JSON.parse(coachProfile);
-                const firstName = profile.firstName || 'Coach';
-                // Update greeting if needed
+        // Load team athletes from database
+        function loadTeamAthletes() {
+            // Get all registered users
+            const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Filter for athletes only
+            teamAthletes = allUsers.filter(user => 
+                user.accountType === 'athlete' || 
+                user.profile?.userType === 'athlete' ||
+                (!user.accountType && !user.profile?.userType) // Default to athlete if not specified
+            );
+            
+            console.log('Team athletes loaded:', teamAthletes);
+            renderPlayerCards();
+        }
+
+        // Render player cards
+        function renderPlayerCards() {
+            const container = document.getElementById('playerCardsContainer');
+            
+            if (teamAthletes.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <div class="text-gray-400 mb-4">
+                            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-2.239"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No Athletes Yet</h3>
+                        <p class="text-gray-600 mb-4">Add athletes to your team to start coaching</p>
+                        <button onclick="addNewAthlete()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                            Add First Athlete
+                        </button>
+                    </div>
+                `;
+                return;
             }
+            
+            const cardsHTML = teamAthletes.map(athlete => {
+                const displayName = athlete.firstName && athlete.lastName 
+                    ? `${athlete.firstName} ${athlete.lastName}`
+                    : athlete.profile?.firstName && athlete.profile?.lastName
+                    ? `${athlete.profile.firstName} ${athlete.profile.lastName}`
+                    : athlete.email?.split('@')[0] || 'Athlete';
+                
+                const sport = athlete.profile?.sport || 'General';
+                const position = athlete.profile?.position || 'Athlete';
+                const status = athlete.isActive ? 'Active' : 'Inactive';
+                const statusColor = athlete.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+                
+                return `
+                    <div class="player-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-200 cursor-pointer" onclick="openAthleteProfile('${athlete.id}')">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center text-blue-600 font-bold text-lg">
+                                    ${displayName.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">${displayName}</h4>
+                                    <p class="text-sm text-gray-600">${position}</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 rounded-full text-xs font-medium ${statusColor}">
+                                ${status}
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Sport:</span>
+                                <span class="font-medium text-gray-900">${sport}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Member since:</span>
+                                <span class="font-medium text-gray-900">${new Date(athlete.createdAt || Date.now()).toLocaleDateString()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <span>View Progress</span>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = cardsHTML;
+        }
+
+        // Open athlete profile
+        function openAthleteProfile(athleteId) {
+            const athlete = teamAthletes.find(a => a.id === athleteId);
+            if (!athlete) {
+                alert('Athlete not found');
+                return;
+            }
+            
+            const displayName = athlete.firstName && athlete.lastName 
+                ? `${athlete.firstName} ${athlete.lastName}`
+                : athlete.profile?.firstName && athlete.profile?.lastName
+                ? `${athlete.profile.firstName} ${athlete.profile.lastName}`
+                : 'Athlete';
+            
+            alert(`Opening profile for ${displayName}\\n\\nThis would navigate to the athlete's detailed profile page with:\\n- Performance metrics\\n- Training history\\n- Injury reports\\n- Program assignments`);
+        }
+
+        // Add new athlete
+        function addNewAthlete() {
+            alert('Add New Athlete\\n\\nThis would open a form to:\\n- Send invitation to athlete\\n- Add athlete manually\\n- Import from team roster');
+        }
+
+        // Logout functionality
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear session data
+                sessionStorage.removeItem('coachUserData');
+                sessionStorage.removeItem('currentUser');
+                
+                // Redirect to login page
+                window.location.href = '../auth/signin/login.html';
+            }
+        }
+
+        function loadCoachData() {
+            // Load coach from session storage
+            const coachUserData = JSON.parse(sessionStorage.getItem('coachUserData') || '{}');
+            const coachProfile = JSON.parse(localStorage.getItem('coachProfile') || '{}');
+            
+            // Get coach name from multiple sources
+            let coachFirstName = 'Coach';
+            let teamName = 'Unknown Team';
+            
+            if (coachUserData.firstName) {
+                coachFirstName = coachUserData.firstName;
+            } else if (coachProfile.firstName) {
+                coachFirstName = coachProfile.firstName;
+            }
+            
+            // Get team name
+            if (coachUserData.teamName) {
+                teamName = coachUserData.teamName;
+            } else if (coachProfile.teamName) {
+                teamName = coachProfile.teamName;
+            } else {
+                teamName = `${coachFirstName}'s Team`;
+            }
+            
+            // Update UI elements
+            document.getElementById('teamName').textContent = teamName;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${coachFirstName}!`;
+            
+            console.log('Coach data loaded:', { coachFirstName, teamName });
+            
+            // Load athletes for this team
+            loadTeamAthletes();
         }
 
         function loadTeamData(teamName) {
