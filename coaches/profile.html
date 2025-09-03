@@ -55,17 +55,17 @@
             <!-- Profile Information -->
             <div class="bg-white rounded-xl p-6 border border-gray-200 mb-6">
                 <div class="flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                        JB
+                    <div id="coachInitials" class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                        PJ
                     </div>
                     <div>
-                        <h2 class="text-lg font-semibold text-gray-900">John Brown</h2>
-                        <p class="text-gray-500 text-sm">xx/xx/xxxx</p>
+                        <h2 id="coachName" class="text-lg font-semibold text-gray-900">Phil Jackson</h2>
+                        <p id="coachEmail" class="text-gray-500 text-sm">earl.foronda@outlook.com</p>
                         <div class="flex items-center space-x-2 mt-1">
                             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
-                            <span class="text-gray-700">Women's Basketball Coach</span>
+                            <span id="coachRole" class="text-gray-700">Basketball Coach</span>
                         </div>
                     </div>
                 </div>
@@ -310,6 +310,40 @@
     </div>
 
     <script>
+        // Load coach profile data on page load
+        window.addEventListener('load', function() {
+            loadCoachProfile();
+        });
+
+        function loadCoachProfile() {
+            // Get coach data from session storage
+            const coachUserData = JSON.parse(sessionStorage.getItem('coachUserData') || '{}');
+            
+            console.log('Loading coach profile data:', coachUserData);
+            
+            if (coachUserData.firstName && coachUserData.lastName) {
+                // Update coach name
+                const fullName = `${coachUserData.firstName} ${coachUserData.lastName}`;
+                document.getElementById('coachName').textContent = fullName;
+                
+                // Update initials
+                const initials = `${coachUserData.firstName.charAt(0)}${coachUserData.lastName.charAt(0)}`;
+                document.getElementById('coachInitials').textContent = initials;
+                
+                // Update email
+                if (coachUserData.email) {
+                    document.getElementById('coachEmail').textContent = coachUserData.email;
+                }
+                
+                // Update role/title
+                let role = 'Basketball Coach';
+                if (coachUserData.profile?.sport) {
+                    role = `${coachUserData.profile.sport} Coach`;
+                }
+                document.getElementById('coachRole').textContent = role;
+            }
+        }
+
         function dismissWarning() {
             const warning = document.getElementById('subscriptionWarning');
             warning.style.display = 'none';
