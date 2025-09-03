@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video System Test - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/videoSystem.js"></script>
+    <script src="js/videoManager.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Robust Video System Test</h1>
+        
+        <!-- Upload Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Upload Test Video</h2>
+            <form id="testUploadForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Video ID:</label>
+                    <input type="text" id="testVideoId" value="452" class="w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Title:</label>
+                    <input type="text" id="testTitle" value="Test Exercise Video" class="w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Video File:</label>
+                    <input type="file" id="testVideoFile" accept="video/*" class="w-full p-2 border border-gray-300 rounded-md">
+                </div>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                    Upload Video
+                </button>
+            </form>
+        </div>
+        
+        <!-- Video Player Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Video Player Test</h2>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Video ID:</label>
+                <select id="videoSelector" class="w-full p-2 border border-gray-300 rounded-md">
+                    <option value="">Choose a video...</option>
+                    <option value="450">Video ID: 450 - Dumbbell Squats</option>
+                    <option value="451">Video ID: 451 - DB Curtsy Lunge</option>
+                    <option value="452">Video ID: 452 - Test Upload</option>
+                </select>
+            </div>
+            <button onclick="loadTestVideo()" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 mb-4">
+                Load Video
+            </button>
+            
+            <!-- Video Container -->
+            <div id="videoContainer" class="w-full h-96 bg-gray-900 rounded-lg flex items-center justify-center">
+                <div class="text-white text-center">
+                    <svg class="w-16 h-16 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <p>Select a video to test playback</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Status -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">System Status</h2>
+            <div id="systemStatus" class="space-y-2">
+                <p class="text-gray-600">Loading system status...</p>
+            </div>
+            <button onclick="checkSystemHealth()" class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 mt-4">
+                Refresh Status
+            </button>
+        </div>
+        
+        <!-- Video List -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4">Stored Videos</h2>
+            <div id="videoList" class="space-y-2">
+                <p class="text-gray-600">Loading videos...</p>
+            </div>
+            <button onclick="refreshVideoList()" class="bg-orange-600 text-white px-4 py-2 rounded-md hover:bg-orange-700 mt-4">
+                Refresh List
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize system
+        document.addEventListener('DOMContentLoaded', async () => {
+            await checkSystemHealth();
+            await refreshVideoList();
+        });
+
+        // Handle form submission
+        document.getElementById('testUploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const videoId = document.getElementById('testVideoId').value;
+            const title = document.getElementById('testTitle').value;
+            const file = document.getElementById('testVideoFile').files[0];
+            
+            if (!file) {
+                alert('Please select a video file');
+                return;
+            }
+            
+            try {
+                const metadata = {
+                    videoId: videoId,
+                    title: title,
+                    category: 'test',
+                    sport: 'general',
+                    difficulty: 'beginner',
+                    description: 'Test video upload'
+                };
+                
+                console.log('Uploading test video...');
+                await window.videoSystem.storeVideo(file, metadata);
+                alert('Video uploaded successfully!');
+                
+                // Refresh the video list
+                await refreshVideoList();
+                
+                // Add to selector
+                const selector = document.getElementById('videoSelector');
+                const option = document.createElement('option');
+                option.value = videoId;
+                option.textContent = `Video ID: ${videoId} - ${title}`;
+                selector.appendChild(option);
+                
+            } catch (error) {
+                console.error('Upload failed:', error);
+                alert('Upload failed: ' + error.message);
+            }
+        });
+
+        // Load selected video
+        async function loadTestVideo() {
+            const videoId = document.getElementById('videoSelector').value;
+            if (!videoId) {
+                alert('Please select a video');
+                return;
+            }
+            
+            const container = document.getElementById('videoContainer');
+            console.log(`Loading video ${videoId} for test...`);
+            
+            try {
+                const success = await window.videoSystem.createVideoPlayer(videoId, container);
+                console.log(`Video ${videoId} load result:`, success);
+            } catch (error) {
+                console.error('Error loading video:', error);
+                container.innerHTML = `
+                    <div class="text-white text-center">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-10h2v8h-2V7z"/>
+                        </svg>
+                        <p class="text-red-500">Error loading video: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Check system health
+        async function checkSystemHealth() {
+            try {
+                const health = await window.videoManager.checkSystemHealth();
+                const statusDiv = document.getElementById('systemStatus');
+                
+                if (health.healthy) {
+                    statusDiv.innerHTML = `
+                        <div class="text-green-600">✅ System Healthy</div>
+                        <div class="text-sm text-gray-600">Videos: ${health.videoCount}</div>
+                        <div class="text-sm text-gray-600">Total Size: ${health.totalSize}</div>
+                        <div class="text-sm text-gray-600">Max File Size: ${health.maxFileSize}</div>
+                        <div class="text-sm text-gray-600">Supported: ${health.supportedFormats.join(', ')}</div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="text-red-600">❌ System Error</div>
+                        <div class="text-sm text-red-600">${health.error}</div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Health check failed:', error);
+                document.getElementById('systemStatus').innerHTML = `
+                    <div class="text-red-600">❌ Health Check Failed</div>
+                    <div class="text-sm text-red-600">${error.message}</div>
+                `;
+            }
+        }
+
+        // Refresh video list
+        async function refreshVideoList() {
+            try {
+                const videos = await window.videoManager.getUploadedVideos();
+                const listDiv = document.getElementById('videoList');
+                
+                if (videos.length === 0) {
+                    listDiv.innerHTML = '<p class="text-gray-600">No videos stored</p>';
+                    return;
+                }
+                
+                listDiv.innerHTML = videos.map(video => `
+                    <div class="border border-gray-200 rounded-md p-3 flex justify-between items-center">
+                        <div>
+                            <div class="font-medium">ID: ${video.videoId} - ${video.title}</div>
+                            <div class="text-sm text-gray-600">${video.category} • ${video.difficulty} • ${video.fileSize}</div>
+                            <div class="text-xs text-gray-500">Uploaded: ${video.uploadedAt}</div>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="previewVideo('${video.videoId}')" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">
+                                Preview
+                            </button>
+                            <button onclick="deleteTestVideo('${video.videoId}')" class="bg-red-500 text-white px-2 py-1 rounded text-xs">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error refreshing video list:', error);
+                document.getElementById('videoList').innerHTML = `
+                    <p class="text-red-600">Error loading videos: ${error.message}</p>
+                `;
+            }
+        }
+
+        // Preview video
+        async function previewVideo(videoId) {
+            const container = document.getElementById('videoContainer');
+            document.getElementById('videoSelector').value = videoId;
+            await loadTestVideo();
+        }
+
+        // Delete video
+        async function deleteTestVideo(videoId) {
+            if (!confirm(`Delete video ${videoId}?`)) return;
+            
+            try {
+                await window.videoManager.deleteVideo(videoId);
+                alert('Video deleted successfully');
+                await refreshVideoList();
+                
+                // Remove from selector
+                const selector = document.getElementById('videoSelector');
+                for (let option of selector.options) {
+                    if (option.value === videoId) {
+                        option.remove();
+                        break;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Delete failed:', error);
+                alert('Delete failed: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
