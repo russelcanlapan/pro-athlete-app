@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Activation Codes - Admin - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Coach Activation Codes</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, <span id="adminUsername">root</span></span>
+                    <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8">
+                <a href="dashboard.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Dashboard</a>
+                <a href="users.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">User Accounts</a>
+                <a href="reports.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Reports</a>
+                <a href="videos.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Video Upload</a>
+                <a href="activation-codes.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Player Activation Codes</a>
+                <a href="coach-activation-codes.html" class="bg-blue-700 px-3 py-2 text-sm font-medium">Coach Activation Codes</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Generate New Code Section -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Generate New Coach Activation Code</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label for="codeType" class="block text-sm font-medium text-gray-700 mb-2">Code Type</label>
+                        <select id="codeType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="coach" selected>Coach Access</option>
+                            <option value="head-coach">Head Coach</option>
+                            <option value="assistant-coach">Assistant Coach</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="expiryDays" class="block text-sm font-medium text-gray-700 mb-2">Expires In (Days)</label>
+                        <select id="expiryDays" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="7">7 Days</option>
+                            <option value="30" selected>30 Days</option>
+                            <option value="90">90 Days</option>
+                            <option value="365">1 Year</option>
+                            <option value="0">Never Expires</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="usageLimit" class="block text-sm font-medium text-gray-700 mb-2">Usage Limit</label>
+                        <select id="usageLimit" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="1" selected>Single Use</option>
+                            <option value="5">5 Uses</option>
+                            <option value="10">10 Uses</option>
+                            <option value="25">25 Uses</option>
+                            <option value="0">Unlimited</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="codeDescription" class="block text-sm font-medium text-gray-700 mb-2">Description (Optional)</label>
+                    <input type="text" id="codeDescription" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Basketball Team Coaches, Fall Season 2024">
+                </div>
+                
+                <button onclick="generateCoachCode()" class="bg-blue-600 text-white px-6 py-3 rounded-md text-sm font-medium hover:bg-blue-700">Generate Coach Activation Code</button>
+            </div>
+        </div>
+
+        <!-- Generated Code Display -->
+        <div id="newCodeDisplay" class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8 hidden">
+            <div class="flex items-center mb-3">
+                <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h4 class="text-lg font-medium text-green-800">New Coach Activation Code Generated!</h4>
+            </div>
+            <div class="bg-white border border-green-200 rounded-md p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Activation Code:</p>
+                        <p class="text-2xl font-mono font-bold text-gray-900" id="generatedCode">XXXXX</p>
+                    </div>
+                    <button onclick="copyToClipboard()" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">Copy Code</button>
+                </div>
+                <div class="mt-3 text-sm text-gray-600">
+                    <p><strong>Type:</strong> <span id="codeTypeDisplay">Coach Access</span></p>
+                    <p><strong>Expires:</strong> <span id="expiryDisplay">30 days from now</span></p>
+                    <p><strong>Usage Limit:</strong> <span id="usageDisplay">Single Use</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Codes Table -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Active Coach Activation Codes</h3>
+                    <button onclick="refreshCodes()" class="bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-700">Refresh</button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expires</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uses</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="codesTable" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">No coach activation codes generated yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Store coach activation codes separately
+        let coachActivationCodes = [];
+
+        // Check admin authentication
+        window.addEventListener('load', function() {
+            const adminUsername = sessionStorage.getItem('adminUsername');
+            if (!adminUsername || adminUsername !== 'root') {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            document.getElementById('adminUsername').textContent = adminUsername;
+            loadCoachActivationCodes();
+            displayCoachCodes();
+        });
+
+        function logout() {
+            sessionStorage.removeItem('adminUsername');
+            window.location.href = 'login.html';
+        }
+
+        function generateCoachCode() {
+            const codeType = document.getElementById('codeType').value;
+            const expiryDays = parseInt(document.getElementById('expiryDays').value);
+            const usageLimit = parseInt(document.getElementById('usageLimit').value);
+            const description = document.getElementById('codeDescription').value;
+            
+            // Generate random 8-character code
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            
+            // Calculate expiry date
+            let expiryDate = null;
+            if (expiryDays > 0) {
+                expiryDate = new Date();
+                expiryDate.setDate(expiryDate.getDate() + expiryDays);
+            }
+            
+            // Create activation code object
+            const activationCode = {
+                id: 'coach_code_' + Date.now(),
+                code: code,
+                type: codeType,
+                description: description || '',
+                createdAt: new Date().toISOString(),
+                expiryDate: expiryDate ? expiryDate.toISOString() : null,
+                usageLimit: usageLimit,
+                usedCount: 0,
+                isActive: true,
+                usedBy: []
+            };
+            
+            // Add to codes array
+            coachActivationCodes.push(activationCode);
+            saveCoachActivationCodes();
+            
+            // Display the new code
+            document.getElementById('generatedCode').textContent = code;
+            document.getElementById('codeTypeDisplay').textContent = codeType.charAt(0).toUpperCase() + codeType.slice(1);
+            document.getElementById('expiryDisplay').textContent = expiryDate ? 
+                expiryDate.toLocaleDateString() : 'Never expires';
+            document.getElementById('usageDisplay').textContent = usageLimit === 0 ? 'Unlimited' : 
+                (usageLimit === 1 ? 'Single Use' : usageLimit + ' uses');
+            
+            document.getElementById('newCodeDisplay').classList.remove('hidden');
+            
+            // Reset form
+            document.getElementById('codeDescription').value = '';
+            
+            // Refresh the table
+            displayCoachCodes();
+            
+            // Scroll to show the generated code
+            document.getElementById('newCodeDisplay').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function copyToClipboard() {
+            const code = document.getElementById('generatedCode').textContent;
+            navigator.clipboard.writeText(code).then(function() {
+                // Show copied feedback
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('bg-green-600');
+                button.classList.remove('bg-blue-600');
+                
+                setTimeout(function() {
+                    button.textContent = originalText;
+                    button.classList.remove('bg-green-600');
+                    button.classList.add('bg-blue-600');
+                }, 2000);
+            });
+        }
+
+        function refreshCodes() {
+            loadCoachActivationCodes();
+            displayCoachCodes();
+        }
+
+        function displayCoachCodes() {
+            const codesTable = document.getElementById('codesTable');
+            
+            // Filter only active codes for display
+            const activeCodes = coachActivationCodes.filter(code => code.isActive);
+            
+            if (activeCodes.length === 0) {
+                codesTable.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-gray-500">No coach activation codes generated yet</td></tr>';
+                return;
+            }
+
+            const currentDate = new Date();
+            
+            codesTable.innerHTML = activeCodes.map(code => {
+                const isExpired = code.expiryDate && new Date(code.expiryDate) < currentDate;
+                const isUsedUp = code.usageLimit > 0 && code.usedCount >= code.usageLimit;
+                const isInactive = isExpired || isUsedUp;
+                
+                const statusClass = isInactive ? 'text-red-600' : 'text-green-600';
+                const statusText = isExpired ? 'Expired' : isUsedUp ? 'Used Up' : 'Active';
+                
+                const usageText = code.usageLimit === 0 ? 
+                    `${code.usedCount} (Unlimited)` : 
+                    `${code.usedCount}/${code.usageLimit}`;
+                
+                return `
+                    <tr class="${isInactive ? 'bg-gray-50' : ''}">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-mono font-medium text-gray-900">${code.code}</div>
+                            ${code.description ? `<div class="text-xs text-gray-500">${code.description}</div>` : ''}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${code.type.charAt(0).toUpperCase() + code.type.slice(1)}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${new Date(code.createdAt).toLocaleDateString()}</div>
+                            <div class="text-xs text-gray-500">${new Date(code.createdAt).toLocaleTimeString()}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${code.expiryDate ? new Date(code.expiryDate).toLocaleDateString() : 'Never'}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">${usageText}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusClass === 'text-green-600' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <button onclick="copyCode('${code.code}')" class="text-blue-600 hover:text-blue-900">Copy</button>
+                            <button onclick="deactivateCode('${code.id}')" class="text-red-600 hover:text-red-900">Deactivate</button>
+                            <button onclick="viewCodeDetails('${code.id}')" class="text-indigo-600 hover:text-indigo-900">Details</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function copyCode(code) {
+            navigator.clipboard.writeText(code).then(function() {
+                alert('Code copied to clipboard: ' + code);
+            });
+        }
+
+        function deactivateCode(codeId) {
+            if (confirm('Are you sure you want to deactivate this coach activation code?')) {
+                const codeIndex = coachActivationCodes.findIndex(code => code.id === codeId);
+                if (codeIndex !== -1) {
+                    coachActivationCodes[codeIndex].isActive = false;
+                    saveCoachActivationCodes();
+                    displayCoachCodes();
+                }
+            }
+        }
+
+        function viewCodeDetails(codeId) {
+            const code = coachActivationCodes.find(c => c.id === codeId);
+            if (code) {
+                const usageDetails = code.usedBy.length > 0 ? 
+                    '\n\nUsed by:\n' + code.usedBy.map(usage => 
+                        `• ${usage.userEmail} on ${new Date(usage.usedAt).toLocaleString()}`
+                    ).join('\n') : 
+                    '\n\nNo usage yet.';
+                
+                alert(`Coach Activation Code Details:\n\nCode: ${code.code}\nType: ${code.type}\nCreated: ${new Date(code.createdAt).toLocaleString()}\nExpires: ${code.expiryDate ? new Date(code.expiryDate).toLocaleString() : 'Never'}\nUsage: ${code.usedCount}/${code.usageLimit === 0 ? 'Unlimited' : code.usageLimit}\nStatus: ${code.isActive ? 'Active' : 'Inactive'}${usageDetails}`);
+            }
+        }
+
+        // Save coach activation codes to localStorage
+        function saveCoachActivationCodes() {
+            localStorage.setItem('coachActivationCodes', JSON.stringify(coachActivationCodes));
+        }
+
+        // Load coach activation codes from localStorage
+        function loadCoachActivationCodes() {
+            const saved = localStorage.getItem('coachActivationCodes');
+            if (saved) {
+                coachActivationCodes = JSON.parse(saved);
+            }
+        }
+    </script>
+</body>
+</html>
