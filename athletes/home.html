@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Athlete Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/robustVideoPlayer.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -181,6 +182,10 @@
                 </div>
             </div>
 
+            <!-- Video Training Library -->
+            <div id="videoPlayerSection" class="mb-10">
+                <!-- Video player will be rendered here -->
+            </div>
 
             <!-- Programs in Progress -->
             <div class="mb-10">
@@ -321,6 +326,13 @@
         window.addEventListener('load', function() {
             loadAthleteData();
             loadPrograms();
+            
+            // Initialize video player
+            setTimeout(async () => {
+                await window.robustVideoPlayer.loadAvailableVideos();
+                window.robustVideoPlayer.renderPlayer('videoPlayerSection');
+                console.log('Robust video player initialized');
+            }, 500);
         });
 
         function loadAthleteData() {
