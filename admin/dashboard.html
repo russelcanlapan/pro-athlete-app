@@ -99,10 +99,31 @@
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Activated Users -->
         <div class="bg-white shadow rounded-lg">
             <div class="px-4 py-5 sm:p-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent User Registrations</h3>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Activated Users</h3>
+                    <div class="flex space-x-4">
+                        <div>
+                            <label for="statusFilter" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select id="statusFilter" onchange="filterUsers()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                <option value="active">Active Users</option>
+                                <option value="disabled">Disabled Users</option>
+                                <option value="all">All Users</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="typeFilter" class="block text-sm font-medium text-gray-700">Type</label>
+                            <select id="typeFilter" onchange="filterUsers()" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                <option value="all">All Types</option>
+                                <option value="athlete">Players</option>
+                                <option value="coach">Coaches</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -110,12 +131,13 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             </tr>
                         </thead>
                         <tbody id="recentUsers" class="bg-white divide-y divide-gray-200">
                             <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Loading recent users...</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Loading activated users...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -125,6 +147,8 @@
     </main>
 
     <script>
+        let allUserData = [];
+
         // Check admin authentication
         function checkAdminAuth() {
             if (sessionStorage.getItem('adminAuthenticated') !== 'true') {
@@ -140,13 +164,47 @@
             window.location.href = 'login.html';
         }
 
+        function filterUsers() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            
+            let filteredUsers = [...allUserData];
+            
+            // Filter by status
+            if (statusFilter === 'active') {
+                filteredUsers = filteredUsers.filter(user => user.isActive !== false);
+            } else if (statusFilter === 'disabled') {
+                filteredUsers = filteredUsers.filter(user => user.isActive === false);
+            }
+            
+            // Filter by type
+            if (typeFilter !== 'all') {
+                filteredUsers = filteredUsers.filter(user => user.accountType === typeFilter);
+            }
+            
+            // Sort by creation date (newest first)
+            filteredUsers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            updateRecentUsersTable(filteredUsers);
+        }
+
         // Load dashboard data
         async function loadDashboardData() {
             try {
-                // Get all registered users from localStorage (simulating database)
-                const allUsers = [];
+                // Get all registered users from multiple storage locations
+                allUserData = [];
                 
-                // Check for users in different storage locations
+                // Primary source: registeredUsers in localStorage
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                console.log('Registered users from localStorage:', registeredUsers);
+                allUserData.push(...registeredUsers);
+                
+                // Secondary source: users array in localStorage  
+                const usersArray = JSON.parse(localStorage.getItem('users') || '[]');
+                console.log('Users array from localStorage:', usersArray);
+                allUserData.push(...usersArray);
+                
+                // Check for users in other storage locations for backward compatibility
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && (key.includes('UserData') || key === 'currentUser')) {
@@ -161,60 +219,87 @@
                                     email: userData.email,
                                     accountType: userData.accountType,
                                     createdAt: userData.createdAt || new Date().toISOString(),
-                                    isActive: userData.isActive !== false
+                                    updatedAt: userData.updatedAt || new Date().toISOString(),
+                                    isActive: userData.isActive !== false,
+                                    activationCode: userData.activationCode || 'N/A'
                                 };
-                                allUsers.push(normalizedUser);
+                                allUserData.push(normalizedUser);
                             }
                         } catch (e) {
                             // Skip invalid data
-                            console.log('Skipping invalid user data:', key, e);
                         }
                     }
                 }
 
                 // Remove duplicates based on email
-                const uniqueUsers = allUsers.filter((user, index, self) => 
+                const uniqueUsers = allUserData.filter((user, index, self) => 
                     index === self.findIndex(u => u.email === user.email)
                 );
+                
+                allUserData = uniqueUsers;
+                console.log('Found all users:', allUserData);
 
-                console.log('Found registered users:', uniqueUsers);
-
-                // Count users by type
-                const athletes = uniqueUsers.filter(user => user.accountType === 'athlete').length;
-                const coaches = uniqueUsers.filter(user => user.accountType === 'coach').length;
-                const totalUsers = uniqueUsers.length;
-
-                // Update UI
+                // Update stats
+                const totalUsers = allUserData.length;
+                const athletes = allUserData.filter(user => user.accountType === 'athlete').length;
+                const coaches = allUserData.filter(user => user.accountType === 'coach').length;
+                
                 document.getElementById('totalUsers').textContent = totalUsers;
-                document.getElementById('totalUsersText').textContent = totalUsers + ' registered users';
+                document.getElementById('totalUsersText').textContent = `${totalUsers} registered users`;
+                
                 document.getElementById('totalAthletes').textContent = athletes;
-                document.getElementById('totalAthletesText').textContent = athletes + ' athletes';
+                document.getElementById('totalAthletesText').textContent = `${athletes} athletes`;
+                
                 document.getElementById('totalCoaches').textContent = coaches;
-                document.getElementById('totalCoachesText').textContent = coaches + ' coaches';
+                document.getElementById('totalCoachesText').textContent = `${coaches} coaches`;
 
-                // Update recent users table
-                const recentUsersTable = document.getElementById('recentUsers');
-                if (uniqueUsers.length === 0) {
-                    recentUsersTable.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No users registered yet</td></tr>';
-                } else {
-                    // Show most recent users (up to 5)
-                    const recentUsers = uniqueUsers.slice(-5).reverse();
-                    recentUsersTable.innerHTML = recentUsers.map(user => `
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.firstName} ${user.lastName}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.accountType === 'athlete' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">
-                                    ${user.accountType}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Today'}</td>
-                        </tr>
-                    `).join('');
-                }
+                // Update users table with filtering
+                filterUsers();
+                
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
+                document.getElementById('recentUsers').innerHTML = 
+                    '<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Error loading data</td></tr>';
             }
+        }
+
+        function updateRecentUsersTable(users) {
+            const tbody = document.getElementById('recentUsers');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No users found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const statusBadge = user.isActive !== false ? 
+                    '<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>' :
+                    '<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Disabled</span>';
+                
+                const typeBadge = user.accountType === 'athlete' ? 
+                    '<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Player</span>' :
+                    '<span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Coach</span>';
+                
+                return `
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            ${user.firstName} ${user.lastName}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${user.email}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${typeBadge}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            ${statusBadge}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            ${new Date(user.createdAt).toLocaleDateString()}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Initialize
