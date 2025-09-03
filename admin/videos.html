@@ -114,6 +114,65 @@
                                   placeholder="Describe the exercise, proper form, benefits, etc."></textarea>
                     </div>
 
+                    <!-- Toggle Fields -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">ID</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="videoId" value="yes" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2">
+                                    <span class="text-sm text-gray-700">Yes</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="videoId" value="no" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2" checked>
+                                    <span class="text-sm text-gray-700">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Both Side</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="bothSide" value="yes" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2">
+                                    <span class="text-sm text-gray-700">Yes</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="bothSide" value="no" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2" checked>
+                                    <span class="text-sm text-gray-700">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-3">Online</label>
+                            <div class="flex space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="online" value="yes" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2">
+                                    <span class="text-sm text-gray-700">Yes</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="online" value="no" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2" checked>
+                                    <span class="text-sm text-gray-700">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Free Content</label>
+                        <div class="flex space-x-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="freeContent" value="yes" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2">
+                                <span class="text-sm text-gray-700">Yes</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="freeContent" value="no" class="mr-2 text-blue-600 focus:ring-blue-500 focus:ring-2" checked>
+                                <span class="text-sm text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- File Upload Area -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Video File</label>
@@ -295,6 +354,10 @@
                         sport: formData.get('targetSport'),
                         difficulty: formData.get('difficultyLevel'),
                         description: formData.get('videoDescription'),
+                        videoId: formData.get('videoId'),
+                        bothSide: formData.get('bothSide'),
+                        online: formData.get('online'),
+                        freeContent: formData.get('freeContent'),
                         fileName: file.name,
                         fileSize: file.size,
                         uploadedAt: new Date()
@@ -434,12 +497,16 @@
                                 <p><strong>Category:</strong> ${video.category}</p>
                                 <p><strong>Sport:</strong> ${video.sport}</p>
                                 <p><strong>Difficulty:</strong> <span class="px-2 py-1 text-xs rounded-full ${getDifficultyColor(video.difficulty)}">${video.difficulty}</span></p>
+                                <p><strong>ID:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.videoId === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.videoId || 'no'}</span></p>
+                                <p><strong>Both Side:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.bothSide === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.bothSide || 'no'}</span></p>
                             </div>
                             <div>
                                 <h4 class="font-medium text-gray-900 mb-2">File Information</h4>
                                 <p><strong>File:</strong> ${video.fileName}</p>
                                 <p><strong>Size:</strong> ${(video.fileSize / (1024 * 1024)).toFixed(2)} MB</p>
                                 <p><strong>Uploaded:</strong> ${video.uploadedAt.toLocaleDateString()}</p>
+                                <p><strong>Online:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.online === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.online || 'no'}</span></p>
+                                <p><strong>Free Content:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.freeContent === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.freeContent || 'no'}</span></p>
                             </div>
                         </div>
                         
