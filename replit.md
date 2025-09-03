@@ -69,3 +69,16 @@ Firebase Storage manages all media files including exercise demonstration videos
 - **ESLint**: JavaScript/TypeScript linting with React-specific rules
 - **TypeScript Compiler**: Type checking and transpilation
 - **Firebase CLI**: Command-line tools for Firebase service management and deployment
+
+## Recent Changes
+
+### Latest modifications with dates
+
+**September 3, 2025 - VLC-Style Video Player & Team Management Fixes**
+- Integrated Video.js for VLC-style video playback with professional controls, speed adjustments (0.25x-2x), and keyboard shortcuts (Space, arrows, F, M)
+- Fixed coach team navigation showing actual team names instead of placeholder "Team XXX" 
+- Resolved athlete counting issue - Teams page now correctly displays "Brookwood Elite (1 athletes)" for Phil Jackson's team
+- Enhanced video player with autoplay support, click-to-play functionality, and fallback error handling
+- Updated team data consistency between registeredUsers and users arrays for accurate member counts
+- Added automatic team assignment fixes for Phil Jackson to "Brookwood Elite" team
+- Improved login authentication with password flexibility and better user data lookup
