@@ -192,25 +192,47 @@
                 // Initialize demo user if needed
                 initializeDemoUser();
                 
-                // Check localStorage for users
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && (key.includes('UserData') || key === 'currentUser')) {
-                        try {
-                            const userData = JSON.parse(localStorage.getItem(key));
-                            if (userData && userData.email === email) {
-                                // Check if password matches (get from localStorage or use stored password)
-                                const storedPassword = localStorage.getItem('signupPassword') || userData.password || 'defaultpass';
-                                if (password === storedPassword || 
-                                    (email === 'alexforonda2000@gmail.com' && password === 'M0ntr3al!') || 
-                                    password === 'password123') { // Simple fallback for demo
-                                    matchedUser = userData;
-                                    userFound = true;
-                                    break;
+                // Check registeredUsers first (primary source)
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                console.log('Checking registered users for login:', registeredUsers);
+                
+                for (const user of registeredUsers) {
+                    if (user.email === email) {
+                        console.log('Found user with matching email:', user);
+                        // Check password - ensure it matches what's in the database
+                        if (user.password === password) {
+                            matchedUser = user;
+                            userFound = true;
+                            console.log('Password match for user:', user.firstName);
+                            break;
+                        } else {
+                            console.log('Password mismatch. Expected:', user.password, 'Got:', password);
+                        }
+                    }
+                }
+                
+                // Fallback: Check other localStorage locations if not found in registeredUsers
+                if (!userFound) {
+                    console.log('User not found in registeredUsers, checking other storage...');
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key && (key.includes('UserData') || key === 'currentUser')) {
+                            try {
+                                const userData = JSON.parse(localStorage.getItem(key));
+                                if (userData && userData.email === email) {
+                                    // Check if password matches (get from localStorage or use stored password)
+                                    const storedPassword = localStorage.getItem('signupPassword') || userData.password || 'defaultpass';
+                                    if (password === storedPassword || 
+                                        (email === 'alexforonda2000@gmail.com' && password === 'M0ntr3al!') || 
+                                        password === 'password123') { // Simple fallback for demo
+                                        matchedUser = userData;
+                                        userFound = true;
+                                        break;
+                                    }
                                 }
+                            } catch (e) {
+                                console.log('Skipping invalid user data:', key);
                             }
-                        } catch (e) {
-                            console.log('Skipping invalid user data:', key);
                         }
                     }
                 }
@@ -299,6 +321,7 @@
                 }
                 
                 // If we get here, no user was found anywhere
+                console.error('Login failed - user not found anywhere. Email:', email, 'Available users:', registeredUsers.map(u => u.email));
                 throw new Error('User not found');
                 
             } catch (error) {
