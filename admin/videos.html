@@ -339,6 +339,9 @@
                 if (progress >= 100) {
                     clearInterval(interval);
                     
+                    // Create video URL for preview
+                    const videoURL = URL.createObjectURL(file);
+                    
                     // Create video entry
                     const video = {
                         id: Date.now(),
@@ -353,6 +356,7 @@
                         freeContent: formData.get('freeContent'),
                         fileName: file.name,
                         fileSize: file.size,
+                        videoURL: videoURL,
                         uploadedAt: new Date()
                     };
 
@@ -467,20 +471,35 @@
                         
                         <!-- Video Player Preview -->
                         <div class="mb-6">
-                            <div class="w-full h-48 bg-gray-900 rounded-lg flex items-center justify-center relative">
-                                <div class="text-center text-white">
-                                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
+                            ${video.videoURL ? `
+                                <video class="w-full h-64 bg-black rounded-lg" controls>
+                                    <source src="${video.videoURL}" type="${getVideoMimeType(video.fileName)}">
+                                    <div class="w-full h-64 bg-gray-900 rounded-lg flex items-center justify-center">
+                                        <p class="text-white">Your browser does not support video playback.</p>
                                     </div>
-                                    <p class="text-sm font-medium">${video.title}</p>
-                                    <p class="text-xs text-gray-300">Video Preview</p>
+                                </video>
+                                <div class="mt-2 flex items-center justify-between">
+                                    <p class="text-sm text-gray-600">Click play to preview the video</p>
+                                    <span class="bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">
+                                        ● UPLOADED
+                                    </span>
                                 </div>
-                                <div class="absolute top-2 right-2 bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">
-                                    ● UPLOADED
+                            ` : `
+                                <div class="w-full h-48 bg-gray-900 rounded-lg flex items-center justify-center relative">
+                                    <div class="text-center text-white">
+                                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-sm font-medium">${video.title}</p>
+                                        <p class="text-xs text-gray-300">Video file not available for preview</p>
+                                    </div>
+                                    <div class="absolute top-2 right-2 bg-yellow-600 text-white px-2 py-1 rounded text-xs font-bold">
+                                        ● NO PREVIEW
+                                    </div>
                                 </div>
-                            </div>
+                            `}
                         </div>
                         
                         <!-- Video Information -->
@@ -691,6 +710,23 @@
                     messageDiv.remove();
                 }
             }, 5000);
+        }
+
+        // Helper function to get video MIME type
+        function getVideoMimeType(fileName) {
+            const extension = fileName.split('.').pop().toLowerCase();
+            switch (extension) {
+                case 'mp4':
+                    return 'video/mp4';
+                case 'mov':
+                    return 'video/quicktime';
+                case 'avi':
+                    return 'video/avi';
+                case 'webm':
+                    return 'video/webm';
+                default:
+                    return 'video/mp4';
+            }
         }
 
         // Initialize
