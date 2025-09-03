@@ -1089,9 +1089,11 @@
             }
             
             // Try to use locally uploaded video if available and valid
-            if (actualVideo && actualVideo.videoURL && actualVideo.videoURL !== null && !actualVideo.videoURL.includes('blob:')) {
+            if (actualVideo && actualVideo.videoURL && actualVideo.videoURL !== null) {
                 video.src = actualVideo.videoURL;
                 console.log('Using locally uploaded video with ID 451');
+                // Auto-play the video
+                video.play().catch(e => console.log('Auto-play prevented by browser:', e));
             } else {
                 // Show working video demonstration
                 console.log('Using demo video content for ID 451');

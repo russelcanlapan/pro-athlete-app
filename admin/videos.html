@@ -582,7 +582,7 @@
                                 <h4 class="font-medium text-gray-900 mb-2">File Information</h4>
                                 <p><strong>File:</strong> ${video.fileName}</p>
                                 <p><strong>Size:</strong> ${(video.fileSize / (1024 * 1024)).toFixed(2)} MB</p>
-                                <p><strong>Uploaded:</strong> ${video.uploadedAt.toLocaleDateString()}</p>
+                                <p><strong>Uploaded:</strong> ${new Date(video.uploadedAt).toLocaleDateString()}</p>
                                 <p><strong>Online:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.online === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.online || 'no'}</span></p>
                                 <p><strong>Free Content:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.freeContent === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.freeContent || 'no'}</span></p>
                             </div>
