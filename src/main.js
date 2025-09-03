@@ -6,7 +6,12 @@ import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   React.createElement(React.StrictMode, null,
-    React.createElement(BrowserRouter, null,
+    React.createElement(BrowserRouter, { 
+      future: { 
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }
+    },
       React.createElement(App)
     )
   )
