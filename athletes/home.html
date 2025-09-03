@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Athlete Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/videoSystem.js"></script>
+    <script src="../js/simpleVideoPlayer.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
@@ -1106,24 +1106,24 @@
             const videoPlayerArea = document.getElementById('videoPlayerArea');
             const connectionText = document.getElementById('connectionText');
             
-            console.log(`Loading video ID ${videoId} from robust video system...`);
+            console.log(`Loading video ID ${videoId} from simple video player...`);
             connectionText.innerHTML = `<strong>Database Connected:</strong> Loading Video ID ${videoId}...`;
             
             try {
-                // Use the robust video system
-                const success = await window.videoSystem.createVideoPlayer(videoId, videoPlayerArea);
+                // Use the simple video player system
+                const success = await window.simpleVideoPlayer.loadVideo(videoId, videoPlayerArea);
                 
                 if (success) {
                     connectionText.innerHTML = `<strong>Database Connected:</strong> Video ID ${videoId} loaded successfully.`;
-                    console.log(`Video ${videoId} loaded with robust video system`);
+                    console.log(`Video ${videoId} loaded with simple video player`);
                 } else {
-                    connectionText.innerHTML = `<strong>Database Connected:</strong> Showing interactive demo for Video ID ${videoId}.`;
-                    console.log(`Video ${videoId} using fallback demo`);
+                    connectionText.innerHTML = `<strong>Database Connected:</strong> Error loading Video ID ${videoId}.`;
+                    console.log(`Video ${videoId} failed to load`);
                 }
             } catch (error) {
                 console.error('Error loading video:', error);
-                connectionText.innerHTML = `<strong>Database Connected:</strong> Error loading video, showing demo for ID ${videoId}.`;
-                await window.videoSystem.createInteractiveDemo(videoId, videoPlayerArea);
+                connectionText.innerHTML = `<strong>Database Connected:</strong> Error loading video ID ${videoId}.`;
+                window.simpleVideoPlayer.showError(videoPlayerArea, `Failed to load video ${videoId}`);
             }
         }
 
