@@ -1,13 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro Athlete - Fitness App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <img src="images/PA-logo_blanc.png" alt="PRO ATHLETE" class="w-10 h-10 rounded-full">
+                    </div>
+                    <span class="text-xl font-bold text-gray-900">Pro Athlete</span>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="window.location.href='auth/signin/login.html'" 
+                            class="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                        Sign In
+                    </button>
+                    <button onclick="window.location.href='auth/signup/email.html'" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <main class="container mx-auto px-4 py-16">
+        <div class="text-center fade-in">
+            <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Less injuries,
+                <br>
+                <span class="text-blue-600">better performance</span>
+            </h1>
+            
+            <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Sport-specific exercises and programs that optimize strength, power, and prevention. 
+                Designed for athletes and coaches who want to maximize performance while minimizing injury risk.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <button onclick="window.location.href='auth/signup/email.html'" 
+                        class="bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 transition-colors duration-200">
+                    Start Free Trial
+                </button>
+                <button onclick="tryDemo()" 
+                        class="border-2 border-blue-600 text-blue-600 font-semibold py-4 px-8 rounded-lg text-lg hover:bg-blue-50 transition-colors duration-200">
+                    Try Demo
+                </button>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
+            <!-- For Athletes -->
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                    <div class="text-3xl">🏃‍♂️</div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">For Athletes</h3>
+                <ul class="text-gray-600 space-y-2">
+                    <li>• Personalized training programs</li>
+                    <li>• Sport-specific exercises</li>
+                    <li>• Injury prevention routines</li>
+                    <li>• Progress tracking</li>
+                </ul>
+            </div>
+
+            <!-- For Coaches -->
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                    <div class="text-3xl">👨‍💼</div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">For Coaches</h3>
+                <ul class="text-gray-600 space-y-2">
+                    <li>• Team management tools</li>
+                    <li>• Custom program creation</li>
+                    <li>• Athlete progress monitoring</li>
+                    <li>• Performance analytics</li>
+                </ul>
+            </div>
+
+            <!-- Programs -->
+            <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
+                <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                    <div class="text-3xl">💪</div>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">Training Programs</h3>
+                <ul class="text-gray-600 space-y-2">
+                    <li>• Strength training</li>
+                    <li>• Mobility & flexibility</li>
+                    <li>• Prehabilitation</li>
+                    <li>• Warm-up routines</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sports Section -->
+        <div class="mt-20 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">Supporting Multiple Sports</h2>
+            <div class="flex justify-center space-x-8">
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🏀</div>
+                    <p class="text-gray-600">Basketball</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🏐</div>
+                    <p class="text-gray-600">Volleyball</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">🏈</div>
+                    <p class="text-gray-600">Football</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-2">⚽</div>
+                    <p class="text-gray-600">Soccer</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-20">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 Pro Athlete. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function tryDemo() {
+            // Demo button that doesn't work - just shows a message
+            alert('Demo coming soon! Please use "Start Free Trial" to access the full app.');
+        }
+    </script>
+</body>
 </html>
