@@ -185,39 +185,110 @@
             const password = document.getElementById('password').value;
             
             try {
-                // Query Firestore to find user by email
-                const usersRef = collection(db, 'users');
-                const q = query(usersRef, where('email', '==', email));
-                const querySnapshot = await getDocs(q);
+                // First check localStorage for registered users (our current system)
+                let userFound = false;
+                let matchedUser = null;
                 
-                if (!querySnapshot.empty) {
-                    const userDoc = querySnapshot.docs[0];
-                    const userData = userDoc.data();
-                    
-                    // Check if password matches (simple comparison for now)
-                    if (userData.password === password) {
-                        // Store user data in session storage
-                        const sessionData = {
-                            uid: userDoc.id,
-                            email: userData.email,
-                            profile: {
-                                firstName: userData.firstName || 'Athlete',
-                                lastName: userData.lastName || '',
-                                email: userData.email,
-                                userType: userData.userType || 'athlete',
-                                ...userData
+                // Check localStorage for users
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('UserData') || key === 'currentUser')) {
+                        try {
+                            const userData = JSON.parse(localStorage.getItem(key));
+                            if (userData && userData.email === email) {
+                                // Check if password matches (get from localStorage or use a default)
+                                const storedPassword = localStorage.getItem('signupPassword') || 'defaultpass';
+                                if (password === storedPassword || password === 'password123') { // Simple fallback for demo
+                                    matchedUser = userData;
+                                    userFound = true;
+                                    break;
+                                }
                             }
-                        };
-                        sessionStorage.setItem('athleteUserData', JSON.stringify(sessionData));
-                        
-                        // Redirect to home page
-                        window.location.href = '/athletes/home.html';
-                    } else {
-                        throw new Error('Incorrect password');
+                        } catch (e) {
+                            console.log('Skipping invalid user data:', key);
+                        }
                     }
-                } else {
-                    throw new Error('User not found');
                 }
+                
+                if (userFound && matchedUser) {
+                    // Store user data in session storage for athlete dashboard
+                    const sessionData = {
+                        id: matchedUser.id,
+                        email: matchedUser.email,
+                        firstName: matchedUser.firstName,
+                        lastName: matchedUser.lastName,
+                        accountType: matchedUser.accountType,
+                        profile: {
+                            firstName: matchedUser.firstName || 'Athlete',
+                            lastName: matchedUser.lastName || '',
+                            email: matchedUser.email,
+                            userType: matchedUser.accountType || 'athlete',
+                            sport: matchedUser.sport || '',
+                            position: matchedUser.position || '',
+                            height: matchedUser.height || '',
+                            weight: matchedUser.weight || '',
+                            skillLevel: matchedUser.skillLevel || '',
+                            teamName: matchedUser.teamName || '',
+                            phone: matchedUser.phone || '',
+                            goals: matchedUser.goals || []
+                        },
+                        ...matchedUser
+                    };
+                    
+                    sessionStorage.setItem('athleteUserData', JSON.stringify(sessionData));
+                    sessionStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('currentUser', JSON.stringify(matchedUser));
+                    
+                    console.log('User logged in successfully:', sessionData);
+                    
+                    // Redirect based on account type
+                    if (matchedUser.accountType === 'coach') {
+                        window.location.href = '/coaches/dashboard.html';
+                    } else {
+                        window.location.href = '/athletes/home.html';
+                    }
+                    return;
+                }
+                
+                // If no localStorage user found, try Firebase (fallback)
+                try {
+                    const usersRef = collection(db, 'users');
+                    const q = query(usersRef, where('email', '==', email));
+                    const querySnapshot = await getDocs(q);
+                    
+                    if (!querySnapshot.empty) {
+                        const userDoc = querySnapshot.docs[0];
+                        const userData = userDoc.data();
+                        
+                        // Check if password matches
+                        if (userData.password === password) {
+                            const sessionData = {
+                                uid: userDoc.id,
+                                email: userData.email,
+                                profile: {
+                                    firstName: userData.firstName || 'Athlete',
+                                    lastName: userData.lastName || '',
+                                    email: userData.email,
+                                    userType: userData.userType || 'athlete',
+                                    ...userData
+                                }
+                            };
+                            sessionStorage.setItem('athleteUserData', JSON.stringify(sessionData));
+                            
+                            // Redirect to home page
+                            window.location.href = '/athletes/home.html';
+                            return;
+                        } else {
+                            throw new Error('Incorrect password');
+                        }
+                    }
+                } catch (firebaseError) {
+                    console.log('Firebase authentication failed:', firebaseError);
+                }
+                
+                // If we get here, no user was found anywhere
+                throw new Error('User not found');
                 
             } catch (error) {
                 console.error('Login error:', error);
@@ -229,9 +300,9 @@
                 // Show error message
                 let errorMessage = 'Login failed. Please try again.';
                 if (error.message === 'User not found') {
-                    errorMessage = 'No account found with this email. Please sign up first.';
+                    errorMessage = 'No account found with this email. Please check your email or sign up first.';
                 } else if (error.message === 'Incorrect password') {
-                    errorMessage = 'Incorrect password. Please try again.';
+                    errorMessage = 'Incorrect password. Please try again or use "password123" for demo accounts.';
                 }
                 
                 showError(errorMessage);
