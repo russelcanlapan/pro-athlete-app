@@ -235,8 +235,11 @@ class RobustVideoPlayer {
         this.currentVideo = video;
 
         try {
-            // Check if video has actual file data (from admin uploads)
-            if (video.videoURL && video.videoURL.startsWith('blob:')) {
+            // Try multiple video sources
+            if (video.videoLink) {
+                console.log('Loading video with video link URL');
+                this.createVideoPlayerWithLink(video, playerArea);
+            } else if (video.videoURL && video.videoURL.startsWith('blob:')) {
                 console.log('Loading video with blob URL');
                 this.createVideoPlayer(video, playerArea);
             } else if (video.base64Data) {
@@ -258,7 +261,7 @@ class RobustVideoPlayer {
     createVideoPlayer(video, container) {
         container.innerHTML = `
             <div class="relative w-full h-full">
-                <video class="w-full h-full object-cover" controls preload="metadata" 
+                <video id="mainVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" 
                        poster="${this.createPosterImage(video)}">
                     <source src="${video.videoURL}" type="video/mp4">
                     Your browser does not support video playback.
@@ -273,8 +276,53 @@ class RobustVideoPlayer {
                     <div class="font-medium">${video.title}</div>
                     <div class="text-xs text-gray-300">${video.category || 'Training'} • ${video.difficulty || 'Standard'}</div>
                 </div>
+                
+                <!-- Loading/Error overlay -->
+                <div id="videoError_${video.videoId}" class="absolute inset-0 bg-red-900 bg-opacity-75 flex items-center justify-center hidden">
+                    <div class="text-white text-center">
+                        <svg class="w-12 h-12 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-10h2v8h-2V7z"/>
+                        </svg>
+                        <p class="mb-2">Video failed to load</p>
+                        <button onclick="robustVideoPlayer.switchToDemo('${video.videoId}')" 
+                                class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">
+                            Show Demo Instead
+                        </button>
+                    </div>
+                </div>
             </div>
         `;
+        
+        // Setup error handling for blob URL expiration
+        this.setupVideoErrorHandling(video);
+    }
+
+    /**
+     * Create video player with video link (most reliable)
+     */
+    createVideoPlayerWithLink(video, container) {
+        container.innerHTML = `
+            <div class="relative w-full h-full">
+                <video id="linkVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" 
+                       poster="${this.createPosterImage(video)}">
+                    <source src="${video.videoLink}" type="video/mp4">
+                    Your browser does not support video playback.
+                </video>
+                
+                <!-- Video overlay -->
+                <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    ● LINK: ${video.videoId}
+                </div>
+                
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm">
+                    <div class="font-medium">${video.title}</div>
+                    <div class="text-xs text-gray-300">${video.category || 'Training'} • ${video.difficulty || 'Standard'}</div>
+                </div>
+            </div>
+        `;
+        
+        // Setup error handling
+        this.setupLinkVideoErrorHandling(video);
     }
 
     /**
@@ -638,6 +686,81 @@ class RobustVideoPlayer {
             </svg>
         `;
         return 'data:image/svg+xml;base64,' + btoa(svg);
+    }
+
+    /**
+     * Setup video error handling for blob URL issues
+     */
+    setupVideoErrorHandling(video) {
+        setTimeout(() => {
+            const videoElement = document.getElementById(`mainVideo_${video.videoId}`);
+            if (videoElement) {
+                videoElement.addEventListener('error', () => {
+                    console.log(`Video ${video.videoId} failed to load, showing demo`);
+                    this.switchToDemo(video.videoId);
+                });
+                
+                videoElement.addEventListener('loadstart', () => {
+                    console.log(`Video ${video.videoId} starting to load`);
+                });
+                
+                // Check if video loads within 3 seconds
+                setTimeout(() => {
+                    if (videoElement.readyState === 0) {
+                        console.log(`Video ${video.videoId} timeout, switching to demo`);
+                        this.switchToDemo(video.videoId);
+                    }
+                }, 3000);
+            }
+        }, 100);
+    }
+
+    /**
+     * Setup error handling for link videos
+     */
+    setupLinkVideoErrorHandling(video) {
+        setTimeout(() => {
+            const videoElement = document.getElementById(`linkVideo_${video.videoId}`);
+            if (videoElement) {
+                videoElement.addEventListener('error', () => {
+                    console.log(`Link video ${video.videoId} failed to load, trying blob URL`);
+                    this.tryBlobFallback(video);
+                });
+                
+                videoElement.addEventListener('loadstart', () => {
+                    console.log(`Link video ${video.videoId} starting to load`);
+                });
+                
+                videoElement.addEventListener('canplay', () => {
+                    console.log(`Link video ${video.videoId} can play!`);
+                });
+            }
+        }, 100);
+    }
+
+    /**
+     * Try blob URL as fallback
+     */
+    tryBlobFallback(video) {
+        if (video.videoURL && video.videoURL.startsWith('blob:')) {
+            console.log(`Trying blob URL fallback for video ${video.videoId}`);
+            const container = document.getElementById('videoPlayerArea');
+            this.createVideoPlayer(video, container);
+        } else {
+            console.log(`No blob URL available, showing demo for video ${video.videoId}`);
+            this.switchToDemo(video.videoId);
+        }
+    }
+
+    /**
+     * Switch to demo when video fails
+     */
+    switchToDemo(videoId) {
+        const video = this.availableVideos.find(v => v.videoId === videoId);
+        if (video) {
+            const container = document.getElementById('videoPlayerArea');
+            this.createInteractiveDemo(video, container);
+        }
     }
 
     /**
