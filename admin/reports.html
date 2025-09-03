@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Admin - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Reports</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, <span id="adminUsername">root</span></span>
+                    <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8">
+                <a href="dashboard.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Dashboard</a>
+                <a href="users.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">User Accounts</a>
+                <a href="reports.html" class="bg-blue-700 px-3 py-2 text-sm font-medium">Reports</a>
+                <a href="videos.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Video Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Report Types -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">User Registration Report</h3>
+                    <p class="text-sm text-gray-600 mb-4">Export user registration data and statistics</p>
+                    <button onclick="generateUserReport()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700">Generate Report</button>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Activity Report</h3>
+                    <p class="text-sm text-gray-600 mb-4">Track user engagement and platform usage</p>
+                    <button onclick="generateActivityReport()" class="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700">Generate Report</button>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Team Statistics</h3>
+                    <p class="text-sm text-gray-600 mb-4">Analyze team formation and performance metrics</p>
+                    <button onclick="generateTeamReport()" class="w-full bg-purple-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-purple-700">Generate Report</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Filters -->
+        <div class="bg-white shadow rounded-lg mb-6">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Report Filters</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label for="dateFrom" class="block text-sm font-medium text-gray-700">From Date</label>
+                        <input type="date" id="dateFrom" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="dateTo" class="block text-sm font-medium text-gray-700">To Date</label>
+                        <input type="date" id="dateTo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="reportType" class="block text-sm font-medium text-gray-700">Report Type</label>
+                        <select id="reportType" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="all">All Data</option>
+                            <option value="athletes">Athletes Only</option>
+                            <option value="coaches">Coaches Only</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="format" class="block text-sm font-medium text-gray-700">Export Format</label>
+                        <select id="format" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            <option value="csv">CSV</option>
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Reports -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent Reports</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Report Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Generated</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTable" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">No reports generated yet</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let generatedReports = [];
+
+        // Check admin authentication
+        function checkAdminAuth() {
+            if (sessionStorage.getItem('adminAuthenticated') !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminAuthenticated');
+            sessionStorage.removeItem('adminUsername');
+            window.location.href = 'login.html';
+        }
+
+        function generateUserReport() {
+            const report = {
+                id: Date.now(),
+                name: 'User Registration Report',
+                type: 'User Registration',
+                generated: new Date(),
+                status: 'Completed',
+                data: {
+                    totalUsers: 0, // Would be populated from Firebase
+                    athletes: 0,
+                    coaches: 0
+                }
+            };
+
+            generatedReports.unshift(report);
+            updateReportsTable();
+            
+            // Simulate report generation
+            alert('User Registration Report generated successfully!\\n\\nThis would normally download a file with user data.');
+        }
+
+        function generateActivityReport() {
+            const report = {
+                id: Date.now(),
+                name: 'Activity Report',
+                type: 'Activity',
+                generated: new Date(),
+                status: 'Completed',
+                data: {
+                    activeUsers: 0,
+                    totalLogins: 0,
+                    avgSessionTime: '0 minutes'
+                }
+            };
+
+            generatedReports.unshift(report);
+            updateReportsTable();
+            
+            alert('Activity Report generated successfully!\\n\\nThis would show user engagement metrics.');
+        }
+
+        function generateTeamReport() {
+            const report = {
+                id: Date.now(),
+                name: 'Team Statistics Report',
+                type: 'Team Statistics',
+                generated: new Date(),
+                status: 'Completed',
+                data: {
+                    totalTeams: 0,
+                    avgTeamSize: 0,
+                    mostPopularSports: []
+                }
+            };
+
+            generatedReports.unshift(report);
+            updateReportsTable();
+            
+            alert('Team Statistics Report generated successfully!\\n\\nThis would include team formation and performance data.');
+        }
+
+        function updateReportsTable() {
+            const reportsTable = document.getElementById('reportsTable');
+            
+            if (generatedReports.length === 0) {
+                reportsTable.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">No reports generated yet</td></tr>';
+                return;
+            }
+
+            reportsTable.innerHTML = generatedReports.map(report => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${report.name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${report.type}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${report.generated.toLocaleString()}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            ${report.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="downloadReport(${report.id})" class="text-blue-600 hover:text-blue-900 mr-2">Download</button>
+                        <button onclick="deleteReport(${report.id})" class="text-red-600 hover:text-red-900">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function downloadReport(reportId) {
+            const report = generatedReports.find(r => r.id === reportId);
+            if (report) {
+                alert(`Downloading ${report.name}...\\n\\nIn a real implementation, this would download the actual report file.`);
+            }
+        }
+
+        function deleteReport(reportId) {
+            if (confirm('Are you sure you want to delete this report?')) {
+                generatedReports = generatedReports.filter(r => r.id !== reportId);
+                updateReportsTable();
+            }
+        }
+
+        // Set default dates
+        function setDefaultDates() {
+            const today = new Date();
+            const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+            
+            document.getElementById('dateFrom').value = lastMonth.toISOString().split('T')[0];
+            document.getElementById('dateTo').value = today.toISOString().split('T')[0];
+        }
+
+        // Initialize
+        if (checkAdminAuth()) {
+            const username = sessionStorage.getItem('adminUsername');
+            document.getElementById('adminUsername').textContent = username;
+            setDefaultDates();
+        }
+    </script>
+</body>
+</html>

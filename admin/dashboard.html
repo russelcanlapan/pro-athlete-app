@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Welcome, <span id="adminUsername">root</span></span>
+                    <button onclick="logout()" class="text-sm text-red-600 hover:text-red-700">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8">
+                <a href="dashboard.html" class="bg-blue-700 px-3 py-2 text-sm font-medium">Dashboard</a>
+                <a href="users.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">User Accounts</a>
+                <a href="reports.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Reports</a>
+                <a href="videos.html" class="hover:bg-blue-700 px-3 py-2 text-sm font-medium">Video Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-bold" id="totalUsers">0</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Users</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="totalUsersText">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-bold" id="totalAthletes">0</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Athletes</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="totalAthletesText">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-bold" id="totalCoaches">0</span>
+                            </div>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Coaches</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="totalCoachesText">Loading...</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Recent User Registrations</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentUsers" class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">Loading recent users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Check admin authentication
+        function checkAdminAuth() {
+            if (sessionStorage.getItem('adminAuthenticated') !== 'true') {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return true;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminAuthenticated');
+            sessionStorage.removeItem('adminUsername');
+            window.location.href = 'login.html';
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // This would connect to Firebase in a real implementation
+                // For now, we'll simulate some data
+                const mockData = {
+                    totalUsers: 0,
+                    athletes: 0,
+                    coaches: 0,
+                    recentUsers: []
+                };
+
+                // Update UI
+                document.getElementById('totalUsers').textContent = mockData.totalUsers;
+                document.getElementById('totalUsersText').textContent = mockData.totalUsers + ' registered users';
+                document.getElementById('totalAthletes').textContent = mockData.athletes;
+                document.getElementById('totalAthletesText').textContent = mockData.athletes + ' athletes';
+                document.getElementById('totalCoaches').textContent = mockData.coaches;
+                document.getElementById('totalCoachesText').textContent = mockData.coaches + ' coaches';
+
+                // Update recent users table
+                const recentUsersTable = document.getElementById('recentUsers');
+                if (mockData.recentUsers.length === 0) {
+                    recentUsersTable.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No users registered yet</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Initialize
+        if (checkAdminAuth()) {
+            const username = sessionStorage.getItem('adminUsername');
+            document.getElementById('adminUsername').textContent = username;
+            loadDashboardData();
+        }
+    </script>
+</body>
+</html>
