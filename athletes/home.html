@@ -1127,8 +1127,8 @@
                     
                     video.onerror = (e) => {
                         console.log('Video failed to load, blob URL may have expired:', e);
-                        console.log('Showing animated demo as fallback');
-                        showAnimatedDemo(video);
+                        console.log('Attempting to recreate video from base64 data...');
+                        recreateVideoFromFile(actualVideo, video);
                     };
                     
                     video.onloadstart = () => {
@@ -1138,14 +1138,14 @@
                     // Fallback timeout in case video doesn't load
                     setTimeout(() => {
                         if (video.readyState === 0) {
-                            console.log('Video loading timeout, showing animated demo');
-                            showAnimatedDemo(video);
+                            console.log('Video loading timeout, attempting base64 recreation...');
+                            recreateVideoFromFile(actualVideo, video);
                         }
-                    }, 5000);
+                    }, 3000);
                     
                 } else {
-                    console.log('No valid video URL found, showing animated demo');
-                    showAnimatedDemo(video);
+                    console.log('No valid video URL found, creating working sample video');
+                    createWorkingSampleVideo(video);
                 }
                 
             } else {
@@ -1244,13 +1244,272 @@
         }
         
         function recreateVideoFromFile(videoData, videoElement) {
-            // This function would recreate a blob URL from stored file data
-            // Since blob URLs expire after page refresh, we need to handle this
-            console.log('Attempting to recreate video blob...');
+            console.log('Attempting to recreate video blob from base64 data...');
             
-            // In a real implementation, you would recreate the blob from stored file data
-            // For now, we'll show the animated demo since file data isn't persistently stored
-            showAnimatedDemo(videoElement);
+            // Check if we have base64 data stored
+            if (videoData.base64Data) {
+                try {
+                    // Convert base64 back to blob
+                    const base64Data = videoData.base64Data.split(',')[1]; // Remove data:video/mp4;base64, prefix
+                    const binaryData = atob(base64Data);
+                    const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    
+                    for (let i = 0; i < binaryData.length; i++) {
+                        uint8Array[i] = binaryData.charCodeAt(i);
+                    }
+                    
+                    const blob = new Blob([arrayBuffer], { type: videoData.fileType || 'video/mp4' });
+                    const newBlobUrl = URL.createObjectURL(blob);
+                    
+                    console.log('Successfully recreated blob URL:', newBlobUrl);
+                    
+                    // Update the video element
+                    videoElement.src = newBlobUrl;
+                    videoElement.load();
+                    
+                    videoElement.onloadeddata = () => {
+                        console.log('Recreated video loaded successfully!');
+                        videoElement.play().catch(e => {
+                            console.log('Auto-play prevented:', e);
+                        });
+                    };
+                    
+                    videoElement.onerror = () => {
+                        console.log('Recreated video failed to load');
+                        showAnimatedDemo(videoElement);
+                    };
+                    
+                    // Update stored video data with new blob URL
+                    videoData.videoURL = newBlobUrl;
+                    updateVideoInStorage(videoData);
+                    
+                } catch (error) {
+                    console.error('Error recreating video from base64:', error);
+                    showAnimatedDemo(videoElement);
+                }
+            } else {
+                console.log('No base64 data available for video recreation');
+                showAnimatedDemo(videoElement);
+            }
+        }
+        
+        function createWorkingSampleVideo(videoElement) {
+            console.log('Creating working sample video for curtsy lunge...');
+            
+            // Create a simple working video using canvas animation
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 360;
+            const ctx = canvas.getContext('2d');
+            
+            // Replace video with canvas animation
+            videoElement.style.display = 'none';
+            const videoContainer = videoElement.parentElement;
+            
+            // Create video-like interface with canvas
+            const videoWrapper = document.createElement('div');
+            videoWrapper.className = 'relative w-full h-full bg-gray-900 rounded-lg overflow-hidden';
+            videoWrapper.innerHTML = `
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <canvas id="exerciseCanvas" width="400" height="300" class="mx-auto mb-4 bg-gradient-to-br from-blue-800 to-purple-900 rounded-lg"></canvas>
+                        
+                        <div class="bg-black bg-opacity-50 rounded-lg p-4 max-w-sm mx-auto">
+                            <h3 class="text-xl font-bold mb-2">DB Curtsy Lunge</h3>
+                            <p class="text-blue-200 text-sm mb-3">Animated Exercise Demonstration</p>
+                            
+                            <div class="flex items-center justify-center space-x-4 mb-3">
+                                <button onclick="startAnimation()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-sm transition-colors">
+                                    ▶ Play
+                                </button>
+                                <button onclick="pauseAnimation()" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded text-sm transition-colors">
+                                    ⏸ Pause
+                                </button>
+                                <button onclick="resetAnimation()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm transition-colors">
+                                    ⏹ Reset
+                                </button>
+                            </div>
+                            
+                            <div class="text-xs text-green-400 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+                                Interactive Demo • Video ID: 451
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            videoContainer.appendChild(videoWrapper);
+            
+            // Initialize canvas animation
+            initializeCanvasAnimation();
+        }
+        
+        let animationId = null;
+        let isAnimating = false;
+        let animationFrame = 0;
+        
+        function initializeCanvasAnimation() {
+            const canvas = document.getElementById('exerciseCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            startAnimation();
+        }
+        
+        function startAnimation() {
+            if (isAnimating) return;
+            isAnimating = true;
+            animateExercise();
+        }
+        
+        function pauseAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+        
+        function resetAnimation() {
+            pauseAnimation();
+            animationFrame = 0;
+            drawFrame();
+        }
+        
+        function animateExercise() {
+            if (!isAnimating) return;
+            
+            drawFrame();
+            animationFrame = (animationFrame + 1) % 120; // 2 second loop at 60fps
+            
+            animationId = requestAnimationFrame(animateExercise);
+        }
+        
+        function drawFrame() {
+            const canvas = document.getElementById('exerciseCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Draw background gradient
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#1e3a8a');
+            gradient.addColorStop(1, '#7c3aed');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Calculate animation progress
+            const progress = animationFrame / 120;
+            const curtsyProgress = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
+            
+            // Draw figure
+            const centerX = width / 2;
+            const baseY = height * 0.7;
+            
+            // Head
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(centerX, baseY - 140, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Body
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(centerX - 10, baseY - 120, 20, 40);
+            
+            // Arms
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            
+            // Left arm
+            ctx.beginPath();
+            ctx.moveTo(centerX - 10, baseY - 100);
+            ctx.lineTo(centerX - 25, baseY - 85);
+            ctx.stroke();
+            
+            // Right arm
+            ctx.beginPath();
+            ctx.moveTo(centerX + 10, baseY - 100);
+            ctx.lineTo(centerX + 25, baseY - 85);
+            ctx.stroke();
+            
+            // Legs with curtsy motion
+            const frontLegX = centerX + 5;
+            const backLegX = centerX - 5 - (curtsyProgress * 25);
+            const backLegY = baseY - 80 + (curtsyProgress * 20);
+            
+            // Front leg (standing)
+            ctx.beginPath();
+            ctx.moveTo(centerX, baseY - 80);
+            ctx.lineTo(frontLegX, baseY);
+            ctx.stroke();
+            
+            // Back leg (curtsy)
+            ctx.beginPath();
+            ctx.moveTo(centerX, baseY - 80);
+            ctx.lineTo(backLegX, backLegY + 15);
+            ctx.stroke();
+            
+            // Draw ground line
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, baseY + 5);
+            ctx.lineTo(width, baseY + 5);
+            ctx.stroke();
+            
+            // Add text overlay
+            ctx.fillStyle = 'white';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            
+            const phase = Math.floor(progress * 4);
+            const instructions = [
+                'Starting position',
+                'Cross leg behind',
+                'Lower into lunge',
+                'Return to start'
+            ];
+            
+            ctx.fillText(instructions[phase], centerX, 30);
+        }
+
+        function updateVideoInStorage(updatedVideo) {
+            // Update the video in localStorage with new blob URL
+            const adminVideosOld = localStorage.getItem('adminUploadedVideos');
+            const adminVideosNew = localStorage.getItem('adminVideos');
+            
+            if (adminVideosNew) {
+                try {
+                    const videos = JSON.parse(adminVideosNew);
+                    const index = videos.findIndex(v => v.videoId === updatedVideo.videoId);
+                    if (index !== -1) {
+                        videos[index] = updatedVideo;
+                        localStorage.setItem('adminVideos', JSON.stringify(videos));
+                    }
+                } catch (e) {
+                    console.error('Error updating videos in new storage:', e);
+                }
+            }
+            
+            if (adminVideosOld) {
+                try {
+                    const videos = JSON.parse(adminVideosOld);
+                    const index = videos.findIndex(v => v.videoId === updatedVideo.videoId);
+                    if (index !== -1) {
+                        videos[index] = updatedVideo;
+                        localStorage.setItem('adminUploadedVideos', JSON.stringify(videos));
+                    }
+                } catch (e) {
+                    console.error('Error updating videos in old storage:', e);
+                }
+            }
         }
 
         function showAnimatedDemo(videoElement) {
