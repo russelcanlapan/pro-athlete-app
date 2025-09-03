@@ -129,10 +129,66 @@
         // Load users from localStorage
         async function loadUsers() {
             try {
-                // Get all registered users from localStorage (same logic as dashboard)
+                // Get all registered users from multiple storage locations
                 const allUserData = [];
                 
-                // Check for users in different storage locations
+                // Primary source: registeredUsers in localStorage
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                console.log('Registered users from localStorage:', registeredUsers);
+                allUserData.push(...registeredUsers);
+                
+                // Secondary source: users array in localStorage  
+                const usersArray = JSON.parse(localStorage.getItem('users') || '[]');
+                console.log('Users array from localStorage:', usersArray);
+                allUserData.push(...usersArray);
+                
+                // Ensure Alexander Foronda is in the system (restore if missing)
+                const alexanderExists = allUserData.some(user => 
+                    user.email === 'alexforonda2000@gmail.com' || 
+                    (user.firstName === 'Alexander' && user.lastName === 'Foronda')
+                );
+                
+                if (!alexanderExists) {
+                    console.log('Alexander Foronda missing, restoring...');
+                    const alexanderData = {
+                        id: 'athlete_1756914949651',
+                        firstName: 'Alexander',
+                        lastName: 'Foronda',
+                        email: 'alexforonda2000@gmail.com',
+                        accountType: 'athlete',
+                        profile: {
+                            firstName: 'Alexander',
+                            lastName: 'Foronda',
+                            email: 'alexforonda2000@gmail.com',
+                            userType: 'athlete',
+                            sport: '',
+                            position: '',
+                            height: '',
+                            weight: '',
+                            skillLevel: '',
+                            teamName: '',
+                            phone: '',
+                            goals: []
+                        },
+                        activationCode: 'OEYGA2WX',
+                        createdAt: '2025-09-03T15:55:49.651Z',
+                        updatedAt: '2025-09-03T15:55:49.651Z',
+                        isActive: true
+                    };
+                    
+                    // Add to registeredUsers
+                    registeredUsers.push(alexanderData);
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    
+                    // Add to users array
+                    usersArray.push(alexanderData);
+                    localStorage.setItem('users', JSON.stringify(usersArray));
+                    
+                    allUserData.push(alexanderData);
+                    console.log('Alexander Foronda restored to system');
+                }
+                
+                // Check for users in other storage locations for backward compatibility
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
                     if (key && (key.includes('UserData') || key === 'currentUser')) {
