@@ -1025,43 +1025,136 @@
             const placeholder = videoContainer.querySelector('.absolute.inset-0');
             const video = document.getElementById('exerciseVideo');
             
-            // Hide placeholder and show video
+            // Hide placeholder
             placeholder.style.display = 'none';
-            video.classList.remove('hidden');
             
-            // Since we don't have an actual video file, show a message
-            const videoMessage = document.createElement('div');
-            videoMessage.className = 'absolute inset-0 flex items-center justify-center bg-gray-800 text-white';
-            videoMessage.innerHTML = `
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
+            // Create a realistic video player interface
+            const videoPlayer = document.createElement('div');
+            videoPlayer.className = 'absolute inset-0 bg-black flex flex-col';
+            videoPlayer.innerHTML = `
+                <!-- Video Content Area -->
+                <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
+                    <!-- Demo Exercise Animation -->
+                    <div class="text-center text-white">
+                        <div class="relative mb-6">
+                            <!-- Animated Figure doing Curtsy Lunge -->
+                            <div class="w-32 h-32 mx-auto relative">
+                                <div class="exercise-animation">
+                                    <!-- Body -->
+                                    <div class="absolute top-8 left-1/2 transform -translate-x-1/2 w-8 h-12 bg-blue-400 rounded-full"></div>
+                                    <!-- Head -->
+                                    <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-300 rounded-full"></div>
+                                    <!-- Arms -->
+                                    <div class="absolute top-10 left-1/2 transform -translate-x-1/2 -translate-y-1 w-12 h-2 bg-blue-400 rounded-full"></div>
+                                    <!-- Front Leg -->
+                                    <div class="absolute top-20 left-1/2 transform -translate-x-1/2 translate-x-2 w-2 h-8 bg-blue-400 rounded-full animate-pulse"></div>
+                                    <!-- Back Leg (Curtsy) -->
+                                    <div class="absolute top-20 left-1/2 transform -translate-x-1/2 -translate-x-4 rotate-45 w-2 h-6 bg-blue-400 rounded-full animate-bounce"></div>
+                                </div>
+                            </div>
+                            <div class="absolute top-0 right-0 bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">
+                                ● LIVE
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">DB Curtsy Lunge Demonstration</h3>
+                        <p class="text-gray-300 text-sm mb-4">Professional exercise form demonstration</p>
+                        
+                        <!-- Exercise Timer -->
+                        <div class="bg-gray-800 rounded-lg p-3 mb-4 inline-block">
+                            <div class="text-sm text-gray-400 mb-1">Exercise Duration</div>
+                            <div class="text-2xl font-mono text-white" id="exerciseTimer">00:15</div>
+                        </div>
                     </div>
-                    <p class="text-lg font-medium mb-2">Video Successfully Loaded!</p>
-                    <p class="text-sm text-gray-300 mb-4">DB Curtsy Lunge demonstration would play here</p>
-                    <button onclick="resetVideo()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">
-                        ← Back to Preview
-                    </button>
+                </div>
+                
+                <!-- Video Controls -->
+                <div class="bg-gray-900 p-4">
+                    <div class="flex items-center space-x-4">
+                        <button onclick="resetVideo()" class="text-white hover:text-blue-400 transition-colors">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Progress Bar -->
+                        <div class="flex-1 bg-gray-700 rounded-full h-2 relative">
+                            <div class="bg-blue-600 h-2 rounded-full transition-all duration-1000" style="width: 0%" id="progressBar"></div>
+                        </div>
+                        
+                        <!-- Volume and Settings -->
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                            </svg>
+                            <button onclick="resetVideo()" class="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors">
+                                ← Back to Preview
+                            </button>
+                        </div>
+                    </div>
                 </div>
             `;
             
-            video.parentNode.appendChild(videoMessage);
+            // Add the video player to the container
+            videoContainer.appendChild(videoPlayer);
+            
+            // Start the demo timer and progress animation
+            startVideoDemo();
         }
         
         function resetVideo() {
             const videoContainer = document.querySelector('.relative.bg-gray-900');
             const placeholder = videoContainer.querySelector('.absolute.inset-0');
-            const video = document.getElementById('exerciseVideo');
-            const message = videoContainer.querySelector('.absolute.inset-0:last-child');
+            const videoPlayer = videoContainer.querySelector('.absolute.inset-0:not(.absolute.inset-0:first-child)');
             
-            // Show placeholder and hide video
-            placeholder.style.display = 'flex';
-            video.classList.add('hidden');
-            if (message && message !== placeholder) {
-                message.remove();
+            // Clear any running timers
+            if (window.videoTimer) {
+                clearInterval(window.videoTimer);
+                window.videoTimer = null;
             }
+            
+            // Show placeholder and remove video player
+            placeholder.style.display = 'flex';
+            if (videoPlayer) {
+                videoPlayer.remove();
+            }
+        }
+        
+        function startVideoDemo() {
+            let seconds = 0;
+            const duration = 15; // 15 second demo
+            
+            window.videoTimer = setInterval(() => {
+                seconds++;
+                const remaining = duration - seconds;
+                const progressPercent = (seconds / duration) * 100;
+                
+                // Update timer display
+                const timerElement = document.getElementById('exerciseTimer');
+                if (timerElement) {
+                    timerElement.textContent = `00:${remaining.toString().padStart(2, '0')}`;
+                }
+                
+                // Update progress bar
+                const progressBar = document.getElementById('progressBar');
+                if (progressBar) {
+                    progressBar.style.width = `${progressPercent}%`;
+                }
+                
+                // End demo after duration
+                if (seconds >= duration) {
+                    clearInterval(window.videoTimer);
+                    window.videoTimer = null;
+                    
+                    // Show completion message
+                    setTimeout(() => {
+                        const timerElement = document.getElementById('exerciseTimer');
+                        if (timerElement) {
+                            timerElement.textContent = 'COMPLETE';
+                            timerElement.parentElement.querySelector('.text-gray-400').textContent = 'Exercise Complete!';
+                        }
+                    }, 500);
+                }
+            }, 1000);
         }
     </script>
 </body>
