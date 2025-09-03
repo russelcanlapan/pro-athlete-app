@@ -1154,8 +1154,12 @@
                 `;
                 
                 // Insert demo overlay into video container
-                const videoContainer = video.closest('.flex-1');
-                videoContainer.appendChild(demoOverlay);
+                const videoContainer = document.querySelector('.relative.bg-gray-900');
+                if (videoContainer) {
+                    videoContainer.appendChild(demoOverlay);
+                } else {
+                    console.error('Video container not found');
+                }
             }
             
             // Fallback: Handle video errors
