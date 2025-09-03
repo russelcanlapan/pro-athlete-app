@@ -243,7 +243,34 @@
             if (storedVideos) {
                 uploadedVideos = JSON.parse(storedVideos);
                 updateVideosTable();
+            } else {
+                // Initialize with demo video if no videos exist
+                initializeDemoVideo();
             }
+        }
+
+        // Initialize demo video with ID 451
+        function initializeDemoVideo() {
+            const demoVideo = {
+                id: Date.now(),
+                title: 'DB Curtsy Lunge',
+                category: 'strength',
+                sport: 'all',
+                difficulty: 'intermediate',
+                description: 'Cross one leg behind the other. Bend your knee into a lunge position',
+                videoId: '451',
+                bothSide: 'no',
+                online: 'yes',
+                freeContent: 'no',
+                fileName: '35-db-curtsy-lunge-.mp4',
+                fileSize: 1600000, // ~1.5MB
+                uploadedAt: new Date(),
+                videoURL: null // No actual video file for demo
+            };
+            
+            uploadedVideos = [demoVideo];
+            saveVideosToStorage();
+            updateVideosTable();
         }
 
         // Save videos to localStorage

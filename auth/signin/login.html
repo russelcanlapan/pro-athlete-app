@@ -189,6 +189,9 @@
                 let userFound = false;
                 let matchedUser = null;
                 
+                // Initialize demo user if needed
+                initializeDemoUser();
+                
                 // Check localStorage for users
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
@@ -336,6 +339,47 @@
         function goBack() {
             window.location.href = '/index.html';
         }
+
+        // Initialize demo user data
+        function initializeDemoUser() {
+            const existingUser = localStorage.getItem('currentUser');
+            if (!existingUser) {
+                const demoUser = {
+                    id: 'athlete_1756914949651',
+                    firstName: 'Alexander',
+                    lastName: 'Foronda',
+                    email: 'alexforonda2000@gmail.com',
+                    accountType: 'athlete',
+                    createdAt: '2025-09-03T15:55:49.651Z',
+                    updatedAt: '2025-09-03T15:55:49.651Z',
+                    isActive: true,
+                    activationCode: 'OEYGA2WX',
+                    phone: '',
+                    dateOfBirth: '',
+                    sport: '',
+                    position: '',
+                    height: '',
+                    weight: '',
+                    skillLevel: '',
+                    teamName: '',
+                    organization: '',
+                    coachingExperience: ''
+                };
+                
+                localStorage.setItem('currentUser', JSON.stringify(demoUser));
+                localStorage.setItem('signupFirstName', 'Alexander');
+                localStorage.setItem('signupLastName', 'Foronda');
+                localStorage.setItem('signupEmail', 'alexforonda2000@gmail.com');
+                localStorage.setItem('signupPassword', 'password123');
+                localStorage.setItem('signupAccountType', 'athlete');
+                localStorage.setItem('signupActivationCode', 'OEYGA2WX');
+            }
+        }
+
+        // Initialize demo data on page load
+        window.addEventListener('load', function() {
+            initializeDemoUser();
+        });
     </script>
 </body>
 </html>
