@@ -11,3 +11,5 @@ export const AthleteProtectedRoute = ({ children }) => {
 
   return children
 }
+
+export default AthleteProtectedRoute
