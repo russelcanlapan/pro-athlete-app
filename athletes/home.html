@@ -192,19 +192,22 @@
                     
                     <!-- Video Player -->
                     <div class="relative bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
-                        <video id="exerciseVideo" class="w-full h-full object-cover" controls poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI5MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDkwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2MDAiIGhlaWdodD0iOTAwIiBmaWxsPSIjMzc0MTUxIi8+CjxjaXJjbGUgY3g9IjgwMCIgY3k9IjQ1MCIgcj0iNjAiIGZpbGw9IiM2Mzc0OEUiLz4KPHBhdGggZD0iTTc3MCA0MjBWNDgwTDgyMCA0NTBMNzcwIDQyMFoiIGZpbGw9IndoaXRlIi8+CjwvdHZnPgo=">
-                            <!-- Placeholder for video - in real app this would be the actual video file -->
-                            <div class="absolute inset-0 flex items-center justify-center bg-gray-800">
-                                <div class="text-center text-white">
-                                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                    </div>
-                                    <p class="text-lg font-medium">DB Curtsy Lunge</p>
-                                    <p class="text-sm text-gray-300">Click to play demonstration</p>
+                        <div class="absolute inset-0 flex items-center justify-center bg-gray-800 cursor-pointer" onclick="playVideo()">
+                            <div class="text-center text-white">
+                                <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 hover:bg-blue-700 transition-colors">
+                                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
                                 </div>
+                                <p class="text-lg font-medium">DB Curtsy Lunge</p>
+                                <p class="text-sm text-gray-300">Click to play demonstration</p>
                             </div>
+                        </div>
+                        <!-- Hidden video element that will be shown when playing -->
+                        <video id="exerciseVideo" class="w-full h-full object-cover hidden" controls>
+                            <!-- In a real implementation, this would load from uploaded videos -->
+                            <source src="data:video/mp4;base64," type="video/mp4">
+                            Your browser does not support the video tag.
                         </video>
                     </div>
                     
@@ -369,24 +372,41 @@
                 try {
                     const userData = JSON.parse(sessionUserData);
                     firstName = userData.firstName || userData.name || 'Athlete';
+                    console.log('Loaded user from session:', userData);
                 } catch (e) {
                     console.log('Error parsing session user data:', e);
                 }
             }
             
-            // Fallback to localStorage
+            // Check currentUser from localStorage
+            if (firstName === 'Athlete') {
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    try {
+                        const user = JSON.parse(currentUser);
+                        firstName = user.firstName || user.name || 'Athlete';
+                        console.log('Loaded user from currentUser:', user);
+                    } catch (e) {
+                        console.log('Error parsing current user data:', e);
+                    }
+                }
+            }
+            
+            // Fallback to athleteProfile
             if (firstName === 'Athlete') {
                 const athleteProfile = localStorage.getItem('athleteProfile');
                 if (athleteProfile) {
                     try {
                         const profile = JSON.parse(athleteProfile);
                         firstName = profile.firstName || 'Athlete';
+                        console.log('Loaded user from profile:', profile);
                     } catch (e) {
                         console.log('Error parsing athlete profile:', e);
                     }
                 }
             }
             
+            console.log('Final firstName:', firstName);
             document.getElementById('greeting').textContent = `Hello, ${firstName}!`;
         }
         
@@ -996,6 +1016,51 @@
                 }
             } catch (error) {
                 console.error('Error saving sample programs to Firebase:', error);
+            }
+        }
+        
+        // Video player functionality
+        function playVideo() {
+            const videoContainer = document.querySelector('.relative.bg-gray-900');
+            const placeholder = videoContainer.querySelector('.absolute.inset-0');
+            const video = document.getElementById('exerciseVideo');
+            
+            // Hide placeholder and show video
+            placeholder.style.display = 'none';
+            video.classList.remove('hidden');
+            
+            // Since we don't have an actual video file, show a message
+            const videoMessage = document.createElement('div');
+            videoMessage.className = 'absolute inset-0 flex items-center justify-center bg-gray-800 text-white';
+            videoMessage.innerHTML = `
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <p class="text-lg font-medium mb-2">Video Successfully Loaded!</p>
+                    <p class="text-sm text-gray-300 mb-4">DB Curtsy Lunge demonstration would play here</p>
+                    <button onclick="resetVideo()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm">
+                        ← Back to Preview
+                    </button>
+                </div>
+            `;
+            
+            video.parentNode.appendChild(videoMessage);
+        }
+        
+        function resetVideo() {
+            const videoContainer = document.querySelector('.relative.bg-gray-900');
+            const placeholder = videoContainer.querySelector('.absolute.inset-0');
+            const video = document.getElementById('exerciseVideo');
+            const message = videoContainer.querySelector('.absolute.inset-0:last-child');
+            
+            // Show placeholder and hide video
+            placeholder.style.display = 'flex';
+            video.classList.add('hidden');
+            if (message && message !== placeholder) {
+                message.remove();
             }
         }
     </script>
