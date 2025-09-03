@@ -303,15 +303,134 @@ class RobustVideoPlayer {
     createVideoPlayerWithLink(video, container) {
         container.innerHTML = `
             <div class="relative w-full h-full">
-                <video id="linkVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" autoplay
+                <!-- Video.js Player with VLC-like functionality -->
+                <video 
+                    id="videojs-player_${video.videoId}"
+                    class="video-js vjs-default-skin w-full h-full"
+                    controls
+                    preload="auto"
+                    data-setup='{"fluid": true, "responsive": true, "playbackRates": [0.5, 1, 1.25, 1.5, 2], "hotkeys": true}'
+                    poster="${this.createPosterImage(video)}">
+                    <source src="${video.videoLink}" type="video/mp4">
+                    <p class="vjs-no-js">
+                        To view this video please enable JavaScript, and consider upgrading to a web browser that
+                        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>.
+                    </p>
+                </video>
+                
+                <!-- Video overlay -->
+                <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold z-20">
+                    ● VLC-STYLE: ${video.videoId}
+                </div>
+                
+                <div class="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm z-20">
+                    <div class="font-medium">${video.title}</div>
+                    <div class="text-xs text-gray-300">${video.category || 'Training'} • ${video.difficulty || 'Standard'}</div>
+                </div>
+            </div>
+        `;
+        
+        // Initialize Video.js with VLC-like features
+        setTimeout(() => {
+            try {
+                const player = videojs(`videojs-player_${video.videoId}`, {
+                    // VLC-like configuration
+                    fluid: true,
+                    responsive: true,
+                    playbackRates: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2], // Speed controls like VLC
+                    controls: true,
+                    preload: 'auto',
+                    autoplay: false,
+                    muted: false,
+                    loop: false,
+                    // VLC-style hotkeys
+                    userActions: {
+                        hotkeys: true
+                    },
+                    // Enhanced quality
+                    html5: {
+                        vhs: {
+                            enableLowInitialPlaylist: true,
+                            smoothQualityChange: true,
+                            handlePartialData: true
+                        }
+                    }
+                });
+
+                // Add VLC-like keyboard shortcuts
+                player.ready(() => {
+                    // Space bar for play/pause
+                    player.on('keydown', (event) => {
+                        const keyCode = event.which || event.keyCode;
+                        switch(keyCode) {
+                            case 32: // Space bar
+                                event.preventDefault();
+                                if (player.paused()) {
+                                    player.play();
+                                } else {
+                                    player.pause();
+                                }
+                                break;
+                            case 37: // Left arrow - rewind 10s
+                                event.preventDefault();
+                                player.currentTime(Math.max(0, player.currentTime() - 10));
+                                break;
+                            case 39: // Right arrow - forward 10s
+                                event.preventDefault();
+                                player.currentTime(player.currentTime() + 10);
+                                break;
+                            case 38: // Up arrow - volume up
+                                event.preventDefault();
+                                player.volume(Math.min(1, player.volume() + 0.1));
+                                break;
+                            case 40: // Down arrow - volume down
+                                event.preventDefault();
+                                player.volume(Math.max(0, player.volume() - 0.1));
+                                break;
+                            case 70: // F key - fullscreen
+                                event.preventDefault();
+                                if (player.isFullscreen()) {
+                                    player.exitFullscreen();
+                                } else {
+                                    player.requestFullscreen();
+                                }
+                                break;
+                            case 77: // M key - mute/unmute
+                                event.preventDefault();
+                                player.muted(!player.muted());
+                                break;
+                        }
+                    });
+
+                    console.log(`VLC-style Video.js player initialized for video ${video.videoId}`);
+                });
+
+                // Store player reference for cleanup
+                this.currentVideoPlayer = player;
+                
+            } catch (error) {
+                console.error('Error initializing Video.js player:', error);
+                // Fallback to standard HTML5 player
+                this.createStandardVideoPlayer(video, container);
+            }
+        }, 100);
+    }
+
+    /**
+     * Create standard HTML5 video player as fallback
+     */
+    createStandardVideoPlayer(video, container) {
+        container.innerHTML = `
+            <div class="relative w-full h-full">
+                <video id="linkVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata"
                        poster="${this.createPosterImage(video)}">
                     <source src="${video.videoLink}" type="video/mp4">
                     Your browser does not support video playback.
                 </video>
                 
                 <!-- Video overlay -->
-                <div class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    ● LINK: ${video.videoId}
+                <div class="absolute top-4 right-4 bg-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    ● FALLBACK: ${video.videoId}
                 </div>
                 
                 <div class="absolute bottom-4 left-4 bg-black bg-opacity-70 text-white px-3 py-2 rounded text-sm">
@@ -320,59 +439,6 @@ class RobustVideoPlayer {
                 </div>
             </div>
         `;
-        
-        // Setup error handling and ensure video plays
-        this.setupLinkVideoErrorHandling(video);
-        
-        // Setup video element with enhanced playback
-        setTimeout(() => {
-            const videoElement = document.getElementById(`linkVideo_${video.videoId}`);
-            if (videoElement) {
-                // Add click to play functionality
-                videoElement.addEventListener('click', () => {
-                    if (videoElement.paused) {
-                        videoElement.play().catch(error => {
-                            console.log('Video play failed:', error);
-                        });
-                    } else {
-                        videoElement.pause();
-                    }
-                });
-                
-                // Try autoplay (may be blocked by browser)
-                videoElement.play().catch(error => {
-                    console.log('Autoplay prevented - user must click to play:', error);
-                    // Add visual indicator for user to click
-                    const overlay = document.createElement('div');
-                    overlay.className = 'absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-pointer z-10';
-                    overlay.innerHTML = `
-                        <div class="text-white text-center">
-                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-2">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </div>
-                            <p class="text-sm">Click to Play</p>
-                        </div>
-                    `;
-                    
-                    overlay.addEventListener('click', () => {
-                        videoElement.play();
-                        overlay.remove();
-                    });
-                    
-                    videoElement.parentElement.appendChild(overlay);
-                });
-                
-                // Remove overlay when video starts playing
-                videoElement.addEventListener('play', () => {
-                    const overlay = videoElement.parentElement.querySelector('.absolute.inset-0.flex');
-                    if (overlay && overlay !== videoElement.parentElement.children[0]) {
-                        overlay.remove();
-                    }
-                });
-            }
-        }, 100);
     }
 
     /**
