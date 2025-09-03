@@ -63,17 +63,47 @@
             <!-- Profile Information -->
             <div class="bg-white rounded-xl p-6 border border-gray-200 mb-6">
                 <div class="flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                        SZ
+                    <div id="profileAvatar" class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                        AF
                     </div>
                     <div>
-                        <h2 class="text-lg font-semibold text-gray-900">Scarlett Zhang</h2>
-                        <p class="text-gray-500 text-sm">xx/xx/xxxx</p>
+                        <h2 id="profileName" class="text-lg font-semibold text-gray-900">Alexander Foronda</h2>
+                        <p id="profileEmail" class="text-gray-500 text-sm">alexforonda2000@gmail.com</p>
                         <div class="flex items-center space-x-2 mt-1">
                             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                             </svg>
-                            <span class="text-gray-700">Women's Basketball Athlete</span>
+                            <span id="profileType" class="text-gray-700">Athlete</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional Profile Details -->
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="text-gray-500">Sport:</span>
+                            <span id="profileSport" class="ml-1 text-gray-900">General Fitness</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Position:</span>
+                            <span id="profilePosition" class="ml-1 text-gray-900">Athlete</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Height:</span>
+                            <span id="profileHeight" class="ml-1 text-gray-900">-</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Weight:</span>
+                            <span id="profileWeight" class="ml-1 text-gray-900">-</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Skill Level:</span>
+                            <span id="profileSkillLevel" class="ml-1 text-gray-900">-</span>
+                        </div>
+                        <div>
+                            <span class="text-gray-500">Team:</span>
+                            <span id="profileTeam" class="ml-1 text-gray-900">-</span>
                         </div>
                     </div>
                 </div>
@@ -81,25 +111,44 @@
 
             <!-- Injury Reports Section -->
             <div class="bg-white rounded-xl p-6 border border-gray-200 mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Injury Reports</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Injury Reports</h3>
+                    <button onclick="addNewInjury()" class="bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                        + Add Report
+                    </button>
+                </div>
                 
-                <!-- Sample Injury Report -->
+                <!-- Injury Reports Container -->
+                <div id="injuryReportsContainer">
+                    <!-- No injuries message (will be hidden if injuries exist) -->
+                    <div id="noInjuriesMessage" class="text-center py-8 text-gray-500">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <p class="text-sm">No injury reports on file</p>
+                        <p class="text-xs text-gray-400 mt-1">Your injury history will appear here</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sample Injury Report Template (Hidden) -->
+            <div id="injuryReportTemplate" class="hidden">
                 <div class="border border-gray-200 rounded-lg p-4 mb-4">
                     <div class="flex items-center justify-between mb-3">
                         <div>
-                            <h4 class="font-medium text-gray-900">Knee Sprain</h4>
-                            <p class="text-sm text-gray-500">13:01 p.m. 02/01/2025</p>
+                            <h4 class="font-medium text-gray-900 injury-name">Knee Sprain</h4>
+                            <p class="text-sm text-gray-500 injury-date">13:01 p.m. 02/01/2025</p>
                         </div>
                         <button onclick="toggleReport('knee')" class="text-gray-500 hover:text-gray-700">
-                            <svg id="kneeArrow" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 transform transition-transform arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                     </div>
                     
                     <div class="flex items-center space-x-2 mb-3">
-                        <span class="text-sm font-medium text-gray-900">Knee Sprain</span>
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Left Knee</span>
+                        <span class="text-sm font-medium text-gray-900 injury-type">Knee Sprain</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded injury-location">Left Knee</span>
                     </div>
                     
                     <div class="flex items-center space-x-4 text-sm text-gray-600">
@@ -107,13 +156,13 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                             </svg>
-                            <span>Injury Date: 12/05/2024</span>
+                            <span class="injury-date-detail">Injury Date: 12/05/2024</span>
                         </div>
                         <div class="flex items-center space-x-1">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                             </svg>
-                            <span>Recovery Time: 6 weeks</span>
+                            <span class="recovery-time">Recovery Time: 6 weeks</span>
                         </div>
                     </div>
 
@@ -819,8 +868,131 @@
             }
         }
 
+        // Load user profile data
+        function loadUserProfile() {
+            // Try to get user data from session storage first
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}');
+            const athleteUserData = JSON.parse(sessionStorage.getItem('athleteUserData') || '{}');
+            const athleteProfile = JSON.parse(localStorage.getItem('athleteProfile') || '{}');
+            
+            // Merge user data sources
+            const userData = { ...athleteProfile, ...athleteUserData, ...currentUser };
+            
+            console.log('Loading profile for user:', userData);
+            
+            // Update profile display
+            if (userData.firstName && userData.lastName) {
+                const fullName = `${userData.firstName} ${userData.lastName}`;
+                document.getElementById('profileName').textContent = fullName;
+                
+                // Update avatar initials
+                const initials = `${userData.firstName.charAt(0)}${userData.lastName.charAt(0)}`.toUpperCase();
+                document.getElementById('profileAvatar').textContent = initials;
+            }
+            
+            if (userData.email) {
+                document.getElementById('profileEmail').textContent = userData.email;
+            }
+            
+            // Update profile details
+            document.getElementById('profileSport').textContent = userData.sport || userData.profile?.sport || 'General Fitness';
+            document.getElementById('profilePosition').textContent = userData.position || userData.profile?.position || 'Athlete';
+            document.getElementById('profileHeight').textContent = userData.height || userData.profile?.height || '-';
+            document.getElementById('profileWeight').textContent = userData.weight || userData.profile?.weight || '-';
+            document.getElementById('profileSkillLevel').textContent = userData.skillLevel || userData.profile?.skillLevel || '-';
+            document.getElementById('profileTeam').textContent = userData.teamName || userData.profile?.teamName || '-';
+            
+            // Update athlete type
+            const userType = userData.userType || userData.accountType || 'Athlete';
+            document.getElementById('profileType').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+        }
+        
+        // Load injury reports
+        function loadInjuryReports() {
+            const injuries = JSON.parse(localStorage.getItem('userInjuries') || '[]');
+            const container = document.getElementById('injuryReportsContainer');
+            const noInjuriesMessage = document.getElementById('noInjuriesMessage');
+            
+            if (injuries.length === 0) {
+                noInjuriesMessage.style.display = 'block';
+                return;
+            }
+            
+            noInjuriesMessage.style.display = 'none';
+            
+            // Clear existing injuries except the "no injuries" message
+            Array.from(container.children).forEach(child => {
+                if (child.id !== 'noInjuriesMessage') {
+                    child.remove();
+                }
+            });
+            
+            injuries.forEach((injury, index) => {
+                const injuryElement = createInjuryElement(injury, index);
+                container.appendChild(injuryElement);
+            });
+        }
+        
+        // Create injury report element
+        function createInjuryElement(injury, index) {
+            const template = document.getElementById('injuryReportTemplate');
+            const injuryDiv = template.cloneNode(true);
+            injuryDiv.removeAttribute('id');
+            injuryDiv.classList.remove('hidden');
+            
+            // Update injury details
+            injuryDiv.querySelector('.injury-name').textContent = injury.name || 'Injury Report';
+            injuryDiv.querySelector('.injury-date').textContent = injury.date || new Date().toLocaleDateString();
+            injuryDiv.querySelector('.injury-type').textContent = injury.type || 'General Injury';
+            injuryDiv.querySelector('.injury-location').textContent = injury.location || 'Not specified';
+            injuryDiv.querySelector('.injury-date-detail').textContent = `Injury Date: ${injury.injuryDate || injury.date}`;
+            injuryDiv.querySelector('.recovery-time').textContent = `Recovery Time: ${injury.recoveryTime || 'TBD'}`;
+            
+            // Update toggle functionality
+            const toggleButton = injuryDiv.querySelector('button[onclick*="toggleReport"]');
+            toggleButton.setAttribute('onclick', `toggleReport('injury${index}')`);
+            
+            const content = injuryDiv.querySelector('.expandable-content');
+            content.id = `injury${index}Content`;
+            
+            const arrow = injuryDiv.querySelector('.arrow-icon');
+            arrow.id = `injury${index}Arrow`;
+            
+            return injuryDiv;
+        }
+        
+        // Add new injury report
+        function addNewInjury() {
+            const injuryName = prompt('Enter injury name:');
+            if (!injuryName) return;
+            
+            const injuryLocation = prompt('Enter injury location (e.g., Left Knee, Right Ankle):');
+            const recoveryTime = prompt('Enter estimated recovery time (e.g., 2 weeks, 1 month):');
+            
+            const injury = {
+                name: injuryName,
+                location: injuryLocation || 'Not specified',
+                type: injuryName,
+                date: new Date().toLocaleDateString(),
+                injuryDate: new Date().toLocaleDateString(),
+                recoveryTime: recoveryTime || 'TBD',
+                timestamp: Date.now()
+            };
+            
+            // Save to localStorage
+            const injuries = JSON.parse(localStorage.getItem('userInjuries') || '[]');
+            injuries.unshift(injury); // Add to beginning of array
+            localStorage.setItem('userInjuries', JSON.stringify(injuries));
+            
+            // Reload injury reports
+            loadInjuryReports();
+        }
+
         // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            loadInjuryReports();
+            
             // Check if user data exists in session storage
             const existingData = sessionStorage.getItem('athleteUserData');
             if (!existingData) {
