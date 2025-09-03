@@ -111,6 +111,7 @@
 
     <script>
         let allUsers = [];
+        let userChanges = {}; // Track changes made to users
 
         // Check admin authentication
         function checkAdminAuth() {
@@ -524,6 +525,9 @@
 
                 <!-- Admin Actions -->
                 <div class="mt-6 border-t pt-4 flex space-x-3">
+                    <button onclick="saveUserChanges('${userId}')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm font-medium">
+                        Save Changes
+                    </button>
                     <button onclick="changeUserPassword('${userId}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
                         Change Password
                     </button>
@@ -693,31 +697,117 @@
                 if (newValue === null) return; // User cancelled
             }
             
-            // Update in all storage locations
-            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-            const userIndex = registeredUsers.findIndex(u => u.id === userId);
+            // Track the change for saving later
+            if (!userChanges[userId]) {
+                userChanges[userId] = {};
+            }
+            userChanges[userId][fieldName] = newValue;
             
-            if (userIndex !== -1) {
-                // Handle special cases
-                if (fieldName === 'goals') {
-                    registeredUsers[userIndex][fieldName] = newValue.split(',').map(g => g.trim()).filter(g => g);
+            // Show visual indication that there are unsaved changes
+            const saveButton = document.querySelector(`button[onclick="saveUserChanges('${userId}')"]`);
+            if (saveButton) {
+                saveButton.classList.add('bg-yellow-600', 'hover:bg-yellow-700');
+                saveButton.classList.remove('bg-green-600', 'hover:bg-green-700');
+                saveButton.textContent = 'Save Changes*';
+            }
+            
+            // Update the display temporarily (will be persisted when saved)
+            updateDisplayField(userId, fieldName, newValue);
+        }
+        
+        // Update display field without saving to database
+        function updateDisplayField(userId, fieldName, newValue) {
+            // Find the field element and update its display
+            const fieldElements = document.querySelectorAll(`span[onclick*="editField('${userId}', '${fieldName}'"]`);
+            fieldElements.forEach(el => {
+                if (fieldName === 'goals' && Array.isArray(newValue)) {
+                    el.textContent = newValue.join(', ') || 'Click to add';
                 } else {
-                    registeredUsers[userIndex][fieldName] = newValue;
+                    el.textContent = newValue || 'Click to add';
                 }
+                el.style.backgroundColor = '#fef3c7'; // Light yellow to indicate unsaved changes
+            });
+        }
+        
+        // Save all user changes to database
+        function saveUserChanges(userId) {
+            const changes = userChanges[userId];
+            if (!changes || Object.keys(changes).length === 0) {
+                alert('No changes to save.');
+                return;
+            }
+            
+            try {
+                // Update in registeredUsers
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                const userIndex = registeredUsers.findIndex(u => u.id === userId);
                 
-                // Update profile nested object if it exists
-                if (!registeredUsers[userIndex].profile) {
-                    registeredUsers[userIndex].profile = {};
+                if (userIndex !== -1) {
+                    // Apply all changes
+                    for (const [fieldName, newValue] of Object.entries(changes)) {
+                        if (fieldName === 'goals') {
+                            registeredUsers[userIndex][fieldName] = typeof newValue === 'string' 
+                                ? newValue.split(',').map(g => g.trim()).filter(g => g)
+                                : newValue;
+                        } else {
+                            registeredUsers[userIndex][fieldName] = newValue;
+                        }
+                        
+                        // Update profile nested object if it exists
+                        if (!registeredUsers[userIndex].profile) {
+                            registeredUsers[userIndex].profile = {};
+                        }
+                        registeredUsers[userIndex].profile[fieldName] = registeredUsers[userIndex][fieldName];
+                    }
+                    
+                    // Update timestamp
+                    registeredUsers[userIndex].updatedAt = new Date().toISOString();
+                    
+                    // Save to localStorage
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    
+                    // Also update in users array for consistency
+                    const usersArray = JSON.parse(localStorage.getItem('users') || '[]');
+                    const usersIndex = usersArray.findIndex(u => u.id === userId);
+                    if (usersIndex !== -1) {
+                        for (const [fieldName, newValue] of Object.entries(changes)) {
+                            usersArray[usersIndex][fieldName] = registeredUsers[userIndex][fieldName];
+                            if (usersArray[usersIndex].profile) {
+                                usersArray[usersIndex].profile[fieldName] = registeredUsers[userIndex][fieldName];
+                            }
+                        }
+                        usersArray[usersIndex].updatedAt = new Date().toISOString();
+                        localStorage.setItem('users', JSON.stringify(usersArray));
+                    }
+                    
+                    // Clear the changes tracking
+                    userChanges[userId] = {};
+                    
+                    // Update button state
+                    const saveButton = document.querySelector(`button[onclick="saveUserChanges('${userId}')"]`);
+                    if (saveButton) {
+                        saveButton.classList.remove('bg-yellow-600', 'hover:bg-yellow-700');
+                        saveButton.classList.add('bg-green-600', 'hover:bg-green-700');
+                        saveButton.textContent = 'Save Changes';
+                    }
+                    
+                    // Remove visual indicators of unsaved changes
+                    const changedFields = document.querySelectorAll(`span[onclick*="editField('${userId}'"`);
+                    changedFields.forEach(el => {
+                        el.style.backgroundColor = '';
+                    });
+                    
+                    // Refresh the modal and user list
+                    viewUserDetails(userId);
+                    loadUsers();
+                    
+                    alert(`Changes saved successfully for user ${registeredUsers[userIndex].firstName} ${registeredUsers[userIndex].lastName}!`);
+                } else {
+                    alert('User not found in database.');
                 }
-                registeredUsers[userIndex].profile[fieldName] = registeredUsers[userIndex][fieldName];
-                
-                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-                
-                // Refresh the modal to show updated data
-                viewUserDetails(userId);
-                loadUsers(); // Refresh user list too
-                
-                alert(`${fieldName} updated successfully.`);
+            } catch (error) {
+                console.error('Error saving user changes:', error);
+                alert('Error saving changes. Please try again.');
             }
         }
 
