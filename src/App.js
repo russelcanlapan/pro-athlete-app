@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './store/AuthContext.js'
 import ProtectedRoute from './components/auth/ProtectedRoute.js'
 import AthleteProtectedRoute from './components/auth/AthleteProtectedRoute.js'
@@ -111,9 +111,11 @@ class AppView {
   }
 
   render() {
-    return React.createElement(AuthProvider, null,
-      React.createElement('div', { className: 'App' },
-        React.createElement(Routes, null, ...this.router.renderRoutes())
+    return React.createElement(Router, null,
+      React.createElement(AuthProvider, null,
+        React.createElement('div', { className: 'App' },
+          React.createElement(Routes, null, ...this.router.renderRoutes())
+        )
       )
     )
   }

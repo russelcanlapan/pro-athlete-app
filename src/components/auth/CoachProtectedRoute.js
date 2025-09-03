@@ -11,5 +11,3 @@ export const CoachProtectedRoute = ({ children }) => {
 
   return children
 }
-
-export default CoachProtectedRoute
