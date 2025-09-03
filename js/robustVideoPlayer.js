@@ -261,7 +261,7 @@ class RobustVideoPlayer {
     createVideoPlayer(video, container) {
         container.innerHTML = `
             <div class="relative w-full h-full">
-                <video id="mainVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" 
+                <video id="mainVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" autoplay
                        poster="${this.createPosterImage(video)}">
                     <source src="${video.videoURL}" type="video/mp4">
                     Your browser does not support video playback.
@@ -303,7 +303,7 @@ class RobustVideoPlayer {
     createVideoPlayerWithLink(video, container) {
         container.innerHTML = `
             <div class="relative w-full h-full">
-                <video id="linkVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" 
+                <video id="linkVideo_${video.videoId}" class="w-full h-full object-cover" controls preload="metadata" autoplay
                        poster="${this.createPosterImage(video)}">
                     <source src="${video.videoLink}" type="video/mp4">
                     Your browser does not support video playback.
@@ -321,8 +321,58 @@ class RobustVideoPlayer {
             </div>
         `;
         
-        // Setup error handling
+        // Setup error handling and ensure video plays
         this.setupLinkVideoErrorHandling(video);
+        
+        // Setup video element with enhanced playback
+        setTimeout(() => {
+            const videoElement = document.getElementById(`linkVideo_${video.videoId}`);
+            if (videoElement) {
+                // Add click to play functionality
+                videoElement.addEventListener('click', () => {
+                    if (videoElement.paused) {
+                        videoElement.play().catch(error => {
+                            console.log('Video play failed:', error);
+                        });
+                    } else {
+                        videoElement.pause();
+                    }
+                });
+                
+                // Try autoplay (may be blocked by browser)
+                videoElement.play().catch(error => {
+                    console.log('Autoplay prevented - user must click to play:', error);
+                    // Add visual indicator for user to click
+                    const overlay = document.createElement('div');
+                    overlay.className = 'absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 cursor-pointer z-10';
+                    overlay.innerHTML = `
+                        <div class="text-white text-center">
+                            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-2">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm">Click to Play</p>
+                        </div>
+                    `;
+                    
+                    overlay.addEventListener('click', () => {
+                        videoElement.play();
+                        overlay.remove();
+                    });
+                    
+                    videoElement.parentElement.appendChild(overlay);
+                });
+                
+                // Remove overlay when video starts playing
+                videoElement.addEventListener('play', () => {
+                    const overlay = videoElement.parentElement.querySelector('.absolute.inset-0.flex');
+                    if (overlay && overlay !== videoElement.parentElement.children[0]) {
+                        overlay.remove();
+                    }
+                });
+            }
+        }, 100);
     }
 
     /**
