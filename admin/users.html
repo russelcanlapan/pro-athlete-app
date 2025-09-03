@@ -241,42 +241,204 @@
             const user = allUsers.find(u => u.id === userId);
             if (!user) return;
 
+            // Get detailed profile information from signup data
+            const profileData = user.profile || {};
+            const signupData = JSON.parse(localStorage.getItem('registeredUsers') || '[]').find(u => u.email === user.email) || {};
+            
+            // Merge all available data
+            const fullUserData = { ...user, ...profileData, ...signupData };
+            
+            const currentAdmin = sessionStorage.getItem('adminUsername');
+            const isRootUser = currentAdmin === 'root';
+
             const modalContent = document.getElementById('userModalContent');
             modalContent.innerHTML = `
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <h4 class="font-medium text-gray-900 mb-2">Basic Information</h4>
-                        <p><strong>Name:</strong> ${user.firstName} ${user.lastName}</p>
-                        <p><strong>Email:</strong> ${user.email}</p>
-                        <p><strong>Account Type:</strong> ${user.accountType}</p>
-                        <p><strong>Phone:</strong> ${user.phone || 'N/A'}</p>
-                        <p><strong>Date of Birth:</strong> ${user.dateOfBirth || 'N/A'}</p>
+                        <p><strong>Name:</strong> ${fullUserData.firstName} ${fullUserData.lastName}</p>
+                        <p><strong>Email:</strong> ${fullUserData.email}</p>
+                        <p><strong>Account Type:</strong> ${fullUserData.accountType || fullUserData.userType}</p>
+                        <p><strong>Phone:</strong> ${fullUserData.phone || 'N/A'}</p>
+                        <p><strong>Date of Birth:</strong> ${fullUserData.dateOfBirth || 'N/A'}</p>
+                        <p><strong>Activation Code:</strong> ${fullUserData.activationCode || 'N/A'}</p>
                     </div>
                     <div>
-                        <h4 class="font-medium text-gray-900 mb-2">${user.accountType === 'athlete' ? 'Athletic' : 'Coaching'} Information</h4>
-                        ${user.accountType === 'athlete' ? `
-                            <p><strong>Sport:</strong> ${user.sport || 'N/A'}</p>
-                            <p><strong>Position:</strong> ${user.position || 'N/A'}</p>
-                            <p><strong>Height:</strong> ${user.height ? user.height + ' cm' : 'N/A'}</p>
-                            <p><strong>Weight:</strong> ${user.weight ? user.weight + ' kg' : 'N/A'}</p>
-                            <p><strong>Skill Level:</strong> ${user.skillLevel || 'N/A'}</p>
+                        <h4 class="font-medium text-gray-900 mb-2">${fullUserData.accountType === 'athlete' ? 'Athletic' : 'Coaching'} Information</h4>
+                        ${fullUserData.accountType === 'athlete' ? `
+                            <p><strong>Sport:</strong> ${fullUserData.sport || 'N/A'}</p>
+                            <p><strong>Position:</strong> ${fullUserData.position || 'N/A'}</p>
+                            <p><strong>Height:</strong> ${fullUserData.height || 'N/A'}</p>
+                            <p><strong>Weight:</strong> ${fullUserData.weight || 'N/A'}</p>
+                            <p><strong>Skill Level:</strong> ${fullUserData.skillLevel || 'N/A'}</p>
+                            <p><strong>Team:</strong> ${fullUserData.teamName || 'N/A'}</p>
+                            <p><strong>Goals:</strong> ${fullUserData.goals ? fullUserData.goals.join(', ') : 'N/A'}</p>
                         ` : `
-                            <p><strong>Organization:</strong> ${user.organization || 'N/A'}</p>
-                            <p><strong>Experience:</strong> ${user.coachingExperience ? user.coachingExperience + ' years' : 'N/A'}</p>
-                            <p><strong>Teams Managed:</strong> ${user.teamsManaged ? user.teamsManaged.length : 0}</p>
+                            <p><strong>Organization:</strong> ${fullUserData.organization || 'N/A'}</p>
+                            <p><strong>Experience:</strong> ${fullUserData.coachingExperience ? fullUserData.coachingExperience + ' years' : 'N/A'}</p>
+                            <p><strong>Teams Managed:</strong> ${fullUserData.teamsManaged ? fullUserData.teamsManaged.length : 0}</p>
                         `}
-                        <p><strong>Team:</strong> ${user.teamName || 'N/A'}</p>
                     </div>
                 </div>
-                <div class="mt-4">
+                
+                <!-- Password Management Section -->
+                <div class="mt-6 border-t pt-4">
+                    <h4 class="font-medium text-gray-900 mb-3">Security & Access</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span><strong>Password:</strong></span>
+                            <div class="flex items-center space-x-2">
+                                <span id="passwordDisplay">${isRootUser ? (fullUserData.password || '**********') : '**********'}</span>
+                                ${isRootUser ? `
+                                    <button onclick="togglePasswordVisibility('${userId}')" id="passwordToggle" class="text-blue-600 hover:text-blue-800 text-xs">
+                                        ${fullUserData.password && !fullUserData.password.includes('*') ? 'Hide' : 'Show'}
+                                    </button>
+                                ` : '<span class="text-xs text-gray-500">(Root access required)</span>'}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span><strong>Account Status:</strong></span>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-1 text-xs rounded-full ${fullUserData.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                    ${fullUserData.isActive !== false ? 'Active' : 'Disabled'}
+                                </span>
+                                <button onclick="toggleUserStatus('${userId}')" class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-xs">
+                                    ${fullUserData.isActive !== false ? 'Disable' : 'Enable'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Details -->
+                <div class="mt-4 border-t pt-4">
                     <h4 class="font-medium text-gray-900 mb-2">Account Details</h4>
-                    <p><strong>Created:</strong> ${new Date(user.createdAt).toLocaleString()}</p>
-                    <p><strong>Last Updated:</strong> ${new Date(user.updatedAt).toLocaleString()}</p>
-                    <p><strong>Status:</strong> ${user.isActive ? 'Active' : 'Inactive'}</p>
+                    <p><strong>Created:</strong> ${new Date(fullUserData.createdAt).toLocaleString()}</p>
+                    <p><strong>Last Updated:</strong> ${new Date(fullUserData.updatedAt || fullUserData.createdAt).toLocaleString()}</p>
+                    <p><strong>User ID:</strong> ${fullUserData.id}</p>
+                </div>
+
+                <!-- Admin Actions -->
+                <div class="mt-6 border-t pt-4 flex space-x-3">
+                    <button onclick="changeUserPassword('${userId}')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+                        Change Password
+                    </button>
+                    <button onclick="resetUserData('${userId}')" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm">
+                        Reset Profile
+                    </button>
+                    <button onclick="deleteUser('${userId}')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
+                        Delete User
+                    </button>
                 </div>
             `;
 
             document.getElementById('userModal').classList.remove('hidden');
+        }
+        
+        // Toggle password visibility (root only)
+        function togglePasswordVisibility(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            const passwordDisplay = document.getElementById('passwordDisplay');
+            const toggleButton = document.getElementById('passwordToggle');
+            
+            if (passwordDisplay.textContent.includes('*')) {
+                // Show actual password
+                const actualPassword = JSON.parse(localStorage.getItem('registeredUsers') || '[]').find(u => u.id === userId)?.password || 'password123';
+                passwordDisplay.textContent = actualPassword;
+                toggleButton.textContent = 'Hide';
+            } else {
+                // Hide password
+                passwordDisplay.textContent = '**********';
+                toggleButton.textContent = 'Show';
+            }
+        }
+        
+        // Toggle user active status
+        function toggleUserStatus(userId) {
+            const userIndex = allUsers.findIndex(u => u.id === userId);
+            if (userIndex === -1) return;
+            
+            allUsers[userIndex].isActive = !allUsers[userIndex].isActive;
+            
+            // Update in storage
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const regUserIndex = registeredUsers.findIndex(u => u.id === userId);
+            if (regUserIndex !== -1) {
+                registeredUsers[regUserIndex].isActive = allUsers[userIndex].isActive;
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+            }
+            
+            // Refresh the modal
+            viewUserDetails(userId);
+            
+            // Show confirmation
+            alert(`User ${allUsers[userIndex].isActive ? 'enabled' : 'disabled'} successfully.`);
+        }
+        
+        // Change user password
+        function changeUserPassword(userId) {
+            const newPassword = prompt('Enter new password for user:');
+            if (!newPassword) return;
+            
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return;
+            }
+            
+            // Update password in storage
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const userIndex = registeredUsers.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                registeredUsers[userIndex].password = newPassword;
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                alert('Password changed successfully.');
+                viewUserDetails(userId); // Refresh modal
+            }
+        }
+        
+        // Reset user profile data
+        function resetUserData(userId) {
+            if (!confirm('Are you sure you want to reset this user\'s profile data? This action cannot be undone.')) {
+                return;
+            }
+            
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const userIndex = registeredUsers.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                // Keep basic info but reset profile data
+                const basicInfo = {
+                    id: registeredUsers[userIndex].id,
+                    firstName: registeredUsers[userIndex].firstName,
+                    lastName: registeredUsers[userIndex].lastName,
+                    email: registeredUsers[userIndex].email,
+                    password: registeredUsers[userIndex].password,
+                    accountType: registeredUsers[userIndex].accountType,
+                    createdAt: registeredUsers[userIndex].createdAt,
+                    isActive: registeredUsers[userIndex].isActive
+                };
+                registeredUsers[userIndex] = basicInfo;
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                alert('User profile data reset successfully.');
+                loadUsers(); // Refresh user list
+                closeUserModal();
+            }
+        }
+        
+        // Delete user
+        function deleteUser(userId) {
+            const user = allUsers.find(u => u.id === userId);
+            if (!confirm(`Are you sure you want to permanently delete user "${user.firstName} ${user.lastName}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            // Remove from registered users
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const filteredUsers = registeredUsers.filter(u => u.id !== userId);
+            localStorage.setItem('registeredUsers', JSON.stringify(filteredUsers));
+            
+            alert('User deleted successfully.');
+            loadUsers(); // Refresh user list
+            closeUserModal();
         }
 
         function closeUserModal() {
