@@ -316,7 +316,15 @@
                 ...sessionData,
                 ...signupData,
                 // Ensure we have the activation code
-                activationCode: signupData.activationCode || user.activationCode || 'N/A'
+                activationCode: signupData.activationCode || user.activationCode || 'N/A',
+                // Ensure athletic information from profile is included
+                sport: signupData.sport || sessionData.profile?.sport || profileData.sport || user.sport || '',
+                position: signupData.position || sessionData.profile?.position || profileData.position || user.position || '',
+                height: signupData.height || sessionData.profile?.height || profileData.height || user.height || '',
+                weight: signupData.weight || sessionData.profile?.weight || profileData.weight || user.weight || '',
+                skillLevel: signupData.skillLevel || sessionData.profile?.skillLevel || profileData.skillLevel || user.skillLevel || '',
+                teamName: signupData.teamName || sessionData.profile?.teamName || profileData.teamName || user.teamName || '',
+                goals: signupData.goals || sessionData.profile?.goals || profileData.goals || user.goals || []
             };
             
             const currentAdmin = sessionStorage.getItem('adminUsername');
@@ -341,6 +349,9 @@
                         <p><strong>Date of Birth:</strong> 
                             <span onclick="editField('${userId}', 'dateOfBirth', '${fullUserData.dateOfBirth || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.dateOfBirth || 'Click to add'}</span>
                         </p>
+                        <p><strong>Team:</strong> 
+                            <span onclick="editField('${userId}', 'teamName', '${fullUserData.teamName || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.teamName || 'Click to add team'}</span>
+                        </p>
                         <p><strong>Activation Code:</strong> ${fullUserData.activationCode}</p>
                     </div>
                     <div>
@@ -360,9 +371,6 @@
                             </p>
                             <p><strong>Skill Level:</strong> 
                                 <span onclick="editField('${userId}', 'skillLevel', '${fullUserData.skillLevel || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.skillLevel || 'Click to add'}</span>
-                            </p>
-                            <p><strong>Team:</strong> 
-                                <span onclick="editField('${userId}', 'teamName', '${fullUserData.teamName || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.teamName || 'Click to add'}</span>
                             </p>
                             <p><strong>Goals:</strong> 
                                 <span onclick="editField('${userId}', 'goals', '${fullUserData.goals ? fullUserData.goals.join(', ') : ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.goals ? fullUserData.goals.join(', ') : 'Click to add'}</span>
@@ -540,8 +548,51 @@
         
         // Edit field inline
         function editField(userId, fieldName, currentValue) {
-            const newValue = prompt(`Enter new ${fieldName}:`, currentValue || '');
-            if (newValue === null) return; // User cancelled
+            let newValue;
+            
+            // Special handling for team name to show coach association
+            if (fieldName === 'teamName') {
+                const user = allUsers.find(u => u.id === userId);
+                if (user && user.accountType === 'athlete') {
+                    // Get all coaches for team selection
+                    const coaches = allUsers.filter(u => u.accountType === 'coach');
+                    
+                    if (coaches.length > 0) {
+                        let coachOptions = coaches.map(coach => 
+                            `${coach.firstName} ${coach.lastName} (${coach.email})`
+                        ).join('\\n');
+                        
+                        const selectedOption = prompt(
+                            `Enter team name or select a coach to associate with:\\n\\nAvailable Coaches:\\n${coachOptions}\\n\\nEnter team name:`, 
+                            currentValue || ''
+                        );
+                        
+                        if (selectedOption === null) return; // User cancelled
+                        
+                        // Check if user selected a coach by email
+                        const selectedCoach = coaches.find(coach => 
+                            selectedOption.includes(coach.email) || 
+                            selectedOption.includes(`${coach.firstName} ${coach.lastName}`)
+                        );
+                        
+                        if (selectedCoach) {
+                            newValue = `${selectedCoach.firstName}'s Team`;
+                            alert(`Athlete ${user.firstName} ${user.lastName} has been assigned to ${selectedCoach.firstName} ${selectedCoach.lastName}'s team.`);
+                        } else {
+                            newValue = selectedOption;
+                        }
+                    } else {
+                        newValue = prompt(`Enter team name:`, currentValue || '');
+                        if (newValue === null) return;
+                    }
+                } else {
+                    newValue = prompt(`Enter team name:`, currentValue || '');
+                    if (newValue === null) return;
+                }
+            } else {
+                newValue = prompt(`Enter new ${fieldName}:`, currentValue || '');
+                if (newValue === null) return; // User cancelled
+            }
             
             // Update in all storage locations
             const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
