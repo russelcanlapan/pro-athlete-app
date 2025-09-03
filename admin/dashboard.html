@@ -141,27 +141,56 @@
         // Load dashboard data
         async function loadDashboardData() {
             try {
-                // This would connect to Firebase in a real implementation
-                // For now, we'll simulate some data
-                const mockData = {
-                    totalUsers: 0,
-                    athletes: 0,
-                    coaches: 0,
-                    recentUsers: []
-                };
+                // Get all registered users from localStorage (simulating database)
+                const allUsers = [];
+                
+                // Check for users in different storage locations
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('UserData') || key === 'currentUser')) {
+                        try {
+                            const userData = JSON.parse(localStorage.getItem(key));
+                            if (userData && userData.email && userData.accountType) {
+                                allUsers.push(userData);
+                            }
+                        } catch (e) {
+                            // Skip invalid data
+                        }
+                    }
+                }
+
+                // Count users by type
+                const athletes = allUsers.filter(user => user.accountType === 'athlete').length;
+                const coaches = allUsers.filter(user => user.accountType === 'coach').length;
+                const totalUsers = allUsers.length;
 
                 // Update UI
-                document.getElementById('totalUsers').textContent = mockData.totalUsers;
-                document.getElementById('totalUsersText').textContent = mockData.totalUsers + ' registered users';
-                document.getElementById('totalAthletes').textContent = mockData.athletes;
-                document.getElementById('totalAthletesText').textContent = mockData.athletes + ' athletes';
-                document.getElementById('totalCoaches').textContent = mockData.coaches;
-                document.getElementById('totalCoachesText').textContent = mockData.coaches + ' coaches';
+                document.getElementById('totalUsers').textContent = totalUsers;
+                document.getElementById('totalUsersText').textContent = totalUsers + ' registered users';
+                document.getElementById('totalAthletes').textContent = athletes;
+                document.getElementById('totalAthletesText').textContent = athletes + ' athletes';
+                document.getElementById('totalCoaches').textContent = coaches;
+                document.getElementById('totalCoachesText').textContent = coaches + ' coaches';
 
                 // Update recent users table
                 const recentUsersTable = document.getElementById('recentUsers');
-                if (mockData.recentUsers.length === 0) {
+                if (allUsers.length === 0) {
                     recentUsersTable.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-gray-500">No users registered yet</td></tr>';
+                } else {
+                    // Show most recent users (up to 5)
+                    const recentUsers = allUsers.slice(-5).reverse();
+                    recentUsersTable.innerHTML = recentUsers.map(user => `
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${user.firstName || 'N/A'} ${user.lastName || ''}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.email}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.accountType === 'athlete' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">
+                                    ${user.accountType}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Today'}</td>
+                        </tr>
+                    `).join('');
                 }
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
