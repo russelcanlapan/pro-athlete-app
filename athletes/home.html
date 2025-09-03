@@ -1137,7 +1137,7 @@
                 
                 // Create video player
                 videoPlayerArea.innerHTML = `
-                    <video id="selectedVideo" class="w-full h-full object-cover" controls autoplay muted>
+                    <video id="selectedVideo" class="w-full h-full object-cover" controls muted>
                         <source src="${actualVideo.videoURL}" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
@@ -1147,10 +1147,41 @@
                 `;
                 
                 const video = document.getElementById('selectedVideo');
-                video.onerror = () => {
-                    console.log(`Video ${videoId} failed to load, showing interactive demo`);
-                    createInteractiveDemo(videoId, videoPlayerArea);
-                };
+                
+                // Add comprehensive error handling
+                video.addEventListener('loadstart', () => {
+                    console.log(`Video ${videoId} starting to load...`);
+                });
+                
+                video.addEventListener('loadeddata', () => {
+                    console.log(`Video ${videoId} data loaded successfully`);
+                    // Try to play if user hasn't interacted yet
+                    video.play().catch(e => {
+                        console.log('Auto-play prevented, user can click play button');
+                    });
+                });
+                
+                video.addEventListener('error', (e) => {
+                    console.log(`Video ${videoId} failed to load:`, e);
+                    console.log('Blob URL may have expired, showing interactive demo');
+                    connectionText.innerHTML = `<strong>Database Connected:</strong> Video file expired, showing interactive demo for ID ${videoId}.`;
+                    setTimeout(() => {
+                        createInteractiveDemo(videoId, videoPlayerArea);
+                    }, 1000);
+                });
+                
+                video.addEventListener('canplay', () => {
+                    console.log(`Video ${videoId} can start playing`);
+                });
+                
+                // Set a timeout to fallback if video doesn't load
+                setTimeout(() => {
+                    if (video.readyState === 0) {
+                        console.log(`Video ${videoId} timeout - falling back to interactive demo`);
+                        connectionText.innerHTML = `<strong>Database Connected:</strong> Loading timeout, showing interactive demo for ID ${videoId}.`;
+                        createInteractiveDemo(videoId, videoPlayerArea);
+                    }
+                }, 5000);
                 
             } else {
                 console.log(`No uploaded video found for ID ${videoId}, creating interactive demo`);
