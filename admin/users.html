@@ -241,12 +241,27 @@
             const user = allUsers.find(u => u.id === userId);
             if (!user) return;
 
-            // Get detailed profile information from signup data
+            // Get all available user data sources
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const sessionUsers = JSON.parse(sessionStorage.getItem('athleteUserData') || '{}');
             const profileData = user.profile || {};
-            const signupData = JSON.parse(localStorage.getItem('registeredUsers') || '[]').find(u => u.email === user.email) || {};
             
-            // Merge all available data
-            const fullUserData = { ...user, ...profileData, ...signupData };
+            // Find user in all possible data sources
+            const signupData = registeredUsers.find(u => u.id === userId || u.email === user.email) || {};
+            const sessionData = sessionUsers.id === userId ? sessionUsers : {};
+            
+            console.log('Loading user data from sources:', { user, signupData, sessionData, profileData });
+            
+            // Merge all available data with priority: signupData > sessionData > profileData > user
+            const fullUserData = { 
+                ...user, 
+                ...profileData, 
+                ...sessionData.profile, 
+                ...sessionData,
+                ...signupData,
+                // Ensure we have the activation code
+                activationCode: signupData.activationCode || user.activationCode || 'N/A'
+            };
             
             const currentAdmin = sessionStorage.getItem('adminUsername');
             const isRootUser = currentAdmin === 'root';
@@ -256,27 +271,53 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <h4 class="font-medium text-gray-900 mb-2">Basic Information</h4>
-                        <p><strong>Name:</strong> ${fullUserData.firstName} ${fullUserData.lastName}</p>
-                        <p><strong>Email:</strong> ${fullUserData.email}</p>
+                        <p><strong>Name:</strong> 
+                            <span onclick="editField('${userId}', 'firstName', '${fullUserData.firstName}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.firstName}</span>
+                            <span onclick="editField('${userId}', 'lastName', '${fullUserData.lastName}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.lastName}</span>
+                        </p>
+                        <p><strong>Email:</strong> 
+                            <span onclick="editField('${userId}', 'email', '${fullUserData.email}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.email}</span>
+                        </p>
                         <p><strong>Account Type:</strong> ${fullUserData.accountType || fullUserData.userType}</p>
-                        <p><strong>Phone:</strong> ${fullUserData.phone || 'N/A'}</p>
-                        <p><strong>Date of Birth:</strong> ${fullUserData.dateOfBirth || 'N/A'}</p>
-                        <p><strong>Activation Code:</strong> ${fullUserData.activationCode || 'N/A'}</p>
+                        <p><strong>Phone:</strong> 
+                            <span onclick="editField('${userId}', 'phone', '${fullUserData.phone || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.phone || 'Click to add'}</span>
+                        </p>
+                        <p><strong>Date of Birth:</strong> 
+                            <span onclick="editField('${userId}', 'dateOfBirth', '${fullUserData.dateOfBirth || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.dateOfBirth || 'Click to add'}</span>
+                        </p>
+                        <p><strong>Activation Code:</strong> ${fullUserData.activationCode}</p>
                     </div>
                     <div>
                         <h4 class="font-medium text-gray-900 mb-2">${fullUserData.accountType === 'athlete' ? 'Athletic' : 'Coaching'} Information</h4>
                         ${fullUserData.accountType === 'athlete' ? `
-                            <p><strong>Sport:</strong> ${fullUserData.sport || 'N/A'}</p>
-                            <p><strong>Position:</strong> ${fullUserData.position || 'N/A'}</p>
-                            <p><strong>Height:</strong> ${fullUserData.height || 'N/A'}</p>
-                            <p><strong>Weight:</strong> ${fullUserData.weight || 'N/A'}</p>
-                            <p><strong>Skill Level:</strong> ${fullUserData.skillLevel || 'N/A'}</p>
-                            <p><strong>Team:</strong> ${fullUserData.teamName || 'N/A'}</p>
-                            <p><strong>Goals:</strong> ${fullUserData.goals ? fullUserData.goals.join(', ') : 'N/A'}</p>
+                            <p><strong>Sport:</strong> 
+                                <span onclick="editField('${userId}', 'sport', '${fullUserData.sport || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.sport || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Position:</strong> 
+                                <span onclick="editField('${userId}', 'position', '${fullUserData.position || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.position || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Height:</strong> 
+                                <span onclick="editField('${userId}', 'height', '${fullUserData.height || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.height || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Weight:</strong> 
+                                <span onclick="editField('${userId}', 'weight', '${fullUserData.weight || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.weight || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Skill Level:</strong> 
+                                <span onclick="editField('${userId}', 'skillLevel', '${fullUserData.skillLevel || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.skillLevel || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Team:</strong> 
+                                <span onclick="editField('${userId}', 'teamName', '${fullUserData.teamName || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.teamName || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Goals:</strong> 
+                                <span onclick="editField('${userId}', 'goals', '${fullUserData.goals ? fullUserData.goals.join(', ') : ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.goals ? fullUserData.goals.join(', ') : 'Click to add'}</span>
+                            </p>
                         ` : `
-                            <p><strong>Organization:</strong> ${fullUserData.organization || 'N/A'}</p>
-                            <p><strong>Experience:</strong> ${fullUserData.coachingExperience ? fullUserData.coachingExperience + ' years' : 'N/A'}</p>
-                            <p><strong>Teams Managed:</strong> ${fullUserData.teamsManaged ? fullUserData.teamsManaged.length : 0}</p>
+                            <p><strong>Organization:</strong> 
+                                <span onclick="editField('${userId}', 'organization', '${fullUserData.organization || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.organization || 'Click to add'}</span>
+                            </p>
+                            <p><strong>Experience:</strong> 
+                                <span onclick="editField('${userId}', 'coachingExperience', '${fullUserData.coachingExperience || ''}')" class="cursor-pointer hover:bg-gray-100 px-1 rounded">${fullUserData.coachingExperience ? fullUserData.coachingExperience + ' years' : 'Click to add'}</span>
+                            </p>
                         `}
                     </div>
                 </div>
@@ -439,6 +480,39 @@
             alert('User deleted successfully.');
             loadUsers(); // Refresh user list
             closeUserModal();
+        }
+        
+        // Edit field inline
+        function editField(userId, fieldName, currentValue) {
+            const newValue = prompt(`Enter new ${fieldName}:`, currentValue || '');
+            if (newValue === null) return; // User cancelled
+            
+            // Update in all storage locations
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const userIndex = registeredUsers.findIndex(u => u.id === userId);
+            
+            if (userIndex !== -1) {
+                // Handle special cases
+                if (fieldName === 'goals') {
+                    registeredUsers[userIndex][fieldName] = newValue.split(',').map(g => g.trim()).filter(g => g);
+                } else {
+                    registeredUsers[userIndex][fieldName] = newValue;
+                }
+                
+                // Update profile nested object if it exists
+                if (!registeredUsers[userIndex].profile) {
+                    registeredUsers[userIndex].profile = {};
+                }
+                registeredUsers[userIndex].profile[fieldName] = registeredUsers[userIndex][fieldName];
+                
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                
+                // Refresh the modal to show updated data
+                viewUserDetails(userId);
+                loadUsers(); // Refresh user list too
+                
+                alert(`${fieldName} updated successfully.`);
+            }
         }
 
         function closeUserModal() {
