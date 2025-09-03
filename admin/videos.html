@@ -215,6 +215,9 @@
             dropZone.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
+                // Set the file input value
+                const fileInput = document.getElementById('videoFile');
+                fileInput.files = files;
                 handleFileSelect({ target: { files } });
             }
         });
@@ -239,10 +242,25 @@
             event.preventDefault();
             
             const formData = new FormData(event.target);
-            const file = document.getElementById('videoFile').files[0];
+            const fileInput = document.getElementById('videoFile');
+            const file = fileInput.files[0];
             
             if (!file) {
                 alert('Please select a video file to upload.');
+                return;
+            }
+            
+            // Validate file type
+            const allowedTypes = ['video/mp4', 'video/mov', 'video/avi', 'video/quicktime'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please select a valid video file (MP4, MOV, or AVI).');
+                return;
+            }
+            
+            // Validate file size (100MB limit)
+            const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+            if (file.size > maxSize) {
+                alert('File size must be less than 100MB.');
                 return;
             }
 
