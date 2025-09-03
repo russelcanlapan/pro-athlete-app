@@ -29,44 +29,8 @@
             <h1 class="text-3xl font-bold text-gray-900 mb-8">Teams</h1>
 
             <!-- Team Cards -->
-            <div class="space-y-4 mb-8">
-                <!-- Team XXX -->
-                <div class="team-card bg-blue-600 rounded-2xl p-6 cursor-pointer" onclick="selectTeam('Team XXX')">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                            <span class="text-2xl">🏀</span>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-bold text-white mb-1">Team XXX</h3>
-                            <p class="text-white/80 text-sm mb-2">(0 athletes)</p>
-                            <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span class="text-white/80 text-sm">Women's Basketball</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Team YYY -->
-                <div class="team-card bg-blue-600 rounded-2xl p-6 cursor-pointer" onclick="selectTeam('Team YYY')">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-                            <span class="text-2xl">🏈</span>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-bold text-white mb-1">Team YYY</h3>
-                            <p class="text-white/80 text-sm mb-2">(11 athletes)</p>
-                            <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <span class="text-white/80 text-sm">Women's Basketball</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div id="teamsContainer" class="space-y-4 mb-8">
+                <!-- Teams will be dynamically loaded here -->
             </div>
 
             <!-- Add Team Section -->
@@ -106,6 +70,98 @@
     </div>
 
     <script>
+        let coachTeams = [];
+
+        // Load coach teams on page load
+        window.addEventListener('load', function() {
+            loadCoachTeams();
+        });
+
+        function loadCoachTeams() {
+            // Get coach data from session storage
+            const coachUserData = JSON.parse(sessionStorage.getItem('coachUserData') || '{}');
+            const coachProfile = JSON.parse(localStorage.getItem('coachProfile') || '{}');
+            
+            // Get coach's team name
+            let teamName = 'Unknown Team';
+            let coachFirstName = 'Coach';
+            
+            if (coachUserData.firstName) {
+                coachFirstName = coachUserData.firstName;
+            }
+            
+            if (coachUserData.teamName && coachUserData.teamName.trim()) {
+                teamName = coachUserData.teamName;
+            } else if (coachUserData.profile?.teamName && coachUserData.profile.teamName.trim()) {
+                teamName = coachUserData.profile.teamName;
+            } else if (coachProfile.teamName && coachProfile.teamName.trim()) {
+                teamName = coachProfile.teamName;
+            } else {
+                // Check registeredUsers for team assignment
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                const coachInRegistry = registeredUsers.find(u => u.id === coachUserData.id || u.email === coachUserData.email);
+                
+                if (coachInRegistry && coachInRegistry.teamName && coachInRegistry.teamName.trim()) {
+                    teamName = coachInRegistry.teamName;
+                } else {
+                    teamName = `${coachFirstName}'s Team`;
+                }
+            }
+            
+            // Count athletes for this team
+            const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const teamAthletes = allUsers.filter(user => 
+                (user.accountType === 'athlete' || user.profile?.userType === 'athlete') &&
+                (user.teamName === teamName || user.profile?.teamName === teamName)
+            );
+            
+            // Create team object
+            const team = {
+                name: teamName,
+                athleteCount: teamAthletes.length,
+                sport: 'Basketball', // Default sport
+                icon: '🏀'
+            };
+            
+            coachTeams = [team];
+            renderTeams();
+        }
+
+        function renderTeams() {
+            const container = document.getElementById('teamsContainer');
+            
+            if (coachTeams.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">No teams found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const teamsHTML = coachTeams.map(team => `
+                <div class="team-card bg-blue-600 rounded-2xl p-6 cursor-pointer" onclick="selectTeam('${team.name}')">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                            <span class="text-2xl">${team.icon}</span>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-white mb-1">${team.name}</h3>
+                            <p class="text-white/80 text-sm mb-2">(${team.athleteCount} athletes)</p>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span class="text-white/80 text-sm">${team.sport}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = teamsHTML;
+        }
+
         function selectTeam(teamName) {
             // Navigate to the tracking page with the selected team
             window.location.href = `tracking.html?team=${encodeURIComponent(teamName)}`;
