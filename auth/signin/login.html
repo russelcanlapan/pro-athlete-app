@@ -238,7 +238,12 @@
                         ...matchedUser
                     };
                     
-                    sessionStorage.setItem('athleteUserData', JSON.stringify(sessionData));
+                    // Store in appropriate session storage based on account type
+                    if (matchedUser.accountType === 'coach') {
+                        sessionStorage.setItem('coachUserData', JSON.stringify(sessionData));
+                    } else {
+                        sessionStorage.setItem('athleteUserData', JSON.stringify(sessionData));
+                    }
                     sessionStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('currentUser', JSON.stringify(matchedUser));
@@ -247,7 +252,7 @@
                     
                     // Redirect based on account type
                     if (matchedUser.accountType === 'coach') {
-                        window.location.href = '/coaches/dashboard.html';
+                        window.location.href = '/coaches/home.html';
                     } else {
                         window.location.href = '/athletes/home.html';
                     }
