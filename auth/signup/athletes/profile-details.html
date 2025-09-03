@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Athlete Profile - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center py-8">
+        <div class="w-full max-w-2xl mx-auto px-6">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4">
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Complete your athlete profile</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="bg-white rounded-xl shadow-sm p-8">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Tell us about yourself</h2>
+                        <p class="text-gray-600">This information helps us create personalized training programs for you.</p>
+                    </div>
+
+                    <form id="profileForm" class="space-y-6">
+                        <!-- Athletic Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="sport" class="block text-sm font-medium text-gray-700 mb-2">Primary Sport</label>
+                                <select id="sport" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Select your sport</option>
+                                    <option value="basketball">Basketball</option>
+                                    <option value="soccer">Soccer</option>
+                                    <option value="football">Football</option>
+                                    <option value="baseball">Baseball</option>
+                                    <option value="tennis">Tennis</option>
+                                    <option value="swimming">Swimming</option>
+                                    <option value="track">Track & Field</option>
+                                    <option value="volleyball">Volleyball</option>
+                                    <option value="hockey">Hockey</option>
+                                    <option value="lacrosse">Lacrosse</option>
+                                    <option value="golf">Golf</option>
+                                    <option value="wrestling">Wrestling</option>
+                                    <option value="gymnastics">Gymnastics</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="position" class="block text-sm font-medium text-gray-700 mb-2">Position (Optional)</label>
+                                <input type="text" id="position" placeholder="e.g., Point Guard, Midfielder" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Physical Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label for="height" class="block text-sm font-medium text-gray-700 mb-2">Height</label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="heightFeet" min="3" max="8" placeholder="5" 
+                                           class="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <span class="flex items-center text-gray-500">ft</span>
+                                    <input type="number" id="heightInches" min="0" max="11" placeholder="10" 
+                                           class="w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <span class="flex items-center text-gray-500">in</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label for="weight" class="block text-sm font-medium text-gray-700 mb-2">Weight (lbs)</label>
+                                <input type="number" id="weight" min="50" max="400" placeholder="150" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label for="dateOfBirth" class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                                <input type="date" id="dateOfBirth" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Experience and Goals -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="skillLevel" class="block text-sm font-medium text-gray-700 mb-2">Skill Level</label>
+                                <select id="skillLevel" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="">Select your level</option>
+                                    <option value="beginner">Beginner (0-1 years)</option>
+                                    <option value="intermediate">Intermediate (2-5 years)</option>
+                                    <option value="advanced">Advanced (6+ years)</option>
+                                    <option value="professional">Professional/Elite</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label for="teamName" class="block text-sm font-medium text-gray-700 mb-2">Team/Organization (Optional)</label>
+                                <input type="text" id="teamName" placeholder="e.g., Lakers, UCLA, High School Team" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number (Optional)</label>
+                                <input type="tel" id="phone" placeholder="(555) 123-4567" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Goals and Preferences -->
+                        <div>
+                            <label for="goals" class="block text-sm font-medium text-gray-700 mb-2">Training Goals (Optional)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="strength" class="mr-2 rounded">
+                                    <span class="text-sm">Strength</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="endurance" class="mr-2 rounded">
+                                    <span class="text-sm">Endurance</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="speed" class="mr-2 rounded">
+                                    <span class="text-sm">Speed</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="agility" class="mr-2 rounded">
+                                    <span class="text-sm">Agility</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="flexibility" class="mr-2 rounded">
+                                    <span class="text-sm">Flexibility</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="injury-prevention" class="mr-2 rounded">
+                                    <span class="text-sm">Injury Prevention</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="rehabilitation" class="mr-2 rounded">
+                                    <span class="text-sm">Rehabilitation</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="weight-loss" class="mr-2 rounded">
+                                    <span class="text-sm">Weight Loss</span>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Continue to activation key">
+                    Continue to Activation
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function handleNext() {
+            // Collect all form data
+            const sport = document.getElementById('sport').value;
+            const position = document.getElementById('position').value;
+            const heightFeet = document.getElementById('heightFeet').value;
+            const heightInches = document.getElementById('heightInches').value;
+            const weight = document.getElementById('weight').value;
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+            const skillLevel = document.getElementById('skillLevel').value;
+            const teamName = document.getElementById('teamName').value;
+            const phone = document.getElementById('phone').value;
+            
+            // Collect training goals
+            const goalCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const goals = Array.from(goalCheckboxes).map(cb => cb.value);
+            
+            // Validate required fields
+            if (!sport || !skillLevel) {
+                alert('Please fill in all required fields (Sport and Skill Level).');
+                return;
+            }
+            
+            // Calculate height in cm for consistency
+            let heightInCm = '';
+            if (heightFeet && heightInches !== '') {
+                const totalInches = (parseInt(heightFeet) * 12) + parseInt(heightInches || 0);
+                heightInCm = Math.round(totalInches * 2.54);
+            }
+            
+            // Store profile data in localStorage
+            const profileData = {
+                sport: sport,
+                position: position,
+                height: heightInCm ? `${heightInCm} cm` : '',
+                heightFeet: heightFeet,
+                heightInches: heightInches,
+                weight: weight ? `${weight} lbs` : '',
+                dateOfBirth: dateOfBirth,
+                skillLevel: skillLevel,
+                teamName: teamName,
+                phone: phone,
+                goals: goals
+            };
+            
+            localStorage.setItem('athleteProfileData', JSON.stringify(profileData));
+            
+            console.log('Athlete profile data saved:', profileData);
+            
+            // Navigate to activation key page
+            window.location.href = 'activation-key.html';
+        }
+
+        function goBack() {
+            window.location.href = '../account-type.html';
+        }
+
+        // Phone number formatting
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 6) {
+                value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6,10)}`;
+            } else if (value.length >= 3) {
+                value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+            }
+            e.target.value = value;
+        });
+
+        // Auto-focus on first field
+        document.getElementById('sport').focus();
+    </script>
+</body>
+</html>

@@ -124,10 +124,12 @@
             // Store account type in localStorage
             localStorage.setItem('signupAccountType', selectedType);
             
-            // Navigate to appropriate activation key page based on account type
+            // Navigate based on account type
             if (selectedType === 'athlete') {
-                window.location.href = 'athletes/activation-key.html';
+                // Athletes go to profile collection first
+                window.location.href = 'athletes/profile-details.html';
             } else if (selectedType === 'coach') {
+                // Coaches go directly to activation key
                 window.location.href = 'coaches/activation-key.html';
             }
         }
