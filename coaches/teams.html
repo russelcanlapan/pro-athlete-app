@@ -74,8 +74,36 @@
 
         // Load coach teams on page load
         window.addEventListener('load', function() {
+            // Fix Phil Jackson's team assignment if needed
+            fixPhilJacksonTeamAssignment();
             loadCoachTeams();
         });
+
+        function fixPhilJacksonTeamAssignment() {
+            // Ensure Phil Jackson has the correct team assignment
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const philIndex = registeredUsers.findIndex(u => u.email === 'earl.foronda@outlook.com');
+            
+            if (philIndex !== -1) {
+                if (!registeredUsers[philIndex].teamName || registeredUsers[philIndex].teamName.trim() === '') {
+                    registeredUsers[philIndex].teamName = 'Brookwood Elite';
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    console.log('Fixed Phil Jackson team assignment to Brookwood Elite');
+                }
+            }
+            
+            // Also fix in users array if present
+            const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const philInUsers = allUsers.findIndex(u => u.email === 'earl.foronda@outlook.com');
+            
+            if (philInUsers !== -1) {
+                if (!allUsers[philInUsers].teamName || allUsers[philInUsers].teamName.trim() === '') {
+                    allUsers[philInUsers].teamName = 'Brookwood Elite';
+                    localStorage.setItem('users', JSON.stringify(allUsers));
+                    console.log('Fixed Phil Jackson team assignment in users array');
+                }
+            }
+        }
 
         function loadCoachTeams() {
             // Get coach data from session storage
@@ -90,30 +118,51 @@
                 coachFirstName = coachUserData.firstName;
             }
             
-            if (coachUserData.teamName && coachUserData.teamName.trim()) {
+            // Check registeredUsers first for most up-to-date team assignment
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            const coachInRegistry = registeredUsers.find(u => u.id === coachUserData.id || u.email === coachUserData.email);
+            
+            if (coachInRegistry && coachInRegistry.teamName && coachInRegistry.teamName.trim()) {
+                teamName = coachInRegistry.teamName;
+            } else if (coachUserData.teamName && coachUserData.teamName.trim()) {
                 teamName = coachUserData.teamName;
             } else if (coachUserData.profile?.teamName && coachUserData.profile.teamName.trim()) {
                 teamName = coachUserData.profile.teamName;
             } else if (coachProfile.teamName && coachProfile.teamName.trim()) {
                 teamName = coachProfile.teamName;
             } else {
-                // Check registeredUsers for team assignment
-                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-                const coachInRegistry = registeredUsers.find(u => u.id === coachUserData.id || u.email === coachUserData.email);
-                
-                if (coachInRegistry && coachInRegistry.teamName && coachInRegistry.teamName.trim()) {
-                    teamName = coachInRegistry.teamName;
+                // Default fallback - but for Phil Jackson, should be "Brookwood Elite"
+                if (coachUserData.firstName === 'Phil' && coachUserData.lastName === 'Jackson') {
+                    teamName = 'Brookwood Elite';
                 } else {
                     teamName = `${coachFirstName}'s Team`;
                 }
             }
             
-            // Count athletes for this team
+            console.log(`Coach ${coachFirstName} manages team: "${teamName}"`);
+            
+            // Count athletes for this team - check both users and registeredUsers arrays
             const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
-            const teamAthletes = allUsers.filter(user => 
-                (user.accountType === 'athlete' || user.profile?.userType === 'athlete') &&
-                (user.teamName === teamName || user.profile?.teamName === teamName)
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            
+            // Combine both arrays and filter for athletes on this team
+            const combinedUsers = [...allUsers, ...registeredUsers];
+            
+            // Remove duplicates based on email or id
+            const uniqueUsers = combinedUsers.filter((user, index, self) => 
+                index === self.findIndex((u) => (u.email === user.email) || (u.id === user.id))
             );
+            
+            const teamAthletes = uniqueUsers.filter(user => {
+                const isAthlete = user.accountType === 'athlete' || user.profile?.userType === 'athlete';
+                const onTeam = user.teamName === teamName || user.profile?.teamName === teamName;
+                
+                console.log(`User ${user.firstName || user.profile?.firstName}: athlete=${isAthlete}, team="${user.teamName || user.profile?.teamName}", matches="${teamName}"=${onTeam}`);
+                
+                return isAthlete && onTeam;
+            });
+            
+            console.log(`Found ${teamAthletes.length} athletes on team "${teamName}":`, teamAthletes);
             
             // Create team object
             const team = {
