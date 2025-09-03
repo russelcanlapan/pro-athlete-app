@@ -50,21 +50,29 @@
     <script>
         async function registerCoach() {
             try {
-                // Get signup data from sessionStorage
+                // Get signup data from both sessionStorage and localStorage
                 const signupData = JSON.parse(sessionStorage.getItem('signupData') || '{}');
+                const firstName = localStorage.getItem('signupFirstName') || signupData.firstName || 'Coach';
+                const lastName = localStorage.getItem('signupLastName') || signupData.lastName || 'User';
+                const email = localStorage.getItem('signupEmail') || signupData.email || 'coach@proathlete.com';
                 
                 // Create user data
                 const userData = {
                     id: 'coach_' + Date.now(),
-                    firstName: signupData.firstName || 'Coach',
-                    lastName: signupData.lastName || 'User',
+                    firstName: firstName,
+                    lastName: lastName,
                     accountType: 'coach',
-                    email: signupData.email || 'coach@proathlete.com',
+                    email: email,
                     createdAt: new Date(),
                     updatedAt: new Date(),
                     isActive: true,
                     isAuthenticated: true
                 };
+                
+                console.log('Signup data available:', signupData);
+                console.log('LocalStorage firstName:', localStorage.getItem('signupFirstName'));
+                console.log('LocalStorage lastName:', localStorage.getItem('signupLastName'));
+                console.log('Creating user with data:', userData);
                 
                 console.log('Registering coach:', userData);
                 
