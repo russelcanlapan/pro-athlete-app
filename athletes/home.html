@@ -55,10 +55,11 @@
                     <h1 class="text-3xl font-bold text-gray-900 mb-1" id="greeting">Hello, Athlete!</h1>
                     <p class="text-gray-600">Ready to crush your goals today?</p>
                 </div>
-                <button class="p-3 hover:bg-white/50 rounded-full transition-colors duration-200">
-                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM9 7H4a2 2 0 00-2 2v10a2 2 0 002 2h5l5-5V9a2 2 0 00-2-2z"></path>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
+                    <span>Logout</span>
                 </button>
             </div>
 
@@ -176,6 +177,43 @@
                             <div class="w-4 h-4 bg-red-500 rounded-full"></div>
                             <span class="text-sm font-medium text-gray-700">Unacceptable (&lt; 60%)</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Player Section -->
+            <div class="mb-10">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Exercise Videos</h3>
+                <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <div class="mb-4">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Featured Exercise: DB Curtsy Lunge</h4>
+                        <p class="text-gray-600 text-sm mb-4">Strength Training • Intermediate Level</p>
+                    </div>
+                    
+                    <!-- Video Player -->
+                    <div class="relative bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
+                        <video id="exerciseVideo" class="w-full h-full object-cover" controls poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwMCIgaGVpZ2h0PSI5MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDkwMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE2MDAiIGhlaWdodD0iOTAwIiBmaWxsPSIjMzc0MTUxIi8+CjxjaXJjbGUgY3g9IjgwMCIgY3k9IjQ1MCIgcj0iNjAiIGZpbGw9IiM2Mzc0OEUiLz4KPHBhdGggZD0iTTc3MCA0MjBWNDgwTDgyMCA0NTBMNzcwIDQyMFoiIGZpbGw9IndoaXRlIi8+CjwvdHZnPgo=">
+                            <!-- Placeholder for video - in real app this would be the actual video file -->
+                            <div class="absolute inset-0 flex items-center justify-center bg-gray-800">
+                                <div class="text-center text-white">
+                                    <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-lg font-medium">DB Curtsy Lunge</p>
+                                    <p class="text-sm text-gray-300">Click to play demonstration</p>
+                                </div>
+                            </div>
+                        </video>
+                    </div>
+                    
+                    <!-- Exercise Description -->
+                    <div class="text-sm text-gray-600">
+                        <p class="mb-2"><strong>Instructions:</strong></p>
+                        <p class="mb-1">• Cross one leg behind the other</p>
+                        <p class="mb-3">• Bend your knee into a lunge position</p>
+                        <p class="text-xs text-gray-500">This video is from your personalized training program based on your profile.</p>
                     </div>
                 </div>
             </div>
@@ -322,12 +360,45 @@
         });
 
         function loadAthleteData() {
-            const athleteProfile = localStorage.getItem('athleteProfile');
-            if (athleteProfile) {
-                const profile = JSON.parse(athleteProfile);
-                const firstName = profile.firstName || 'Athlete';
-                document.getElementById('greeting').textContent = `Hello, ${firstName}!`;
+            // Try to get user data from multiple sources
+            let firstName = 'Athlete';
+            
+            // Check session storage first (priority)
+            const sessionUserData = sessionStorage.getItem('athleteUserData');
+            if (sessionUserData) {
+                try {
+                    const userData = JSON.parse(sessionUserData);
+                    firstName = userData.firstName || userData.name || 'Athlete';
+                } catch (e) {
+                    console.log('Error parsing session user data:', e);
+                }
             }
+            
+            // Fallback to localStorage
+            if (firstName === 'Athlete') {
+                const athleteProfile = localStorage.getItem('athleteProfile');
+                if (athleteProfile) {
+                    try {
+                        const profile = JSON.parse(athleteProfile);
+                        firstName = profile.firstName || 'Athlete';
+                    } catch (e) {
+                        console.log('Error parsing athlete profile:', e);
+                    }
+                }
+            }
+            
+            document.getElementById('greeting').textContent = `Hello, ${firstName}!`;
+        }
+        
+        function logout() {
+            // Clear all user data
+            sessionStorage.clear();
+            localStorage.removeItem('athleteProfile');
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('userType');
+            
+            // Redirect to homepage
+            window.location.href = '../index.html';
         }
 
         function loadPrograms() {
