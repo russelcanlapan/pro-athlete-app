@@ -16,7 +16,8 @@ export default defineConfig({
     strictPort: true,
     hmr: {
       clientPort: 5000
-    }
+    },
+    allowedHosts: true
   },
   build: {
     outDir: 'dist',
