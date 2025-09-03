@@ -166,6 +166,15 @@
                         </div>
                     </div>
 
+                    <!-- Video Link Field -->
+                    <div class="mb-6">
+                        <label for="videoLink" class="block text-sm font-medium text-gray-700 mb-2">Video Link</label>
+                        <input type="url" id="videoLink" name="videoLink" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50"
+                               placeholder="Auto-generated after upload..." readonly>
+                        <p class="text-xs text-gray-500 mt-1">This URL is automatically generated when the video is uploaded and saved to the database.</p>
+                    </div>
+
                     <!-- File Upload Area -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Video File</label>
@@ -251,6 +260,9 @@
 
         // Initialize demo video with ID 451
         function initializeDemoVideo() {
+            const baseURL = window.location.origin;
+            const demoVideoLink = `${baseURL}/api/videos/451/db-curtsy-lunge-demo.mp4`;
+            
             const demoVideo = {
                 id: Date.now(),
                 title: 'DB Curtsy Lunge',
@@ -265,7 +277,8 @@
                 fileName: '35-db-curtsy-lunge-.mp4',
                 fileSize: 1600000, // ~1.5MB
                 uploadedAt: new Date(),
-                videoURL: null // No actual video file for demo
+                videoURL: null, // No actual video file for demo
+                videoLink: demoVideoLink
             };
             
             uploadedVideos = [demoVideo];
@@ -384,6 +397,14 @@
                     // Create video URL for preview
                     const videoURL = URL.createObjectURL(file);
                     
+                    // Generate a unique video link for database association
+                    const baseURL = window.location.origin;
+                    const videoId = formData.get('videoId') || Date.now();
+                    const videoLink = `${baseURL}/api/videos/${videoId}/${encodeURIComponent(file.name)}`;
+                    
+                    // Update the video link field in the form
+                    document.getElementById('videoLink').value = videoLink;
+                    
                     // Create video entry
                     const video = {
                         id: Date.now(),
@@ -399,6 +420,7 @@
                         fileName: file.name,
                         fileSize: file.size,
                         videoURL: videoURL,
+                        videoLink: videoLink,
                         uploadedAt: new Date()
                     };
 
@@ -563,6 +585,21 @@
                                 <p><strong>Uploaded:</strong> ${video.uploadedAt.toLocaleDateString()}</p>
                                 <p><strong>Online:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.online === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.online || 'no'}</span></p>
                                 <p><strong>Free Content:</strong> <span class="px-2 py-1 text-xs rounded-full ${video.freeContent === 'yes' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">${video.freeContent || 'no'}</span></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Link -->
+                        <div class="mb-4">
+                            <h4 class="font-medium text-gray-900 mb-2">Database Link</h4>
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <p class="text-xs text-gray-600 mb-1">Video Database URL:</p>
+                                <p class="text-sm font-mono text-blue-600 break-all">${video.videoLink || 'No link generated'}</p>
+                                <div class="mt-2 flex space-x-2">
+                                    <button onclick="copyToClipboard('${video.videoLink}')" class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs hover:bg-blue-200">
+                                        Copy Link
+                                    </button>
+                                    <span class="text-xs text-gray-500">• This URL can be used to access the video from athlete dashboards</span>
+                                </div>
                             </div>
                         </div>
                         
@@ -772,6 +809,15 @@
                 default:
                     return 'video/mp4';
             }
+        }
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showSuccess('Video link copied to clipboard!');
+            }, function(err) {
+                showError('Failed to copy link to clipboard');
+            });
         }
 
         // Initialize
