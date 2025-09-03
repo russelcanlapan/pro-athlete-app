@@ -622,42 +622,60 @@ class RobustVideoSystem {
      * Initialize enhanced demo animation
      */
     initializeEnhancedDemo(videoId, title) {
-        const canvas = document.getElementById(`exercise_canvas_${videoId}`);
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        let frame = 0;
-        let isPlaying = true;
-        let progress = 0;
-        
-        const animate = () => {
-            if (!isPlaying) return;
-            
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Exercise-specific animations
-            if (videoId === '450') {
-                this.drawDumbbellSquatAnimation(ctx, frame, canvas.width, canvas.height);
-            } else if (videoId === '451') {
-                this.drawCurtsyLungeAnimation(ctx, frame, canvas.width, canvas.height);
-            } else {
-                this.drawGenericExerciseAnimation(ctx, frame, canvas.width, canvas.height);
+        // Wait for DOM to be ready
+        setTimeout(() => {
+            const canvas = document.getElementById(`exercise_canvas_${videoId}`);
+            if (!canvas) {
+                console.log(`Canvas not found for video ${videoId}`);
+                return;
             }
             
-            // Update progress bar
-            progress = (frame % 300) / 300 * 100;
-            const progressBar = document.getElementById(`progress_${videoId}`);
-            if (progressBar) {
-                progressBar.style.width = `${progress}%`;
-            }
+            console.log(`Starting animation for video ${videoId}`);
+            const ctx = canvas.getContext('2d');
+            let frame = 0;
+            let isPlaying = true;
+            let progress = 0;
             
-            frame++;
-            setTimeout(() => requestAnimationFrame(animate), 100); // Slower animation
-        };
-        
-        // Store animation state for controls
-        window[`demoState_${videoId}`] = { isPlaying, animate };
-        animate();
+            const animate = () => {
+                if (!isPlaying) {
+                    requestAnimationFrame(animate);
+                    return;
+                }
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Exercise-specific animations
+                if (videoId === '450') {
+                    this.drawDumbbellSquatAnimation(ctx, frame, canvas.width, canvas.height);
+                } else if (videoId === '451') {
+                    this.drawCurtsyLungeAnimation(ctx, frame, canvas.width, canvas.height);
+                } else {
+                    this.drawGenericExerciseAnimation(ctx, frame, canvas.width, canvas.height);
+                }
+                
+                // Update progress bar
+                progress = (frame % 300) / 300 * 100;
+                const progressBar = document.getElementById(`progress_${videoId}`);
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+                
+                frame++;
+                requestAnimationFrame(animate);
+            };
+            
+            // Store animation state for controls
+            window[`demoState_${videoId}`] = { 
+                isPlaying: true, 
+                animate: animate,
+                frame: 0,
+                ctx: ctx,
+                canvas: canvas
+            };
+            
+            // Start animation immediately
+            animate();
+        }, 100);
     }
 
     /**
@@ -845,7 +863,6 @@ class RobustVideoSystem {
         const state = window[`demoState_${videoId}`];
         if (state) {
             state.isPlaying = true;
-            state.animate();
             console.log(`Enhanced demo ${videoId} started`);
         }
     }
@@ -861,16 +878,16 @@ class RobustVideoSystem {
     resetEnhancedDemo(videoId) {
         const state = window[`demoState_${videoId}`];
         if (state) {
-            state.isPlaying = false;
+            state.frame = 0;
             const progressBar = document.getElementById(`progress_${videoId}`);
             if (progressBar) {
                 progressBar.style.width = '0%';
             }
-            // Clear and restart
-            setTimeout(() => {
-                state.isPlaying = true;
-                state.animate();
-            }, 100);
+            // Clear canvas and restart
+            if (state.ctx && state.canvas) {
+                state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
+            }
+            state.isPlaying = true;
             console.log(`Enhanced demo ${videoId} reset`);
         }
     }
