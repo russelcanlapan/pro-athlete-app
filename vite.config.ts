@@ -14,9 +14,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5000,
     strictPort: true,
-    hmr: {
-      clientPort: 5000
-    },
+    hmr: false,
     allowedHosts: true
   },
   build: {
