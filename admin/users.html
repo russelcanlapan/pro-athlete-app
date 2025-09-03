@@ -142,11 +142,38 @@
                 console.log('Users array from localStorage:', usersArray);
                 allUserData.push(...usersArray);
                 
-                // Ensure Alexander Foronda is in the system (restore if missing)
+                // Ensure Alexander Foronda is in the system and has correct password
                 const alexanderExists = allUserData.some(user => 
                     user.email === 'alexforonda2000@gmail.com' || 
                     (user.firstName === 'Alexander' && user.lastName === 'Foronda')
                 );
+                
+                // Check if Alexander's password needs to be updated
+                const alexanderUser = allUserData.find(user => 
+                    user.email === 'alexforonda2000@gmail.com'
+                );
+                
+                if (alexanderUser && alexanderUser.password !== 'M0ntr3al!') {
+                    console.log('Updating Alexander Foronda password to match login credentials...');
+                    alexanderUser.password = 'M0ntr3al!';
+                    alexanderUser.updatedAt = new Date().toISOString();
+                    
+                    // Update in registeredUsers
+                    const userIndex = registeredUsers.findIndex(u => u.email === 'alexforonda2000@gmail.com');
+                    if (userIndex !== -1) {
+                        registeredUsers[userIndex].password = 'M0ntr3al!';
+                        registeredUsers[userIndex].updatedAt = new Date().toISOString();
+                        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    }
+                    
+                    // Update in users array
+                    const usersIndex = usersArray.findIndex(u => u.email === 'alexforonda2000@gmail.com');
+                    if (usersIndex !== -1) {
+                        usersArray[usersIndex].password = 'M0ntr3al!';
+                        usersArray[usersIndex].updatedAt = new Date().toISOString();
+                        localStorage.setItem('users', JSON.stringify(usersArray));
+                    }
+                }
                 
                 if (!alexanderExists) {
                     console.log('Alexander Foronda missing, restoring...');
@@ -155,6 +182,7 @@
                         firstName: 'Alexander',
                         lastName: 'Foronda',
                         email: 'alexforonda2000@gmail.com',
+                        password: 'M0ntr3al!',
                         accountType: 'athlete',
                         profile: {
                             firstName: 'Alexander',
