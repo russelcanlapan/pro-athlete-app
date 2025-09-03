@@ -1074,44 +1074,46 @@
             videoContainer.appendChild(videoPlayer);
             console.log('Playing video from database URL:', videoLink451);
             
-            // Fallback: Try to load from admin database if direct link fails
+            // Check for admin uploaded videos first since database URL might not be live
+            const adminVideos = localStorage.getItem('adminUploadedVideos');
+            let actualVideo = null;
+            
+            if (adminVideos) {
+                const videos = JSON.parse(adminVideos);
+                actualVideo = videos.find(v => v.videoId === '451');
+                console.log('Found admin video with ID 451:', actualVideo);
+            }
+            
+            // If we have a locally uploaded video, use that instead
+            if (actualVideo && actualVideo.videoURL && actualVideo.videoURL !== null) {
+                const video = videoContainer.querySelector('video');
+                video.src = actualVideo.videoURL;
+                console.log('Using locally uploaded video with ID 451');
+            }
+            
+            // Fallback: Handle video errors
             const video = videoContainer.querySelector('video');
             video.addEventListener('error', function() {
-                console.log('Database video failed to load, checking admin database...');
+                console.log('Video failed to load, showing error message...');
                 
-                const adminVideos = localStorage.getItem('adminUploadedVideos');
-                let actualVideo = null;
-                
-                if (adminVideos) {
-                    const videos = JSON.parse(adminVideos);
-                    actualVideo = videos.find(v => v.videoId === '451');
-                }
-                
-                if (actualVideo && actualVideo.videoURL && actualVideo.videoURL !== null) {
-                    // Update video source to local uploaded video
-                    video.src = actualVideo.videoURL;
-                    console.log('Fallback: Playing local uploaded video with ID 451');
-                } else {
-                    // Show demo animation as last resort
-                    console.log('All video sources failed, showing demo animation');
-                    // Show demo animation as last resort
-                    videoContainer.innerHTML = '';
-                    const placeholder = document.createElement('div');
-                    placeholder.className = 'absolute inset-0 flex items-center justify-center bg-gray-800 cursor-pointer';
-                    placeholder.onclick = playVideo;
-                    placeholder.innerHTML = `
-                        <div class="text-center text-white">
-                            <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 hover:bg-blue-700 transition-colors">
-                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            </div>
-                            <p class="text-lg font-medium">DB Curtsy Lunge</p>
-                            <p class="text-sm text-gray-300">Video ID: 451 • Click to retry</p>
+                videoContainer.innerHTML = '';
+                const errorPlaceholder = document.createElement('div');
+                errorPlaceholder.className = 'absolute inset-0 flex items-center justify-center bg-gray-800';
+                errorPlaceholder.innerHTML = `
+                    <div class="text-center text-white">
+                        <div class="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                            </svg>
                         </div>
-                    `;
-                    videoContainer.appendChild(placeholder);
-                }
+                        <p class="text-lg font-medium">Video Not Available</p>
+                        <p class="text-sm text-gray-300">Video ID: 451 • Please try again later</p>
+                        <button onclick="playVideo()" class="mt-3 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm transition-colors">
+                            Retry Loading
+                        </button>
+                    </div>
+                `;
+                videoContainer.appendChild(errorPlaceholder);
             });
         }
         
