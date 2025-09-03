@@ -1109,54 +1109,44 @@
             if (actualVideo) {
                 console.log('Using locally uploaded video with ID 451');
                 
-                // Try multiple video sources
-                const videoSources = [];
-                
-                if (actualVideo.videoURL && !actualVideo.videoURL.includes('null')) {
-                    videoSources.push(actualVideo.videoURL);
-                }
-                
-                if (actualVideo.videoLink && !actualVideo.videoLink.includes('null')) {
-                    videoSources.push(actualVideo.videoLink);
-                }
-                
-                // Try each source until one works
-                let sourceIndex = 0;
-                
-                function tryNextSource() {
-                    if (sourceIndex < videoSources.length) {
-                        video.src = videoSources[sourceIndex];
-                        console.log(`Trying video source ${sourceIndex + 1}:`, videoSources[sourceIndex]);
-                        sourceIndex++;
-                        
-                        video.load(); // Force reload
-                        
-                        // Try to play the video
+                // Try to use the blob URL directly
+                if (actualVideo.videoURL && actualVideo.videoURL.startsWith('blob:')) {
+                    console.log('Found blob URL for video 451, attempting to play:', actualVideo.videoURL);
+                    
+                    video.src = actualVideo.videoURL;
+                    video.load();
+                    
+                    // Set up event handlers
+                    video.onloadeddata = () => {
+                        console.log('Video data loaded successfully!');
                         video.play().catch(e => {
-                            console.log('Auto-play prevented or source failed:', e);
-                            // Try next source after a short delay
-                            setTimeout(tryNextSource, 1000);
+                            console.log('Auto-play prevented by browser:', e);
+                            // This is normal - user can click to play
                         });
-                        
-                    } else {
-                        console.log('All video sources failed, showing animated demo');
+                    };
+                    
+                    video.onerror = (e) => {
+                        console.log('Video failed to load, blob URL may have expired:', e);
+                        console.log('Showing animated demo as fallback');
                         showAnimatedDemo(video);
-                    }
+                    };
+                    
+                    video.onloadstart = () => {
+                        console.log('Video loading started...');
+                    };
+                    
+                    // Fallback timeout in case video doesn't load
+                    setTimeout(() => {
+                        if (video.readyState === 0) {
+                            console.log('Video loading timeout, showing animated demo');
+                            showAnimatedDemo(video);
+                        }
+                    }, 5000);
+                    
+                } else {
+                    console.log('No valid video URL found, showing animated demo');
+                    showAnimatedDemo(video);
                 }
-                
-                // Handle successful video load
-                video.addEventListener('canplay', () => {
-                    console.log('Video loaded successfully!');
-                }, { once: true });
-                
-                // Handle video errors
-                video.addEventListener('error', () => {
-                    console.log('Video source failed, trying next...');
-                    tryNextSource();
-                }, { once: true });
-                
-                // Start trying sources
-                tryNextSource();
                 
             } else {
                 // Show working video demonstration
@@ -1253,6 +1243,16 @@
             });
         }
         
+        function recreateVideoFromFile(videoData, videoElement) {
+            // This function would recreate a blob URL from stored file data
+            // Since blob URLs expire after page refresh, we need to handle this
+            console.log('Attempting to recreate video blob...');
+            
+            // In a real implementation, you would recreate the blob from stored file data
+            // For now, we'll show the animated demo since file data isn't persistently stored
+            showAnimatedDemo(videoElement);
+        }
+
         function showAnimatedDemo(videoElement) {
             if (videoElement) {
                 videoElement.style.display = 'none';
