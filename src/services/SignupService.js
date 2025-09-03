@@ -64,10 +64,12 @@ class SignupService {
     return this.signupData
   }
 
-  // Complete signup
+  // Complete signup using Firebase
   async completeSignup() {
     try {
-      // Mock API call to register user
+      // Import auth service to handle Firebase registration
+      const authService = (await import('./AuthService.js')).default
+      
       const userData = {
         email: this.signupData.email,
         password: this.signupData.password,
@@ -76,7 +78,7 @@ class SignupService {
         accountType: this.signupData.accountType
       }
 
-      const response = await this.mockRegisterUser(userData)
+      const response = await authService.register(userData)
       
       if (response.success) {
         this.clearStorage()
@@ -134,37 +136,17 @@ class SignupService {
     localStorage.removeItem('signupData')
   }
 
-  // Mock email verification (replace with actual API)
+  // Email verification (simplified for demo)
   async mockEmailVerification(pin) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Mock verification - accept any 6-digit PIN
+        // Accept any 6-digit PIN for demo purposes
+        // In production, this would integrate with an actual email verification service
         if (pin.length === 6 && /^\d+$/.test(pin)) {
           resolve({ success: true })
         } else {
           resolve({ success: false, error: 'Invalid PIN' })
         }
-      }, 1000)
-    })
-  }
-
-  // Mock user registration (replace with actual API)
-  async mockRegisterUser(userData) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          success: true,
-          user: {
-            id: Math.floor(Math.random() * 1000),
-            email: userData.email,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            accountType: userData.accountType,
-            isAuthenticated: true,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          }
-        })
       }, 1000)
     })
   }

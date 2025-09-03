@@ -1,55 +1,111 @@
 import User from '../models/User.js'
+import { auth, db } from '../lib/firebase.ts'
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth'
+import { doc, setDoc, getDoc, collection, serverTimestamp } from 'firebase/firestore'
 
 class AuthService {
   constructor() {
     this.currentUser = null
     this.isAuthenticated = false
+    this.setupAuthListener()
   }
 
-  // Login user
+  // Setup Firebase auth state listener
+  setupAuthListener() {
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in
+        const userDoc = await this.getUserFromFirestore(firebaseUser.uid)
+        if (userDoc) {
+          this.currentUser = new User({
+            id: firebaseUser.uid,
+            email: firebaseUser.email,
+            ...userDoc
+          })
+          this.isAuthenticated = true
+          this.saveToStorage()
+        }
+      } else {
+        // User is signed out
+        this.currentUser = null
+        this.isAuthenticated = false
+        this.clearStorage()
+      }
+    })
+  }
+
+  // Login user with Firebase Auth
   async login(email, password) {
     try {
-      // Mock API call - replace with actual API
-      const response = await this.mockApiCall({ email, password }, 'login')
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const firebaseUser = userCredential.user
       
-      if (response.success) {
-        this.currentUser = new User(response.user)
+      // Get user data from Firestore
+      const userDoc = await this.getUserFromFirestore(firebaseUser.uid)
+      
+      if (userDoc) {
+        this.currentUser = new User({
+          id: firebaseUser.uid,
+          email: firebaseUser.email,
+          ...userDoc
+        })
         this.isAuthenticated = true
         this.saveToStorage()
         return { success: true, user: this.currentUser }
       } else {
-        return { success: false, error: response.error }
+        return { success: false, error: 'User profile not found' }
       }
     } catch (error) {
-      return { success: false, error: 'Login failed' }
+      return { success: false, error: this.getFirebaseErrorMessage(error) }
     }
   }
 
-  // Register user
+  // Register user with Firebase Auth and store in Firestore
   async register(userData) {
     try {
-      // Mock API call - replace with actual API
-      const response = await this.mockApiCall(userData, 'register')
+      // Create user in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password)
+      const firebaseUser = userCredential.user
       
-      if (response.success) {
-        this.currentUser = new User(response.user)
-        this.isAuthenticated = true
-        this.saveToStorage()
-        return { success: true, user: this.currentUser }
-      } else {
-        return { success: false, error: response.error }
+      // Create user profile in Firestore
+      const userProfile = {
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        accountType: userData.accountType,
+        email: userData.email,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        isActive: true
       }
+      
+      await setDoc(doc(db, 'users', firebaseUser.uid), userProfile)
+      
+      this.currentUser = new User({
+        id: firebaseUser.uid,
+        email: firebaseUser.email,
+        ...userProfile,
+        isAuthenticated: true
+      })
+      this.isAuthenticated = true
+      this.saveToStorage()
+      
+      return { success: true, user: this.currentUser }
     } catch (error) {
-      return { success: false, error: 'Registration failed' }
+      return { success: false, error: this.getFirebaseErrorMessage(error) }
     }
   }
 
-  // Logout user
-  logout() {
-    this.currentUser = null
-    this.isAuthenticated = false
-    this.clearStorage()
-    return { success: true }
+  // Logout user with Firebase
+  async logout() {
+    try {
+      await signOut(auth)
+      this.currentUser = null
+      this.isAuthenticated = false
+      this.clearStorage()
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: 'Logout failed' }
+    }
   }
 
   // Check if user is authenticated
@@ -61,6 +117,54 @@ class AuthService {
       return true
     }
     return false
+  }
+
+  // Get user data from Firestore
+  async getUserFromFirestore(uid) {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', uid))
+      if (userDoc.exists()) {
+        return userDoc.data()
+      }
+      return null
+    } catch (error) {
+      console.error('Error fetching user from Firestore:', error)
+      return null
+    }
+  }
+
+  // Update user profile in Firestore
+  async updateUserProfile(uid, updateData) {
+    try {
+      const userRef = doc(db, 'users', uid)
+      await setDoc(userRef, {
+        ...updateData,
+        updatedAt: serverTimestamp()
+      }, { merge: true })
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: 'Failed to update profile' }
+    }
+  }
+
+  // Get Firebase error message
+  getFirebaseErrorMessage(error) {
+    switch (error.code) {
+      case 'auth/user-not-found':
+        return 'No account found with this email address'
+      case 'auth/wrong-password':
+        return 'Incorrect password'
+      case 'auth/email-already-in-use':
+        return 'An account with this email already exists'
+      case 'auth/weak-password':
+        return 'Password should be at least 6 characters'
+      case 'auth/invalid-email':
+        return 'Please enter a valid email address'
+      case 'auth/network-request-failed':
+        return 'Network error. Please check your connection'
+      default:
+        return error.message || 'An error occurred'
+    }
   }
 
   // Get current user
@@ -96,45 +200,6 @@ class AuthService {
   clearStorage() {
     localStorage.removeItem('currentUser')
     localStorage.removeItem('isAuthenticated')
-  }
-
-  // Mock API call (replace with actual API)
-  async mockApiCall(data, endpoint) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        if (endpoint === 'login') {
-          // Mock login response
-          resolve({
-            success: true,
-            user: {
-              id: 1,
-              email: data.email,
-              firstName: 'John',
-              lastName: 'Doe',
-              accountType: 'athlete',
-              isAuthenticated: true,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          })
-        } else if (endpoint === 'register') {
-          // Mock register response
-          resolve({
-            success: true,
-            user: {
-              id: 2,
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              accountType: data.accountType,
-              isAuthenticated: true,
-              createdAt: new Date(),
-              updatedAt: new Date()
-            }
-          })
-        }
-      }, 1000)
-    })
   }
 }
 

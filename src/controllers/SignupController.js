@@ -121,12 +121,7 @@ class SignupController {
       const result = await this.signupService.completeSignup()
       
       if (result.success) {
-        // Auto-login the user after successful signup
-        const loginResult = await this.authService.login(
-          result.user.email, 
-          'password' // In real app, you'd handle this differently
-        )
-        
+        // User is automatically authenticated through Firebase
         return {
           success: true,
           user: result.user,
