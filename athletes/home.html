@@ -1027,15 +1027,48 @@
         function playVideo() {
             const videoContainer = document.querySelector('.relative.bg-gray-900');
             const placeholder = videoContainer.querySelector('.absolute.inset-0');
-            const video = document.getElementById('exerciseVideo');
             
             // Hide placeholder
             placeholder.style.display = 'none';
             
-            // Create a realistic video player interface
-            const videoPlayer = document.createElement('div');
-            videoPlayer.className = 'absolute inset-0 bg-black flex flex-col';
-            videoPlayer.innerHTML = `
+            // Try to load the actual video from admin database
+            const adminVideos = localStorage.getItem('adminUploadedVideos');
+            let actualVideo = null;
+            
+            if (adminVideos) {
+                const videos = JSON.parse(adminVideos);
+                actualVideo = videos.find(v => v.videoId === '451');
+            }
+            
+            if (actualVideo && actualVideo.videoURL) {
+                // Show real uploaded video
+                const videoPlayer = document.createElement('div');
+                videoPlayer.className = 'absolute inset-0 bg-black flex flex-col';
+                videoPlayer.innerHTML = `
+                    <div class="flex-1 relative">
+                        <video class="w-full h-full object-cover" controls autoplay>
+                            <source src="${actualVideo.videoURL}" type="video/mp4">
+                            Your browser does not support video playback.
+                        </video>
+                        <div class="absolute top-4 right-4 bg-green-600 text-white px-2 py-1 rounded text-xs font-bold">
+                            ● ID: 451
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-4">
+                        <div class="flex items-center justify-between text-white">
+                            <h3 class="font-medium">${actualVideo.title}</h3>
+                            <button onclick="resetVideo()" class="bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-sm transition-colors">
+                                ← Back to Preview
+                            </button>
+                        </div>
+                    </div>
+                `;
+                videoContainer.appendChild(videoPlayer);
+            } else {
+                // Show demo animation if no real video available
+                const videoPlayer = document.createElement('div');
+                videoPlayer.className = 'absolute inset-0 bg-black flex flex-col';
+                videoPlayer.innerHTML = `
                 <!-- Video Content Area -->
                 <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative">
                     <!-- Demo Exercise Animation -->
@@ -1096,13 +1129,13 @@
                         </div>
                     </div>
                 </div>
-            `;
-            
-            // Add the video player to the container
-            videoContainer.appendChild(videoPlayer);
-            
-            // Start the demo timer and progress animation
-            startVideoDemo();
+                `;
+                
+                videoContainer.appendChild(videoPlayer);
+                
+                // Start the demo timer and progress animation
+                startVideoDemo();
+            }
         }
         
         function resetVideo() {

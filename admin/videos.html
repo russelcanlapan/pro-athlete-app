@@ -473,7 +473,7 @@
                             ${video.difficulty}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${video.uploadedAt ? new Date(video.uploadedAt).toLocaleDateString() : 'Unknown'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${video.uploadedAt ? (typeof video.uploadedAt === 'string' ? new Date(video.uploadedAt).toLocaleDateString() : video.uploadedAt.toLocaleDateString()) : 'Unknown'}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button onclick="viewVideo(${video.id})" class="text-blue-600 hover:text-blue-900 mr-2">View</button>
                         <button onclick="deleteVideo(${video.id})" class="text-red-600 hover:text-red-900">Delete</button>
