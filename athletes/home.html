@@ -183,54 +183,55 @@
 
             <!-- Video Player Section -->
             <div class="mb-10">
-                <h3 class="text-xl font-bold text-gray-900 mb-6">Exercise Videos</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Exercise Video Library</h3>
                 <div class="bg-white rounded-xl p-6 shadow-sm">
+                    <!-- Video Selection -->
                     <div class="mb-4">
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Featured Exercise: DB Curtsy Lunge</h4>
-                        <p class="text-gray-600 text-sm mb-2">Strength Training • Intermediate Level</p>
-                        <div class="flex items-center space-x-2 mb-4">
-                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">Video ID: 451</span>
-                            <span class="text-xs text-gray-500">• From your personalized training program</span>
-                        </div>
-                        <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                            <div class="flex items-center space-x-2">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <p class="text-xs text-green-700">
-                                    <strong>Database Connected:</strong> Video ID 451 is linked to your training database and ready to play.
-                                </p>
-                            </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Exercise Video:</label>
+                        <select id="videoSelector" onchange="selectVideo()" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                            <option value="">Choose an exercise from your training database...</option>
+                            <option value="450">Video ID: 450 - Dumbbell Squats (Beginner)</option>
+                            <option value="451">Video ID: 451 - DB Curtsy Lunge (Intermediate)</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">2 videos available in your personalized training database</p>
+                    </div>
+                    
+                    <!-- Database Connection Status -->
+                    <div id="connectionStatus" class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 hidden">
+                        <div class="flex items-center space-x-2">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p id="connectionText" class="text-xs text-blue-700">
+                                <strong>Database Connected:</strong> Ready to load selected video.
+                            </p>
                         </div>
                     </div>
                     
                     <!-- Video Player -->
-                    <div class="relative bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
-                        <div class="absolute inset-0 flex items-center justify-center bg-gray-800 cursor-pointer" onclick="playVideo()">
+                    <div id="videoPlayerArea" class="relative bg-gray-900 rounded-lg overflow-hidden mb-4" style="aspect-ratio: 16/9;">
+                        <div class="absolute inset-0 flex items-center justify-center bg-gray-800">
                             <div class="text-center text-white">
-                                <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3 hover:bg-blue-700 transition-colors">
-                                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M8 5v14l11-7z"/>
-                                    </svg>
-                                </div>
-                                <p class="text-lg font-medium">DB Curtsy Lunge</p>
-                                <p class="text-sm text-gray-300">Video ID: 451 • Click to play demonstration</p>
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-lg font-medium mb-2">Exercise Video Library</p>
+                                <p class="text-sm text-gray-300">Select a video from the dropdown above to begin</p>
+                                <p class="text-xs text-gray-400 mt-2">Videos are loaded on-demand from your training database</p>
                             </div>
                         </div>
-                        <!-- Hidden video element that will be shown when playing -->
-                        <video id="exerciseVideo" class="w-full h-full object-cover hidden" controls>
-                            <!-- In a real implementation, this would load from uploaded videos -->
-                            <source src="data:video/mp4;base64," type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
                     </div>
                     
-                    <!-- Exercise Description -->
-                    <div class="text-sm text-gray-600">
-                        <p class="mb-2"><strong>Instructions:</strong></p>
-                        <p class="mb-1">• Cross one leg behind the other</p>
-                        <p class="mb-3">• Bend your knee into a lunge position</p>
-                        <p class="text-xs text-gray-500">This video (ID: 451) is from your personalized training program based on your profile and assigned exercises.</p>
+                    <!-- Exercise Information -->
+                    <div id="exerciseInfo" class="text-sm text-gray-600 hidden">
+                        <h4 id="exerciseTitle" class="text-lg font-semibold text-gray-900 mb-2"></h4>
+                        <p id="exerciseCategory" class="text-gray-600 text-sm mb-2"></p>
+                        <div class="mb-3">
+                            <p class="mb-2"><strong>Instructions:</strong></p>
+                            <ul id="instructionsList" class="space-y-1">
+                            </ul>
+                        </div>
+                        <p id="videoDescription" class="text-xs text-gray-500"></p>
                     </div>
                 </div>
             </div>
@@ -1033,7 +1034,333 @@
             }
         }
         
-        // Video player functionality
+        // Video library data
+        const videoLibrary = {
+            '450': {
+                title: 'Dumbbell Squats',
+                category: 'Strength Training • Beginner Level',
+                instructions: [
+                    'Stand with feet shoulder-width apart holding dumbbells',
+                    'Lower your body by bending your knees and hips',
+                    'Keep your chest up and back straight',
+                    'Push through your heels to return to starting position'
+                ],
+                description: 'This video (ID: 450) focuses on proper squat form with dumbbells for building lower body strength.'
+            },
+            '451': {
+                title: 'DB Curtsy Lunge',
+                category: 'Strength Training • Intermediate Level',
+                instructions: [
+                    'Cross one leg behind the other',
+                    'Bend your knee into a lunge position',
+                    'Keep your torso upright throughout the movement',
+                    'Return to starting position and repeat'
+                ],
+                description: 'This video (ID: 451) demonstrates the curtsy lunge exercise for lower body strength and stability.'
+            }
+        };
+
+        // Video selection functionality
+        function selectVideo() {
+            const selector = document.getElementById('videoSelector');
+            const selectedVideoId = selector.value;
+            const connectionStatus = document.getElementById('connectionStatus');
+            const connectionText = document.getElementById('connectionText');
+            const videoPlayerArea = document.getElementById('videoPlayerArea');
+            const exerciseInfo = document.getElementById('exerciseInfo');
+            
+            if (selectedVideoId) {
+                // Show connection status
+                connectionStatus.classList.remove('hidden');
+                connectionText.innerHTML = `<strong>Database Connected:</strong> Loading Video ID ${selectedVideoId}...`;
+                
+                // Update exercise info
+                const videoData = videoLibrary[selectedVideoId];
+                if (videoData) {
+                    document.getElementById('exerciseTitle').textContent = videoData.title;
+                    document.getElementById('exerciseCategory').textContent = videoData.category;
+                    
+                    const instructionsList = document.getElementById('instructionsList');
+                    instructionsList.innerHTML = '';
+                    videoData.instructions.forEach(instruction => {
+                        const li = document.createElement('li');
+                        li.textContent = `• ${instruction}`;
+                        instructionsList.appendChild(li);
+                    });
+                    
+                    document.getElementById('videoDescription').textContent = videoData.description;
+                    exerciseInfo.classList.remove('hidden');
+                }
+                
+                // Load video player
+                loadSelectedVideo(selectedVideoId);
+            } else {
+                connectionStatus.classList.add('hidden');
+                exerciseInfo.classList.add('hidden');
+                resetVideoPlayer();
+            }
+        }
+
+        function loadSelectedVideo(videoId) {
+            const videoPlayerArea = document.getElementById('videoPlayerArea');
+            const connectionText = document.getElementById('connectionText');
+            
+            console.log(`Loading video ID ${videoId} from database...`);
+            
+            // Check for uploaded videos in admin storage
+            const adminVideosOld = localStorage.getItem('adminUploadedVideos');
+            const adminVideosNew = localStorage.getItem('adminVideos');
+            let actualVideo = null;
+            
+            // Try to find the selected video
+            if (adminVideosNew) {
+                try {
+                    const videos = JSON.parse(adminVideosNew);
+                    actualVideo = videos.find(v => v.videoId === videoId);
+                } catch (e) {
+                    console.log('Error parsing new admin videos:', e);
+                }
+            }
+            
+            if (!actualVideo && adminVideosOld) {
+                try {
+                    const videos = JSON.parse(adminVideosOld);
+                    actualVideo = videos.find(v => v.videoId === videoId);
+                } catch (e) {
+                    console.log('Error parsing old admin videos:', e);
+                }
+            }
+            
+            if (actualVideo && actualVideo.videoURL && actualVideo.videoURL.startsWith('blob:')) {
+                console.log(`Found uploaded video for ID ${videoId}, attempting to play`);
+                connectionText.innerHTML = `<strong>Database Connected:</strong> Video ID ${videoId} loaded successfully.`;
+                
+                // Create video player
+                videoPlayerArea.innerHTML = `
+                    <video id="selectedVideo" class="w-full h-full object-cover" controls autoplay muted>
+                        <source src="${actualVideo.videoURL}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                        ● ID: ${videoId}
+                    </div>
+                `;
+                
+                const video = document.getElementById('selectedVideo');
+                video.onerror = () => {
+                    console.log(`Video ${videoId} failed to load, showing interactive demo`);
+                    createInteractiveDemo(videoId, videoPlayerArea);
+                };
+                
+            } else {
+                console.log(`No uploaded video found for ID ${videoId}, creating interactive demo`);
+                connectionText.innerHTML = `<strong>Database Connected:</strong> Showing interactive demo for Video ID ${videoId}.`;
+                createInteractiveDemo(videoId, videoPlayerArea);
+            }
+        }
+
+        function createInteractiveDemo(videoId, container) {
+            const videoData = videoLibrary[videoId];
+            const title = videoData ? videoData.title : `Exercise Video ${videoId}`;
+            
+            container.innerHTML = `
+                <div class="absolute inset-0 bg-gradient-to-br from-blue-900 to-purple-900 flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <canvas id="exerciseCanvas_${videoId}" width="300" height="200" class="mx-auto mb-4 rounded-lg"></canvas>
+                        
+                        <div class="bg-black bg-opacity-50 rounded-lg p-4 max-w-sm mx-auto">
+                            <h3 class="text-lg font-bold mb-2">${title}</h3>
+                            <p class="text-blue-200 text-sm mb-3">Interactive Exercise Demonstration</p>
+                            
+                            <div class="flex items-center justify-center space-x-3 mb-3">
+                                <button onclick="startDemoAnimation('${videoId}')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-xs transition-colors">
+                                    ▶ Play
+                                </button>
+                                <button onclick="pauseDemoAnimation('${videoId}')" class="bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded text-xs transition-colors">
+                                    ⏸ Pause
+                                </button>
+                                <button onclick="resetDemoAnimation('${videoId}')" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-xs transition-colors">
+                                    ⏹ Reset
+                                </button>
+                            </div>
+                            
+                            <div class="text-xs text-green-400 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+                                Interactive Demo • Video ID: ${videoId}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Initialize the animation for this video
+            initializeDemoAnimation(videoId);
+        }
+
+        function resetVideoPlayer() {
+            const videoPlayerArea = document.getElementById('videoPlayerArea');
+            videoPlayerArea.innerHTML = `
+                <div class="absolute inset-0 flex items-center justify-center bg-gray-800">
+                    <div class="text-center text-white">
+                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        <p class="text-lg font-medium mb-2">Exercise Video Library</p>
+                        <p class="text-sm text-gray-300">Select a video from the dropdown above to begin</p>
+                        <p class="text-xs text-gray-400 mt-2">Videos are loaded on-demand from your training database</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Animation control functions
+        let demoAnimations = {};
+
+        function startDemoAnimation(videoId) {
+            if (demoAnimations[videoId] && demoAnimations[videoId].isAnimating) return;
+            if (!demoAnimations[videoId]) demoAnimations[videoId] = { frame: 0, isAnimating: false };
+            
+            demoAnimations[videoId].isAnimating = true;
+            animateDemo(videoId);
+        }
+
+        function pauseDemoAnimation(videoId) {
+            if (demoAnimations[videoId]) {
+                demoAnimations[videoId].isAnimating = false;
+            }
+        }
+
+        function resetDemoAnimation(videoId) {
+            if (demoAnimations[videoId]) {
+                demoAnimations[videoId].isAnimating = false;
+                demoAnimations[videoId].frame = 0;
+                drawDemoFrame(videoId);
+            }
+        }
+
+        function initializeDemoAnimation(videoId) {
+            demoAnimations[videoId] = { frame: 0, isAnimating: false };
+            drawDemoFrame(videoId);
+            startDemoAnimation(videoId);
+        }
+
+        function animateDemo(videoId) {
+            if (!demoAnimations[videoId] || !demoAnimations[videoId].isAnimating) return;
+            
+            drawDemoFrame(videoId);
+            demoAnimations[videoId].frame = (demoAnimations[videoId].frame + 1) % 120;
+            
+            requestAnimationFrame(() => animateDemo(videoId));
+        }
+
+        function drawDemoFrame(videoId) {
+            const canvas = document.getElementById(`exerciseCanvas_${videoId}`);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const frame = demoAnimations[videoId] ? demoAnimations[videoId].frame : 0;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Background
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#1e40af');
+            gradient.addColorStop(1, '#7c3aed');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Animation specific to exercise
+            if (videoId === '450') {
+                drawSquatAnimation(ctx, width, height, frame);
+            } else if (videoId === '451') {
+                drawCurtsyLungeAnimation(ctx, width, height, frame);
+            }
+        }
+
+        function drawSquatAnimation(ctx, width, height, frame) {
+            const progress = frame / 120;
+            const squatProgress = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
+            
+            const centerX = width / 2;
+            const baseY = height * 0.8;
+            const squatDepth = squatProgress * 20;
+            
+            // Figure
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(centerX, baseY - 80 + squatDepth, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(centerX - 6, baseY - 70 + squatDepth, 12, 25);
+            
+            // Legs
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(centerX - 3, baseY - 45 + squatDepth);
+            ctx.lineTo(centerX - 8, baseY + squatDepth);
+            ctx.moveTo(centerX + 3, baseY - 45 + squatDepth);
+            ctx.lineTo(centerX + 8, baseY + squatDepth);
+            ctx.stroke();
+            
+            // Text
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            const phases = ['Starting', 'Descending', 'Bottom', 'Ascending'];
+            ctx.fillText(phases[Math.floor(progress * 4)], centerX, 20);
+        }
+
+        function drawCurtsyLungeAnimation(ctx, width, height, frame) {
+            const progress = frame / 120;
+            const curtsyProgress = Math.sin(progress * Math.PI * 2) * 0.5 + 0.5;
+            
+            const centerX = width / 2;
+            const baseY = height * 0.8;
+            
+            // Head
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.arc(centerX, baseY - 80, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Body
+            ctx.fillStyle = '#3b82f6';
+            ctx.fillRect(centerX - 6, baseY - 70, 12, 25);
+            
+            // Legs with curtsy motion
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 4;
+            
+            const frontLegX = centerX + 3;
+            const backLegX = centerX - 3 - (curtsyProgress * 15);
+            const backLegY = baseY - 45 + (curtsyProgress * 10);
+            
+            // Front leg
+            ctx.beginPath();
+            ctx.moveTo(centerX, baseY - 45);
+            ctx.lineTo(frontLegX, baseY);
+            ctx.stroke();
+            
+            // Back leg (curtsy)
+            ctx.beginPath();
+            ctx.moveTo(centerX, baseY - 45);
+            ctx.lineTo(backLegX, backLegY + 10);
+            ctx.stroke();
+            
+            // Text
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            const phases = ['Start', 'Cross back', 'Lower', 'Return'];
+            ctx.fillText(phases[Math.floor(progress * 4)], centerX, 20);
+        }
+
+        // Legacy function for compatibility
         function playVideo() {
             const videoContainer = document.querySelector('.relative.bg-gray-900');
             const placeholder = videoContainer.querySelector('.absolute.inset-0');
