@@ -217,6 +217,76 @@
                     console.log('Alexander Foronda restored to system');
                 }
                 
+                // Ensure Phil Jackson has the correct activation code S7XXPO54
+                const philUser = allUserData.find(user => 
+                    user.email === 'earl.foronda@outlook.com' || 
+                    (user.firstName === 'Phil' && user.lastName === 'Jackson')
+                );
+                
+                if (philUser && philUser.activationCode !== 'S7XXPO54') {
+                    console.log('Updating Phil Jackson activation code to S7XXPO54...');
+                    philUser.activationCode = 'S7XXPO54';
+                    philUser.updatedAt = new Date().toISOString();
+                    
+                    // Update in registeredUsers
+                    const philIndex = registeredUsers.findIndex(u => 
+                        u.email === 'earl.foronda@outlook.com' || 
+                        (u.firstName === 'Phil' && u.lastName === 'Jackson')
+                    );
+                    if (philIndex !== -1) {
+                        registeredUsers[philIndex].activationCode = 'S7XXPO54';
+                        registeredUsers[philIndex].updatedAt = new Date().toISOString();
+                        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    }
+                    
+                    // Update in users array
+                    const philUsersIndex = usersArray.findIndex(u => 
+                        u.email === 'earl.foronda@outlook.com' || 
+                        (u.firstName === 'Phil' && u.lastName === 'Jackson')
+                    );
+                    if (philUsersIndex !== -1) {
+                        usersArray[philUsersIndex].activationCode = 'S7XXPO54';
+                        usersArray[philUsersIndex].updatedAt = new Date().toISOString();
+                        localStorage.setItem('users', JSON.stringify(usersArray));
+                    }
+                    
+                    console.log('Phil Jackson activation code updated to S7XXPO54');
+                } else if (!philUser) {
+                    console.log('Phil Jackson not found, creating with activation code S7XXPO54...');
+                    const philData = {
+                        id: 'coach_1756928693469',
+                        firstName: 'Phil',
+                        lastName: 'Jackson',
+                        email: 'earl.foronda@outlook.com',
+                        accountType: 'coach',
+                        activationCode: 'S7XXPO54',
+                        createdAt: '2025-09-03T19:44:53.469Z',
+                        updatedAt: new Date().toISOString(),
+                        isActive: true,
+                        profile: {
+                            firstName: 'Phil',
+                            lastName: 'Jackson',
+                            email: 'earl.foronda@outlook.com',
+                            userType: 'coach',
+                            sport: '',
+                            position: '',
+                            height: '',
+                            weight: '',
+                            skillLevel: '',
+                            teamName: '',
+                            phone: '',
+                            goals: []
+                        }
+                    };
+                    
+                    registeredUsers.push(philData);
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    usersArray.push(philData);
+                    localStorage.setItem('users', JSON.stringify(usersArray));
+                    allUserData.push(philData);
+                    console.log('Phil Jackson created with activation code S7XXPO54');
+                }
+                
                 // Check for users in other storage locations for backward compatibility
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
