@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Injury Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .form-input {
+            transition: all 0.2s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <div class="min-h-screen">
+        <!-- Main Content -->
+        <div class="px-6 py-8 max-w-4xl mx-auto">
+                         <!-- Header -->
+             <div class="flex items-center mb-6">
+                 <button onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors mr-4">
+                     <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                     </svg>
+                 </button>
+                 <div class="flex items-center space-x-2">
+                     <h1 class="text-xl font-bold text-gray-900">Knee Sprain</h1>
+                     <button onclick="toggleInfo()" class="p-1 hover:bg-gray-100 rounded-full transition-colors">
+                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                         </svg>
+                     </button>
+                 </div>
+             </div>
+
+                         <!-- Injury Summary -->
+             <div class="bg-white rounded-xl p-4 border border-gray-200 mb-6">
+                 <h2 class="font-semibold text-gray-900 mb-3">Injury Summary</h2>
+                 <div class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                     <p class="text-gray-800">Stepped on teammate's knee while grabbing a rebound, knee twisted inwards (inversion)</p>
+                 </div>
+             </div>
+
+                         <!-- Injury Details Form -->
+             <div class="bg-white rounded-xl p-4 border border-gray-200 mb-6">
+                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                           <!-- Injury Start Day -->
+                      <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Injury Start Day</label>
+                          <div class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                              <p class="text-gray-800">12/05/2024</p>
+                          </div>
+                      </div>
+  
+                      <!-- Expected Recovery Period -->
+                      <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Expected Recovery Period</label>
+                          <div class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                              <p class="text-gray-800">6 Weeks</p>
+                          </div>
+                      </div>
+  
+                      <!-- Injured Area -->
+                      <div>
+                          <label class="block text-sm font-medium text-gray-700 mb-2">Injured Area</label>
+                          <div class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                              <p class="text-gray-800">Knee (Left)</p>
+                          </div>
+                      </div>
+                 </div>
+             </div>
+
+                         <!-- Body Diagram -->
+             <div class="bg-white rounded-xl p-4 border border-gray-200 mb-6">
+                 <h2 class="font-semibold text-gray-900 mb-4">Body Diagram</h2>
+                 <div class="flex justify-center space-x-8">
+                     <!-- Front View -->
+                     <div class="text-center">
+                         <div class="text-center mb-2">
+                             <span class="text-sm font-medium text-gray-900">Front View</span>
+                         </div>
+                         <div class="bg-gray-100 rounded-lg p-4 relative">
+                             <svg class="w-full h-auto max-w-md mx-auto" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <!-- Front View - Anatomical Body -->
+                                 <!-- Head -->
+                                 <path d="M 48 5 Q 60 0 72 5 Q 75 15 75 25 Q 75 35 72 40 Q 60 45 48 40 Q 45 35 45 25 Q 45 15 48 5 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Neck -->
+                                 <path d="M 52 40 L 68 40 L 66 50 L 54 50 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Torso -->
+                                 <path d="M 45 50 L 75 50 Q 80 60 78 70 L 78 110 Q 80 120 75 125 L 45 125 Q 40 120 42 110 L 42 70 Q 40 60 45 50 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Arms -->
+                                 <!-- Right Arm -->
+                                 <path d="M 75 50 Q 85 55 88 70 Q 90 85 88 100 L 82 95 Q 80 85 78 75 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <!-- Left Arm -->
+                                 <path d="M 45 50 Q 35 55 32 70 Q 30 85 32 100 L 38 95 Q 40 85 42 75 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Hands -->
+                                 <ellipse cx="85" cy="105" rx="5" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <ellipse cx="35" cy="105" rx="5" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Legs -->
+                                 <!-- Right Leg -->
+                                 <path d="M 65 125 Q 70 130 72 150 Q 74 170 72 190 L 68 185 Q 66 170 64 155 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <!-- Left Leg -->
+                                 <path d="M 55 125 Q 50 130 48 150 Q 46 170 48 190 L 52 185 Q 54 170 56 155 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Feet -->
+                                 <ellipse cx="70" cy="195" rx="8" ry="4" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <ellipse cx="50" cy="195" rx="8" ry="4" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Injured knee indicator (Left Knee) -->
+                                 <circle cx="70" cy="170" r="4" fill="#ef4444" class="animate-pulse">
+                                     <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+                                 </circle>
+                             </svg>
+                         </div>
+                     </div>
+ 
+                     <!-- Back View -->
+                     <div class="text-center">
+                         <div class="text-center mb-2">
+                             <span class="text-sm font-medium text-gray-900">Back View</span>
+                         </div>
+                         <div class="bg-gray-100 rounded-lg p-4 relative">
+                             <svg class="w-full h-auto max-w-md mx-auto" viewBox="0 0 120 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <!-- Back View - Anatomical Body -->
+                                 <!-- Head -->
+                                 <path d="M 48 5 Q 60 0 72 5 Q 75 15 75 25 Q 75 35 72 40 Q 60 45 48 40 Q 45 35 45 25 Q 45 15 48 5 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Neck -->
+                                 <path d="M 52 40 L 68 40 L 66 50 L 54 50 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Torso -->
+                                 <path d="M 45 50 L 75 50 Q 80 60 78 70 L 78 110 Q 80 120 75 125 L 45 125 Q 40 120 42 110 L 42 70 Q 40 60 45 50 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Arms -->
+                                 <!-- Right Arm -->
+                                 <path d="M 75 50 Q 85 55 88 70 Q 90 85 88 100 L 82 95 Q 80 85 78 75 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <!-- Left Arm -->
+                                 <path d="M 45 50 Q 35 55 32 70 Q 30 85 32 100 L 38 95 Q 40 85 42 75 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Hands -->
+                                 <ellipse cx="85" cy="105" rx="5" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <ellipse cx="35" cy="105" rx="5" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Legs -->
+                                 <!-- Right Leg -->
+                                 <path d="M 65 125 Q 70 130 72 150 Q 74 170 72 190 L 68 185 Q 66 170 64 155 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <!-- Left Leg -->
+                                 <path d="M 55 125 Q 50 130 48 150 Q 46 170 48 190 L 52 185 Q 54 170 56 155 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 
+                                 <!-- Feet -->
+                                 <ellipse cx="70" cy="195" rx="8" ry="4" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                 <ellipse cx="50" cy="195" rx="8" ry="4" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                             </svg>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+                         <!-- Activity and Instructions -->
+             <div class="space-y-4 mb-6">
+                 <!-- Allowed Activities -->
+                 <div class="bg-green-50 rounded-xl p-4 border border-green-200">
+                     <h3 class="font-semibold text-green-700 mb-3">Allowed Activities</h3>
+                     <div class="w-full p-3 bg-white border border-green-300 rounded-lg">
+                         <p class="text-gray-800">Rehab exercises prescribed by physiotherapist; shooting on chair, dribbling on chair</p>
+                     </div>
+                 </div>
+ 
+                 <!-- Restrictions -->
+                 <div class="bg-red-50 rounded-xl p-4 border border-red-200">
+                     <h3 class="font-semibold text-red-700 mb-3">Restrictions</h3>
+                     <div class="w-full p-3 bg-white border border-red-300 rounded-lg">
+                         <p class="text-gray-800">Limit walking to very short distances; no basketball, running, walking long distances</p>
+                     </div>
+                 </div>
+ 
+                 <!-- Other Instructions -->
+                 <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                     <div class="flex items-center space-x-2 mb-3">
+                         <h3 class="font-semibold text-gray-700">Other Instructions</h3>
+                         <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                         </svg>
+                     </div>
+                     <div class="w-full p-3 bg-white border border-gray-300 rounded-lg">
+                         <p class="text-gray-800">Compressive bandage during the day; 1 crutch if necessary for the first few days</p>
+                     </div>
+                 </div>
+ 
+                 <!-- Recommended Rehab Exercises -->
+                 <div class="bg-white rounded-xl p-4 border border-gray-200">
+                     <h3 class="font-semibold text-gray-900 mb-3">Recommended Rehab Exercises</h3>
+                     <div class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                         <span class="text-gray-800">Knee pumps</span>
+                     </div>
+                 </div>
+             </div>
+
+                         <!-- Visibility Settings -->
+             <div class="bg-white rounded-xl p-4 border border-gray-200 mb-20">
+                 <h3 class="font-semibold text-gray-900 mb-3">Visible to coach?</h3>
+                 <div class="flex items-center space-x-4 mb-2">
+                     <label class="flex items-center">
+                         <input type="radio" name="visibility" value="yes" checked class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                         <span class="ml-2 text-gray-700">Yes</span>
+                     </label>
+                     <label class="flex items-center">
+                         <input type="radio" name="visibility" value="no" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                         <span class="ml-2 text-gray-700">No</span>
+                     </label>
+                 </div>
+                 <p class="text-sm text-gray-500">(You can change the visibility later)</p>
+             </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+            <div class="flex justify-around py-3">
+                <a href="home.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Home</span>
+                </a>
+                <a href="tracking.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Tracking</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-blue-600">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function toggleInfo() {
+            alert('Injury details information: View and edit comprehensive injury information including recovery timeline, restrictions, and rehabilitation exercises.');
+        }
+
+        // Get injury details from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const injuryType = urlParams.get('injury');
+        const playerName = urlParams.get('player');
+
+        // Update page title based on injury type
+        if (injuryType) {
+            const title = injuryType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            document.querySelector('h1').textContent = title;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Success - Pro Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: fall 3s linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .success-animation {
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <!-- Confetti Animation -->
+        <div id="confetti-container" class="absolute inset-0 pointer-events-none"></div>
+        
+        <div class="w-full max-w-md mx-auto px-6 py-8 text-center">
+            <!-- Success Icon -->
+            <div class="success-animation mb-8">
+                <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+            
+            <!-- Success Message -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold text-gray-900 mb-4">Your account has been created, now let's complete your profile!</h1>
+                <p class="text-gray-600">We're excited to help you achieve your fitness goals. Let's get started with your personalized experience.</p>
+            </div>
+            
+            <!-- Action Button -->
+            <div class="mb-8">
+                <button onclick="beginProfileSetup()" 
+                        class="w-full bg-blue-600 text-white font-semibold py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Begin
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create confetti animation
+        function createConfetti() {
+            const colors = ['#f56565', '#ed8936', '#ecc94b', '#48bb78', '#38b2ac', '#4299e1', '#9f7aea'];
+            const container = document.getElementById('confetti-container');
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    container.appendChild(confetti);
+                    
+                    // Remove confetti after animation
+                    setTimeout(() => {
+                        confetti.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Start confetti animation when page loads
+        window.addEventListener('load', createConfetti);
+
+        function beginProfileSetup() {
+            // Get account type from localStorage
+            const accountType = localStorage.getItem('signupAccountType');
+            
+            // Navigate to appropriate onboarding flow
+            if (accountType === 'athlete') {
+                window.location.href = '/onboarding/athlete/birthday.html';
+            } else if (accountType === 'coach') {
+                // TODO: Create coach onboarding flow
+                window.location.href = '/index.html';
+            } else {
+                // Default fallback
+                window.location.href = '/index.html';
+            }
+        }
+    </script>
+</body>
+</html>

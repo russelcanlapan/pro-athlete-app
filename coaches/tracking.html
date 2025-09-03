@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .metric-card {
+            transition: all 0.2s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <div class="min-h-screen">
+        <!-- Main Content -->
+        <div class="px-6 py-8 max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center space-x-4">
+                    <button onclick="goBack()" class="p-2 hover:bg-white/50 rounded-full transition-colors">
+                        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Team XXX</h1>
+                        <p class="text-sm text-gray-600">Created 12/15/2024</p>
+                    </div>
+                </div>
+                <div class="relative">
+                    <button onclick="toggleOptionsMenu()" class="p-2 hover:bg-white/50 rounded-full transition-colors">
+                        <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                        </svg>
+                    </button>
+                    <!-- Options Menu -->
+                    <div id="optionsMenu" class="hidden absolute right-0 top-full mt-2 bg-blue-600 rounded-lg shadow-lg z-50 min-w-32">
+                        <button onclick="enterDeleteMode()" class="w-full text-left px-4 py-3 text-white hover:bg-blue-700 flex items-center space-x-2 rounded-t-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            <span>Delete</span>
+                        </button>
+                        <button onclick="editTeam()" class="w-full text-left px-4 py-3 text-white hover:bg-blue-700 flex items-center space-x-2 rounded-b-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            <span>Edit</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Information Card -->
+            <div class="bg-white rounded-2xl p-6 mb-8 border border-gray-100">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-700 mb-1"><span class="font-semibold">Coach:</span> John Brown</p>
+                        <p class="text-gray-700 mb-2"><span class="font-semibold">Level:</span> Intermediate</p>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-2xl">🏀</span>
+                            <span class="text-gray-700">Women's Basketball</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-gray-700"><span class="font-semibold">Average Age:</span> XX</p>
+                    </div>
+                </div>
+            </div>
+
+                         <!-- Members Section -->
+             <div class="mb-8">
+                 <div class="flex items-center justify-between mb-4">
+                     <div class="flex items-center space-x-2">
+                         <h2 class="text-xl font-bold text-gray-900" id="membersCount">Members (11)</h2>
+                         <button onclick="toggleMembersTooltip()" class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center">
+                             <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                             </svg>
+                         </button>
+                     </div>
+                     <button onclick="toggleAddOptions()" class="p-2 hover:bg-white/50 rounded-full transition-colors">
+                         <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                         </svg>
+                     </button>
+                 </div>
+
+                 <!-- Info Box -->
+                 <div id="membersInfoBox" class="bg-blue-100 rounded-lg p-4 mb-4 flex items-center justify-between">
+                     <div class="flex items-center space-x-3">
+                         <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
+                             <span class="text-white text-sm font-bold">i</span>
+                         </div>
+                         <p class="text-blue-800 text-sm">You can add any team member that is signed up on the PRO ATHLETE app! Click here for more information about subscriptions.</p>
+                     </div>
+                     <button onclick="dismissInfoBox()" class="text-blue-600 hover:text-blue-800">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                         </svg>
+                     </button>
+                 </div>
+
+                                                      <!-- Member Cards (shown when team has members) -->
+                   <div id="memberCards" class="mb-4">
+                      <div class="flex space-x-4 overflow-x-auto pb-2">
+                          <!-- Member 1 -->
+                          <div class="flex-shrink-0 text-center relative">
+                              <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                  </svg>
+                                  <!-- Delete Badge -->
+                                  <div id="deleteBadge1" class="hidden absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer" onclick="confirmDeleteMember('XXXXX', 1)">
+                                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="font-semibold text-gray-900 text-sm">XXXXX</p>
+                              <p class="text-gray-600 text-xs">Guard</p>
+                          </div>
+                          <!-- Member 2 -->
+                          <div class="flex-shrink-0 text-center relative">
+                              <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                  </svg>
+                                  <!-- Delete Badge -->
+                                  <div id="deleteBadge2" class="hidden absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer" onclick="confirmDeleteMember('XXXXX', 2)">
+                                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="font-semibold text-gray-900 text-sm">XXXXX</p>
+                              <p class="text-gray-600 text-xs">Guard</p>
+                          </div>
+                          <!-- Member 3 -->
+                          <div class="flex-shrink-0 text-center relative">
+                              <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                  </svg>
+                                  <!-- Delete Badge -->
+                                  <div id="deleteBadge3" class="hidden absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer" onclick="confirmDeleteMember('XXXXX', 3)">
+                                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="font-semibold text-gray-900 text-sm">XXXXX</p>
+                              <p class="text-gray-600 text-xs">Guard</p>
+                          </div>
+                          <!-- Member 4 -->
+                          <div class="flex-shrink-0 text-center relative">
+                              <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 relative">
+                                  <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                  </svg>
+                                  <!-- Delete Badge -->
+                                  <div id="deleteBadge4" class="hidden absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center cursor-pointer" onclick="confirmDeleteMember('XXXXX', 4)">
+                                      <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                      </svg>
+                                  </div>
+                              </div>
+                              <p class="font-semibold text-gray-900 text-sm">XXXXX</p>
+                              <p class="text-gray-600 text-xs">Guard</p>
+                          </div>
+                                                     <!-- Add Member Plus Button -->
+                           <div class="flex-shrink-0 text-center">
+                               <button onclick="showAddMembersModal()" class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-2 hover:bg-gray-50 transition-colors border-2 border-gray-200">
+                                   <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                   </svg>
+                               </button>
+                               <p class="font-semibold text-gray-900 text-sm">Add</p>
+                               <p class="text-gray-600 text-xs">Member</p>
+                           </div>
+                      </div>
+                  </div>
+
+                 
+
+                 
+             </div>
+
+            <!-- Team Performance Section -->
+            <div class="mb-8">
+                <div class="flex items-center space-x-2 mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">Team Performance</h2>
+                    <button onclick="togglePerformanceTooltip()" class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center">
+                        <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+                                 <div class="grid grid-cols-3 gap-4 mb-6">
+                     <!-- Strength -->
+                     <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                         <div class="relative w-20 h-20 mx-auto mb-3">
+                             <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                 <!-- Background circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                 <!-- Progress circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#22c55e" stroke-width="6" fill="none" 
+                                         stroke-dasharray="201" stroke-dashoffset="40.2" 
+                                         stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                             </svg>
+                             <div class="absolute inset-0 flex items-center justify-center">
+                                 <span class="text-lg font-bold text-green-600">80%</span>
+                             </div>
+                         </div>
+                         <div class="flex items-center justify-center space-x-2 mb-2">
+                             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                             </svg>
+                             <h3 class="font-semibold text-gray-900 text-sm">Strength</h3>
+                         </div>
+                     </div>
+
+                     <!-- Prehab -->
+                     <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                         <div class="relative w-20 h-20 mx-auto mb-3">
+                             <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                 <!-- Background circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                 <!-- Progress circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#22c55e" stroke-width="6" fill="none" 
+                                         stroke-dasharray="201" stroke-dashoffset="40.2" 
+                                         stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                             </svg>
+                             <div class="absolute inset-0 flex items-center justify-center">
+                                 <span class="text-lg font-bold text-green-600">80%</span>
+                             </div>
+                         </div>
+                         <div class="flex items-center justify-center space-x-2 mb-2">
+                             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                             </svg>
+                             <h3 class="font-semibold text-gray-900 text-sm">Prehab</h3>
+                         </div>
+                     </div>
+
+                     <!-- Mobility -->
+                     <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                         <div class="relative w-20 h-20 mx-auto mb-3">
+                             <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                 <!-- Background circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                 <!-- Progress circle -->
+                                 <circle cx="40" cy="40" r="32" stroke="#ef4444" stroke-width="6" fill="none" 
+                                         stroke-dasharray="201" stroke-dashoffset="100.5" 
+                                         stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                             </svg>
+                             <div class="absolute inset-0 flex items-center justify-center">
+                                 <span class="text-lg font-bold text-red-600">50%</span>
+                             </div>
+                         </div>
+                         <div class="flex items-center justify-center space-x-2 mb-2">
+                             <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                             </svg>
+                             <h3 class="font-semibold text-gray-900 text-sm">Mobility</h3>
+                         </div>
+                     </div>
+                 </div>
+                
+                <button onclick="viewAnalytics()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md">
+                    View Statistics
+                </button>
+            </div>
+
+                         <!-- Team Health Section -->
+             <div class="mb-20">
+                 <div class="flex items-center space-x-2 mb-6">
+                     <h2 class="text-xl font-bold text-gray-900">Team Health</h2>
+                     <button onclick="toggleHealthTooltip()" class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center">
+                         <svg class="w-3 h-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                         </svg>
+                     </button>
+                 </div>
+                 
+                                   <div class="grid grid-cols-3 gap-4 mb-6">
+                      <!-- Injured -->
+                      <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                          <div class="relative w-20 h-20 mx-auto mb-3">
+                              <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                  <!-- Background circle -->
+                                  <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                  <!-- Progress circle (30% = 3 out of 11 players) -->
+                                  <circle cx="40" cy="40" r="32" stroke="#ef4444" stroke-width="6" fill="none" 
+                                          stroke-dasharray="201" stroke-dashoffset="140.7" 
+                                          stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                              </svg>
+                              <div class="absolute inset-0 flex items-center justify-center">
+                                  <span class="text-lg font-bold text-red-600">3</span>
+                              </div>
+                          </div>
+                          <div class="flex items-center justify-center space-x-2 mb-2">
+                              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                              </svg>
+                              <h3 class="font-semibold text-gray-900 text-sm">Injured</h3>
+                          </div>
+                      </div>
+
+                      <!-- Healthy -->
+                      <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                          <div class="relative w-20 h-20 mx-auto mb-3">
+                              <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                  <!-- Background circle -->
+                                  <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                  <!-- Progress circle (73% = 8 out of 11 players) -->
+                                  <circle cx="40" cy="40" r="32" stroke="#22c55e" stroke-width="6" fill="none" 
+                                          stroke-dasharray="201" stroke-dashoffset="54.27" 
+                                          stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                              </svg>
+                              <div class="absolute inset-0 flex items-center justify-center">
+                                  <span class="text-lg font-bold text-green-600">8</span>
+                              </div>
+                          </div>
+                          <div class="flex items-center justify-center space-x-2 mb-2">
+                              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                              </svg>
+                              <h3 class="font-semibold text-gray-900 text-sm">Healthy</h3>
+                          </div>
+                      </div>
+
+                      <!-- Team Health -->
+                      <div class="metric-card bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-100 text-center">
+                          <div class="relative w-20 h-20 mx-auto mb-3">
+                              <svg class="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
+                                  <!-- Background circle -->
+                                  <circle cx="40" cy="40" r="32" stroke="#e5e7eb" stroke-width="6" fill="none"/>
+                                  <!-- Progress circle (80% overall team health) -->
+                                  <circle cx="40" cy="40" r="32" stroke="#22c55e" stroke-width="6" fill="none" 
+                                          stroke-dasharray="201" stroke-dashoffset="40.2" 
+                                          stroke-linecap="round" class="transition-all duration-1000 ease-out"/>
+                              </svg>
+                              <div class="absolute inset-0 flex items-center justify-center">
+                                  <span class="text-lg font-bold text-green-600">80%</span>
+                              </div>
+                          </div>
+                          <div class="flex items-center justify-center space-x-2 mb-2">
+                              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                              </svg>
+                              <h3 class="font-semibold text-gray-900 text-sm">Team Health</h3>
+                          </div>
+                      </div>
+                  </div>
+                 
+                 <button onclick="viewHealth()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-md">
+                     View Statistics
+                 </button>
+             </div>
+        </div>
+
+                 <!-- Add Members Modal -->
+         <div id="addMembersModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+             <div class="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-xl">
+                 <div class="text-center">
+                     <h3 class="text-lg font-bold text-gray-900 mb-4">Add new members</h3>
+                     <div class="space-y-4">
+                         <button onclick="shareTeamCode()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                             Share Team Code
+                         </button>
+                         <button onclick="inviteDirectly()" class="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-200">
+                             Invite Directly
+                         </button>
+                     </div>
+                     <button onclick="closeAddMembersModal()" class="mt-4 text-gray-500 hover:text-gray-700 transition-colors">
+                         Cancel
+                     </button>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Location Access Modal -->
+         <div id="locationAccessModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+             <div class="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-xl">
+                 <div class="text-center">
+                     <h3 class="text-lg font-bold text-gray-900 mb-4">Access Your Location</h3>
+                     <p class="text-gray-600 mb-6">Allow 'Pro-Athlete' to access your location while you are using the app?</p>
+                     <div class="space-y-3">
+                         <button onclick="allowLocationWhileUsing()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                             Allow while Using App
+                         </button>
+                         <button onclick="allowLocationOnce()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                             Allow Once
+                         </button>
+                         <button onclick="dontAllowLocation()" class="w-full bg-white border-2 border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200">
+                             Don't Allow
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Access Denied Modal -->
+         <div id="accessDeniedModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+             <div class="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-xl">
+                 <div class="text-center">
+                     <h3 class="text-lg font-bold text-gray-900 mb-4">Access Denied</h3>
+                     <p class="text-gray-600 mb-6">We're sorry. Face to face feature requires GPS. To use this function, you must enable location sharing.</p>
+                     <button onclick="closeAccessDeniedModal()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                         Ok
+                     </button>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Delete Confirmation Modal -->
+         <div id="deleteConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+             <div class="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-xl">
+                 <div class="text-center">
+                     <h3 class="text-lg font-bold text-gray-900 mb-4">Confirmation</h3>
+                     <p class="text-gray-600 mb-6">Are you sure you want to remove XXXXX from your team xxx? You will lose access to all the athlete's data permanently.</p>
+                     <div class="flex space-x-3">
+                         <button onclick="cancelDelete()" class="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 px-4 rounded-lg font-semibold hover:bg-gray-50 transition-all duration-200">
+                             Cancel
+                         </button>
+                         <button onclick="deleteMember()" class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                             Yes
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200">
+            <div class="flex justify-around py-3">
+                <a href="home.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Home</span>
+                </a>
+                <a href="tracking.html" class="flex flex-col items-center py-2 px-4 text-blue-600">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Tracking</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTeam = 'Team XXX';
+
+                 // Get team from URL parameter
+         const urlParams = new URLSearchParams(window.location.search);
+         const teamParam = urlParams.get('team');
+         if (teamParam) {
+             currentTeam = teamParam;
+             document.querySelector('h1').textContent = teamParam;
+             
+                                                       // Update members count and show/hide appropriate content based on team
+               if (teamParam === 'Team XXX') {
+                   document.getElementById('membersCount').textContent = 'Members (0)';
+                   currentMemberCount = 0;
+                   document.getElementById('memberCards').classList.add('hidden');
+               } else if (teamParam === 'Team YYY') {
+                   document.getElementById('membersCount').textContent = 'Members (11)';
+                   currentMemberCount = 11;
+                   document.getElementById('memberCards').classList.remove('hidden');
+               } else {
+                   // Default: show members for current team
+                   document.getElementById('membersCount').textContent = 'Members (11)';
+                   currentMemberCount = 11;
+                   document.getElementById('memberCards').classList.remove('hidden');
+               }
+         }
+
+        function goBack() {
+            window.history.back();
+        }
+
+                 function toggleMembersTooltip() {
+             // Show/hide the info box when clicking the tooltip icon
+             const infoBox = document.getElementById('membersInfoBox');
+             if (infoBox.style.display === 'none') {
+                 infoBox.style.display = 'flex';
+             } else {
+                 infoBox.style.display = 'none';
+             }
+         }
+
+         function togglePerformanceTooltip() {
+             // Tooltip functionality for performance section
+             alert('Performance tooltip: Track your team\'s strength, mobility, and prehab performance metrics.');
+         }
+
+         function toggleHealthTooltip() {
+             // Tooltip functionality for health section
+             alert('Health tooltip: Monitor your team\'s injury status and overall health metrics.');
+         }
+
+                   function toggleAddOptions() {
+              const memberCards = document.getElementById('memberCards');
+              memberCards.classList.toggle('hidden');
+          }
+
+         function dismissInfoBox() {
+             document.getElementById('membersInfoBox').style.display = 'none';
+         }
+
+                 function addInPerson() {
+             // Show location access modal
+             document.getElementById('locationAccessModal').classList.remove('hidden');
+         }
+
+                 function addManually() {
+             alert('Add Manually functionality coming soon!');
+         }
+
+                 function showAddMembersModal() {
+             // Request browser location first
+             if (navigator.geolocation) {
+                 navigator.geolocation.getCurrentPosition(
+                     function(position) {
+                         // Location access granted, show the modal
+                         document.getElementById('addMembersModal').classList.remove('hidden');
+                     },
+                     function(error) {
+                         // Location access denied, show access denied modal
+                         document.getElementById('accessDeniedModal').classList.remove('hidden');
+                     },
+                     {
+                         enableHighAccuracy: true,
+                         timeout: 10000,
+                         maximumAge: 300000
+                     }
+                 );
+             } else {
+                 // Geolocation not supported, show access denied modal
+                 document.getElementById('accessDeniedModal').classList.remove('hidden');
+             }
+         }
+
+        function closeAddMembersModal() {
+            document.getElementById('addMembersModal').classList.add('hidden');
+        }
+
+                 function shareTeamCode() {
+             // Generate a random team code and store it
+             const teamCode = Math.floor(1000 + Math.random() * 9000);
+             // Store the team code in sessionStorage so it can be accessed on the face-to-face page
+             sessionStorage.setItem('teamCode', teamCode);
+             closeAddMembersModal();
+             // Navigate to the face-to-face page
+             window.location.href = 'face-to-face.html';
+         }
+
+        function inviteDirectly() {
+            const email = prompt('Enter email address to invite:');
+            if (email) {
+                alert(`Invitation sent to ${email}`);
+                closeAddMembersModal();
+            }
+        }
+
+                 function viewAnalytics() {
+             // Get current team name
+             const teamName = document.querySelector('h1').textContent;
+             // Navigate to team performance page with team parameter
+             window.location.href = `team-performance.html?team=${encodeURIComponent(teamName)}`;
+         }
+
+                                   function viewHealth() {
+              // Get current team name
+              const teamName = document.querySelector('h1').textContent;
+              // Navigate to team injury tracking page with team parameter
+              window.location.href = `team-injury-tracking.html?team=${encodeURIComponent(teamName)}`;
+          }
+
+         function allowLocationWhileUsing() {
+             // Simulate location access granted
+             document.getElementById('locationAccessModal').classList.add('hidden');
+             // Navigate to face-to-face team code page
+             window.location.href = 'face-to-face.html';
+         }
+
+         // Delete functionality
+         let isDeleteMode = false;
+         let currentMemberCount = 11;
+
+         function toggleOptionsMenu() {
+             const menu = document.getElementById('optionsMenu');
+             menu.classList.toggle('hidden');
+         }
+
+         function enterDeleteMode() {
+             isDeleteMode = true;
+             // Show delete badges on all members
+             for (let i = 1; i <= 4; i++) {
+                 const badge = document.getElementById(`deleteBadge${i}`);
+                 if (badge) {
+                     badge.classList.remove('hidden');
+                 }
+             }
+             // Hide options menu
+             document.getElementById('optionsMenu').classList.add('hidden');
+         }
+
+         function exitDeleteMode() {
+             isDeleteMode = false;
+             // Hide delete badges on all members
+             for (let i = 1; i <= 4; i++) {
+                 const badge = document.getElementById(`deleteBadge${i}`);
+                 if (badge) {
+                     badge.classList.add('hidden');
+                 }
+             }
+         }
+
+         function confirmDeleteMember(memberName, memberId) {
+             // Show confirmation modal
+             document.getElementById('deleteConfirmationModal').classList.remove('hidden');
+             // Store member info for deletion
+             document.getElementById('deleteConfirmationModal').setAttribute('data-member-id', memberId);
+             document.getElementById('deleteConfirmationModal').setAttribute('data-member-name', memberName);
+         }
+
+         function deleteMember() {
+             const modal = document.getElementById('deleteConfirmationModal');
+             const memberId = modal.getAttribute('data-member-id');
+             const memberName = modal.getAttribute('data-member-name');
+             
+             // Hide the member card
+             const memberCard = document.querySelector(`#deleteBadge${memberId}`).closest('.flex-shrink-0');
+             memberCard.style.display = 'none';
+             
+             // Update member count
+             currentMemberCount--;
+             document.getElementById('membersCount').textContent = `Members (${currentMemberCount})`;
+             
+             // Exit delete mode
+             exitDeleteMode();
+             
+             // Hide modal
+             modal.classList.add('hidden');
+             
+             // Show success message
+             alert(`${memberName} has been removed from the team.`);
+         }
+
+         function cancelDelete() {
+             document.getElementById('deleteConfirmationModal').classList.add('hidden');
+         }
+
+         function editTeam() {
+             alert('Edit team functionality coming soon!');
+             document.getElementById('optionsMenu').classList.add('hidden');
+         }
+
+         function closeAccessDeniedModal() {
+             document.getElementById('accessDeniedModal').classList.add('hidden');
+         }
+
+         function dontAllowLocation() {
+             document.getElementById('locationAccessModal').classList.add('hidden');
+             alert('Location access denied. Face to face feature will not be available.');
+         }
+
+         // Close options menu when clicking outside
+         document.addEventListener('click', function(event) {
+             if (!event.target.closest('.relative')) {
+                 document.getElementById('optionsMenu').classList.add('hidden');
+             }
+         });
+
+         function allowLocationOnce() {
+             // Simulate location access granted for once
+             document.getElementById('locationAccessModal').classList.add('hidden');
+             // Navigate to face-to-face team code page
+             window.location.href = 'face-to-face.html';
+         }
+
+         function dontAllowLocation() {
+             // Show access denied modal
+             document.getElementById('locationAccessModal').classList.add('hidden');
+             document.getElementById('accessDeniedModal').classList.remove('hidden');
+         }
+
+         function closeAccessDeniedModal() {
+             document.getElementById('accessDeniedModal').classList.add('hidden');
+         }
+
+
+
+                 // Close modal when clicking outside
+         document.addEventListener('click', function(event) {
+             const addMembersModal = document.getElementById('addMembersModal');
+             const locationAccessModal = document.getElementById('locationAccessModal');
+             const accessDeniedModal = document.getElementById('accessDeniedModal');
+             
+             if (event.target === addMembersModal) {
+                 closeAddMembersModal();
+             }
+             if (event.target === locationAccessModal) {
+                 document.getElementById('locationAccessModal').classList.add('hidden');
+             }
+             if (event.target === accessDeniedModal) {
+                 closeAccessDeniedModal();
+             }
+             
+
+         });
+    </script>
+</body>
+</html>

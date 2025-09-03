@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-up - Select Account Type</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+        .account-option {
+            transition: all 0.2s ease;
+        }
+        .account-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Sign up progress">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="5" aria-valuemin="1" aria-valuemax="6" aria-label="Step 5 of 6">
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">What best describes you?</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Are you a coach or an athlete?</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- Athlete Option -->
+                    <button id="athleteOption" onclick="selectAccountType('athlete')" 
+                            class="account-option w-full p-6 border-2 rounded-lg transition-colors border-gray-200 hover:border-gray-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">🏃</div>
+                            <span class="text-lg font-medium">I'm an athlete</span>
+                        </div>
+                    </button>
+
+                    <!-- Coach Option -->
+                    <button id="coachOption" onclick="selectAccountType('coach')" 
+                            class="account-option w-full p-6 border-2 rounded-lg transition-colors border-gray-200 hover:border-gray-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-2xl">📢</div>
+                            <span class="text-lg font-medium">I'm a coach</span>
+                        </div>
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-full hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Complete signup">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const athleteOption = document.getElementById('athleteOption');
+        const coachOption = document.getElementById('coachOption');
+        const nextButton = document.getElementById('nextButton');
+        let selectedType = '';
+
+        function selectAccountType(type) {
+            selectedType = type;
+            
+            // Remove selected class from all options
+            athleteOption.classList.remove('selected');
+            coachOption.classList.remove('selected');
+            
+            // Add selected class to chosen option
+            if (type === 'athlete') {
+                athleteOption.classList.add('selected');
+            } else if (type === 'coach') {
+                coachOption.classList.add('selected');
+            }
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        // Add Enter key functionality
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && selectedType) {
+                handleNext();
+            }
+        });
+
+        function handleNext() {
+            if (!selectedType) return;
+            
+            // Store account type in localStorage
+            localStorage.setItem('signupAccountType', selectedType);
+            
+            // Navigate to appropriate activation key page based on account type
+            if (selectedType === 'athlete') {
+                window.location.href = 'athletes/activation-key.html';
+            } else if (selectedType === 'coach') {
+                window.location.href = 'coaches/activation-key.html';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'name.html';
+        }
+    </script>
+</body>
+</html>

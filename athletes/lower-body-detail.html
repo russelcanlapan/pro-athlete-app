@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lower Body Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .exercise-item {
+            transition: all 0.2s ease;
+        }
+        
+        .exercise-item:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <div class="sticky top-0 bg-white z-10 shadow-sm py-4 px-6 flex items-center justify-between">
+            <button onclick="goBack()" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <h1 id="exerciseTitle" class="text-xl font-semibold text-gray-900">Lower Body</h1>
+            <div class="w-6 h-6"></div> <!-- Placeholder for alignment -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="px-6 py-8 max-w-4xl mx-auto pb-32">
+            <!-- Video Player Section -->
+            <div class="relative w-full bg-blue-500 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=350&fit=crop&crop=center" alt="Exercise Video Placeholder" class="w-full h-full object-cover opacity-70">
+                <button onclick="toggleVideoPlayPause()" class="absolute flex items-center justify-center w-20 h-20 rounded-full bg-black bg-opacity-50 hover:bg-opacity-70 transition-colors">
+                    <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24" id="video-play-pause-icon">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Program Attributes -->
+            <div class="mt-6 grid grid-cols-3 gap-4 text-center">
+                <div class="bg-gray-100 rounded-lg p-3">
+                    <div class="text-xs font-medium text-gray-500">Level</div>
+                    <div id="exerciseLevel" class="text-sm font-semibold text-gray-800 mt-1">Beginner</div>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3">
+                    <div class="text-xs font-medium text-gray-500">Type</div>
+                    <div id="exerciseType" class="text-sm font-semibold text-gray-800 mt-1">Strength</div>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3">
+                    <div class="text-xs font-medium text-gray-500">Sets</div>
+                    <div id="exerciseSets" class="text-sm font-semibold text-gray-800 mt-1">3-4</div>
+                </div>
+            </div>
+
+            <!-- Exercises Section -->
+            <div class="mt-8">
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Exercises (2)</h2>
+                <div id="exercisesContainer" class="space-y-4">
+                    <!-- Dynamic content will be loaded here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+        <div class="flex justify-around py-3">
+            <a href="home.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7m7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="tracking.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="text-xs mt-1">Tracking</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            // Check if all exercises are completed
+            const totalExercises = document.querySelectorAll('.exercise-item').length;
+            if (completedExercises.size < totalExercises) {
+                showLeaveConfirmationModal();
+            } else {
+                window.history.back();
+            }
+        }
+
+        function toggleVideoPlayPause() {
+            // Show confirmation modal first
+            showVideoConfirmationModal();
+        }
+
+        function showVideoConfirmationModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ready to start?</h3>
+                    <p class="text-gray-600 mb-6">Once you click the play button, the system will start tracking your exercise time, and it will count toward your performance score.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="closeVideoModal()" class="flex-1 px-4 py-2 text-blue-600 font-medium">Cancel</button>
+                        <button onclick="confirmVideoPlay()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Yes</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeVideoModal() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function confirmVideoPlay() {
+            closeVideoModal();
+            
+            const videoIcon = document.getElementById('video-play-pause-icon');
+            videoIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+            videoIcon.setAttribute('data-playing', 'true');
+            
+            // Always expand the first exercise (only expand, never close)
+            const firstExerciseCard = document.querySelector('.exercise-item');
+            if (firstExerciseCard) {
+                const description = firstExerciseCard.querySelector('.exercise-description');
+                if (description && description.classList.contains('hidden')) {
+                    const clickableArea = firstExerciseCard.querySelector('[onclick="toggleExerciseDescription(this)"]');
+                    if (clickableArea) {
+                        toggleExerciseDescription(clickableArea);
+                    }
+                }
+            }
+            
+            // Start tracking the first exercise without calling confirmStartTracking
+            // to avoid conflicts with modal closing and duplicate expansion logic
+            startTrackingFromVideo(0);
+        }
+
+        function startTrackingFromVideo(exerciseIndex) {
+            // Stop any existing timer
+            if (activeTimer) {
+                clearInterval(activeTimer);
+            }
+
+            // Update current exercise
+            currentExerciseIndex = exerciseIndex;
+            
+            // Start timer
+            let seconds = 0;
+            const timerElement = document.getElementById(`timer-${exerciseIndex}`);
+            
+            activeTimer = setInterval(() => {
+                seconds += 0.1;
+                if (timerElement) {
+                    timerElement.textContent = `${seconds.toFixed(1)} Sec`;
+                }
+            }, 100);
+
+            // Update the tracking status text
+            const trackingStatus = document.getElementById(`tracking-status-${exerciseIndex}`);
+            if (trackingStatus) {
+                trackingStatus.textContent = 'Tracking in Progress';
+            }
+
+            // Also update the corresponding play/pause button to show it's active
+            const playPauseIcon = document.getElementById(`play-pause-icon-${exerciseIndex}`);
+            if (playPauseIcon) {
+                playPauseIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                playPauseIcon.setAttribute('data-playing', 'true');
+            }
+        }
+
+        // Data structure for exercises
+        const exerciseDataMap = {
+            'Lower Body': {
+                level: 'Beginner',
+                type: 'Strength',
+                sets: '3-4',
+                exercises: [
+                    {
+                        name: 'Bodyweight Squats',
+                        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop&crop=center',
+                        details: 'Repetitions: 10-15 · Rest: 30 sec',
+                        description: [
+                            'Stand with your feet shoulder-width apart, toes slightly turned out',
+                            'Keep your chest up and core engaged',
+                            'Lower your body as if sitting back into a chair',
+                            'Keep your knees in line with your toes',
+                            'Lower until your thighs are parallel to the ground',
+                            'Push through your heels to return to standing position'
+                        ]
+                    },
+                    {
+                        name: 'Lunges',
+                        image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=80&h=80&fit=crop&crop=center',
+                        details: 'Repetitions: 8-12 each leg · Rest: 30 sec',
+                        description: [
+                            'Stand with your feet hip-width apart',
+                            'Step forward with one leg, lowering your hips',
+                            'Bend both knees to 90-degree angles',
+                            'Keep your front knee above your ankle',
+                            'Lower your back knee toward the ground',
+                            'Push back to the starting position',
+                            'Repeat with the other leg'
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function loadExerciseData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const exerciseName = urlParams.get('exercise') || 'Lower Body';
+            const programType = urlParams.get('type') || 'strength';
+            const programLevel = urlParams.get('level') || 'beginner';
+            
+            const currentExerciseDetails = exerciseDataMap[exerciseName] || exerciseDataMap['Lower Body'];
+
+            // Set main exercise details
+            document.getElementById('exerciseTitle').textContent = exerciseName;
+            document.getElementById('exerciseLevel').textContent = currentExerciseDetails.level;
+            document.getElementById('exerciseType').textContent = currentExerciseDetails.type;
+            document.getElementById('exerciseSets').textContent = currentExerciseDetails.sets;
+
+            // Update exercises count in heading
+            document.querySelector('h2').textContent = `Exercises (${currentExerciseDetails.exercises.length})`;
+
+            // Render exercises
+            renderExercises(currentExerciseDetails.exercises);
+        }
+
+        function renderExercises(exercises) {
+            const container = document.getElementById('exercisesContainer');
+            container.innerHTML = '';
+
+            exercises.forEach((exercise, index) => {
+                const exerciseHtml = `
+                    <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm exercise-item">
+                        <div class="flex items-center justify-between cursor-pointer" onclick="toggleExerciseDescription(this)">
+                            <div class="flex items-center space-x-4">
+                                <img src="${exercise.image}" alt="${exercise.name}" class="w-20 h-20 rounded-lg object-cover">
+                                <div>
+                                    <div class="font-semibold text-gray-900">${exercise.name}</div>
+                                    <div class="text-sm text-gray-600">${exercise.details}</div>
+                                </div>
+                            </div>
+                            <svg class="w-5 h-5 text-gray-400 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-arrow-icon>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                        <div class="exercise-description mt-4 hidden">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center space-x-4">
+                                    <button onclick="event.stopPropagation(); togglePlayPause(${index})" class="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors">
+                                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" id="play-pause-icon-${index}">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </button>
+                                    <span class="text-lg font-medium text-gray-700" id="timer-${index}">0.0 Sec</span>
+                                </div>
+                                <span id="tracking-status-${index}" class="text-blue-600 font-medium">Start Tracking</span>
+                            </div>
+                            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                                ${exercise.description.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', exerciseHtml);
+            });
+        }
+
+        let activeTimer = null;
+        let currentExerciseIndex = null;
+        let completedExercises = new Set(); // Track completed exercises
+
+        function startTracking(exerciseIndex) {
+            // Directly start tracking without modal for the text-based design
+            confirmStartTracking(exerciseIndex);
+        }
+
+        function showConfirmationModal(exerciseIndex) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Ready to start?</h3>
+                    <p class="text-gray-600 mb-6">Once you click the play button, the system will start tracking your exercise time, and it will count toward your performance score.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="closeModal()" class="flex-1 px-4 py-2 text-blue-600 font-medium">Cancel</button>
+                        <button onclick="confirmStartTracking(${exerciseIndex})" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Yes</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function showRatingModal(exerciseIndex) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Great work!</h3>
+                    <p class="text-gray-600 mb-6">You just have another session. How is your workout?</p>
+                    <div class="flex space-x-3">
+                        <button onclick="rateWorkout(${exerciseIndex}, 'easy')" class="flex-1 px-4 py-2 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200">Easy</button>
+                        <button onclick="rateWorkout(${exerciseIndex}, 'medium')" class="flex-1 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium hover:bg-yellow-200">Medium</button>
+                        <button onclick="rateWorkout(${exerciseIndex}, 'hard')" class="flex-1 px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200">Hard</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function rateWorkout(exerciseIndex, difficulty) {
+            // Close the rating modal
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+
+            // Mark exercise as completed
+            completedExercises.add(exerciseIndex);
+
+            // Replace tracking status with checkmark
+            const trackingStatus = document.getElementById(`tracking-status-${exerciseIndex}`);
+            if (trackingStatus) {
+                trackingStatus.innerHTML = '<span class="text-green-600">✓</span>';
+            }
+        }
+
+        function showLeaveConfirmationModal() {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Are you sure you want to leave?</h3>
+                    <p class="text-gray-600 mb-6">We encourage completing the practice in one session. This will affect your performance score.</p>
+                    <div class="flex space-x-3">
+                        <button onclick="closeLeaveModal()" class="flex-1 px-4 py-2 text-blue-600 font-medium">Cancel</button>
+                        <button onclick="confirmLeave()" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Yes</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeLeaveModal() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function confirmLeave() {
+            closeLeaveModal();
+            window.history.back();
+        }
+
+        function confirmStartTracking(exerciseIndex) {
+            closeModal();
+            
+            // Stop any existing timer
+            if (activeTimer) {
+                clearInterval(activeTimer);
+            }
+
+            // Update current exercise
+            currentExerciseIndex = exerciseIndex;
+            
+            // Start timer
+            let seconds = 0;
+            const timerElement = document.getElementById(`timer-${exerciseIndex}`);
+            
+            activeTimer = setInterval(() => {
+                seconds += 0.1;
+                if (timerElement) {
+                    timerElement.textContent = `${seconds.toFixed(1)} Sec`;
+                }
+            }, 100);
+
+            // Update the tracking status text
+            const trackingStatus = document.getElementById(`tracking-status-${exerciseIndex}`);
+            if (trackingStatus) {
+                trackingStatus.textContent = 'Tracking in Progress';
+            }
+
+            // Also update the corresponding play/pause button to show it's active
+            const playPauseIcon = document.getElementById(`play-pause-icon-${exerciseIndex}`);
+            if (playPauseIcon) {
+                playPauseIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                playPauseIcon.setAttribute('data-playing', 'true');
+            }
+
+            // If this is the first exercise (index 0), automatically expand it
+            if (exerciseIndex === 0) {
+                const firstExerciseCard = document.querySelector('.exercise-item');
+                if (firstExerciseCard) {
+                    const clickableArea = firstExerciseCard.querySelector('[onclick="toggleExerciseDescription(this)"]');
+                    if (clickableArea) {
+                        toggleExerciseDescription(clickableArea);
+                    }
+                }
+            }
+        }
+
+        function togglePlayPause(exerciseIndex) {
+            const iconElement = document.getElementById(`play-pause-icon-${exerciseIndex}`);
+            const isPlaying = iconElement.getAttribute('data-playing') === 'true';
+            
+            if (isPlaying) {
+                // Pause
+                iconElement.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                iconElement.setAttribute('data-playing', 'false');
+                // Stop the timer
+                if (activeTimer) {
+                    clearInterval(activeTimer);
+                    activeTimer = null;
+                }
+                
+                // Update the tracking status text
+                const trackingStatus = document.getElementById(`tracking-status-${exerciseIndex}`);
+                if (trackingStatus) {
+                    trackingStatus.textContent = 'Start Tracking';
+                }
+
+                // If this is the first exercise, also pause the video button
+                if (exerciseIndex === 0) {
+                    const videoIcon = document.getElementById('video-play-pause-icon');
+                    if (videoIcon) {
+                        videoIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                        videoIcon.setAttribute('data-playing', 'false');
+                    }
+                }
+
+                // Show rating modal after pausing
+                showRatingModal(exerciseIndex);
+
+            } else {
+                // Play
+                iconElement.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                iconElement.setAttribute('data-playing', 'true');
+                // Start the timer
+                startTimer(exerciseIndex);
+                
+                // Update the tracking status text
+                const trackingStatus = document.getElementById(`tracking-status-${exerciseIndex}`);
+                if (trackingStatus) {
+                    trackingStatus.textContent = 'Tracking in Progress';
+                }
+
+                // If this is the first exercise, also play the video button
+                if (exerciseIndex === 0) {
+                    const videoIcon = document.getElementById('video-play-pause-icon');
+                    if (videoIcon) {
+                        videoIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+                        videoIcon.setAttribute('data-playing', 'true');
+                    }
+                }
+
+            }
+        }
+
+        function startTimer(exerciseIndex) {
+            // Stop any existing timer
+            if (activeTimer) {
+                clearInterval(activeTimer);
+            }
+
+            // Update current exercise
+            currentExerciseIndex = exerciseIndex;
+            
+            // Get current timer value or start from 0
+            const timerElement = document.getElementById(`timer-${exerciseIndex}`);
+            let currentSeconds = 0;
+            if (timerElement && timerElement.textContent !== '0.0 Sec') {
+                const timeText = timerElement.textContent;
+                currentSeconds = parseFloat(timeText.replace(' Sec', ''));
+            }
+            
+            activeTimer = setInterval(() => {
+                currentSeconds += 0.1;
+                if (timerElement) {
+                    timerElement.textContent = `${currentSeconds.toFixed(1)} Sec`;
+                }
+            }, 100);
+        }
+
+        function toggleExerciseDescription(element) {
+            const description = element.nextElementSibling;
+            const arrowIcon = element.querySelector('[data-arrow-icon]');
+
+            if (description.classList.contains('hidden')) {
+                description.classList.remove('hidden');
+                description.style.maxHeight = description.scrollHeight + 'px';
+                arrowIcon.classList.remove('rotate-0');
+                arrowIcon.classList.add('rotate-180');
+            } else {
+                description.style.maxHeight = '0';
+                description.classList.add('hidden');
+                arrowIcon.classList.remove('rotate-180');
+                arrowIcon.classList.add('rotate-0');
+            }
+        }
+
+        // Load data when the page loads
+        document.addEventListener('DOMContentLoaded', loadExerciseData);
+    </script>
+</body>
+</html>

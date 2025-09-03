@@ -1,0 +1,79 @@
+    <script>
+        let userData = {
+            profile: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: '',
+                userType: 'athlete'
+            },
+            onboarding: {
+                birthday: '',
+                height: '',
+                weight: '',
+                sport: '',
+                teamType: '',
+                position: ''
+            }
+        };
+
+        // Initialize user data from session storage or use defaults
+        function initializeUserData() {
+            const savedData = sessionStorage.getItem('athleteUserData');
+            if (savedData) {
+                const existingData = JSON.parse(savedData);
+                userData = { ...userData, ...existingData };
+            }
+        }
+
+        // Save user data to session storage
+        function saveUserData() {
+            sessionStorage.setItem('athleteUserData', JSON.stringify(userData));
+        }
+
+        // Update onboarding data
+        function updateOnboardingData(field, value) {
+            userData.onboarding[field] = value;
+            saveUserData();
+        }
+
+        function nextStep() {
+            const height = document.getElementById('height').value;
+            
+            if (!height) {
+                showError('Please enter your height.');
+                return;
+            }
+
+            // Save height data
+            updateOnboardingData('height', height);
+
+            // Navigate to next step
+            window.location.href = 'weight.html';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                nextStep();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUserData();
+            
+            // Pre-fill height if available
+            if (userData.onboarding.height) {
+                document.getElementById('height').value = userData.onboarding.height;
+            }
+        });
+    </script>

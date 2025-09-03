@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strength Program - Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Strength program summary">
+                    <div class="w-6 h-6"></div>
+                    
+                    <div class="flex-1 mx-4"></div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Program Created!</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Program Image -->
+                <div class="mb-8 text-center">
+                    <div class="w-32 h-32 mx-auto mb-6">
+                        <div class="w-full h-full bg-red-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Program Details -->
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4" id="programTitle">
+                        Your Strength Program
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                        Perfect! Your personalized strength program has been created based on your preferences.
+                    </p>
+                    
+                    <!-- Program Benefits -->
+                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                        <h3 class="font-semibold text-blue-900 mb-2">What you'll get:</h3>
+                        <ul class="text-sm text-blue-800 space-y-1">
+                            <li>• Progressive strength building exercises</li>
+                            <li>• Sport-specific movements</li>
+                            <li>• Injury prevention focus</li>
+                            <li>• Performance optimization</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Exercise Preview -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-900 mb-2">Sample Exercise:</h3>
+                        <p class="text-sm text-gray-600">
+                            Squats, Deadlifts, Bench Press, and more tailored to your experience level
+                        </p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8 space-y-4">
+                <button onclick="beginProgram()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Begin strength program">
+                    Begin Program
+                </button>
+                
+                <button onclick="createAnotherProgram()" 
+                        class="w-full bg-gray-100 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                        aria-label="Create another program">
+                    Create Another Program
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function beginProgram() {
+            window.location.href = '/coaches/home.html?t=' + Date.now();
+        }
+
+        function createAnotherProgram() {
+            window.location.href = 'program-type.html';
+        }
+
+        window.addEventListener('load', function() {
+            const strengthProgram = localStorage.getItem('strengthProgram');
+            if (strengthProgram) {
+                const program = JSON.parse(strengthProgram);
+                let programTitle = '';
+                
+                if (program.season === 'in-season') {
+                    programTitle = 'In-season ';
+                } else {
+                    programTitle = 'Off-season ';
+                }
+                
+                if (program.experience === 'never' || program.experience === 'few-times') {
+                    programTitle += 'beginner ';
+                } else if (program.experience === 'frequently') {
+                    programTitle += 'intermediate ';
+                } else if (program.experience === 'advanced') {
+                    programTitle += 'advanced ';
+                }
+                
+                programTitle += 'strength program';
+                document.getElementById('programTitle').textContent = programTitle;
+            }
+        });
+    </script>
+</body>
+</html>

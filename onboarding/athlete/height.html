@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - Height</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+        
+        .unit-toggle {
+            transition: all 0.3s ease;
+        }
+        .unit-toggle.selected {
+            background-color: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Onboarding progress">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="2" aria-valuemin="1" aria-valuemax="6" aria-label="Step 2 of 6">
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Let's setup your profile!</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">What is your height?</h2>
+                </div>
+
+                <!-- Height Icon -->
+                <div class="mb-8 text-center">
+                    <div class="w-32 h-32 mx-auto mb-6">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3143/3143730.png" alt="Ruler" class="w-full h-full object-contain">
+                    </div>
+                </div>
+
+                <!-- Unit Toggle -->
+                <div class="mb-6">
+                    <div class="flex bg-gray-100 rounded-lg p-1">
+                        <button id="ftInToggle" onclick="toggleUnit('ft-in')" 
+                                class="unit-toggle flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-700 selected">
+                            ft/in
+                        </button>
+                        <button id="cmToggle" onclick="toggleUnit('cm')" 
+                                class="unit-toggle flex-1 py-2 px-4 rounded-md text-sm font-medium text-gray-700">
+                            cm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Height Input Fields -->
+                <div class="mb-6" id="inputContainer">
+                    <!-- Feet/Inches inputs (shown by default) -->
+                    <div id="ftInInputs" class="flex space-x-4 justify-center">
+                        <div class="flex-1">
+                            <label for="feetInput" class="block text-sm font-medium text-gray-700 mb-2">feet</label>
+                            <input type="number" 
+                                    id="feetInput" 
+                                    placeholder="5"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-center text-lg"
+                                    min="0" max="8">
+                        </div>
+                        <div class="flex-1">
+                            <label for="inchesInput" class="block text-sm font-medium text-gray-700 mb-2">in</label>
+                            <input type="number" 
+                                    id="inchesInput" 
+                                    placeholder="10"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-center text-lg"
+                                    min="0" max="11">
+                        </div>
+                    </div>
+                    
+                    <!-- CM input (hidden by default) -->
+                    <div id="cmInput" class="hidden">
+                        <label for="cmInputField" class="block text-sm font-medium text-gray-700 mb-2">cm</label>
+                        <input type="number" 
+                                id="cmInputField" 
+                                placeholder="175"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-center text-lg"
+                                min="0" max="300">
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Continue to next step">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let currentUnit = 'ft-in';
+        const feetInput = document.getElementById('feetInput');
+        const inchesInput = document.getElementById('inchesInput');
+        const cmInputField = document.getElementById('cmInputField');
+        const nextButton = document.getElementById('nextButton');
+        const ftInToggle = document.getElementById('ftInToggle');
+        const cmToggle = document.getElementById('cmToggle');
+
+        function toggleUnit(unit) {
+            currentUnit = unit;
+            
+            // Update toggle buttons
+            ftInToggle.classList.toggle('selected', unit === 'ft-in');
+            cmToggle.classList.toggle('selected', unit === 'cm');
+            
+            // Show/hide appropriate input fields
+            if (unit === 'ft-in') {
+                document.getElementById('ftInInputs').classList.remove('hidden');
+                document.getElementById('cmInput').classList.add('hidden');
+            } else {
+                document.getElementById('ftInInputs').classList.add('hidden');
+                document.getElementById('cmInput').classList.remove('hidden');
+            }
+            
+            // Clear inputs
+            feetInput.value = '';
+            inchesInput.value = '';
+            cmInputField.value = '';
+            nextButton.disabled = true;
+        }
+
+        function validateInputs() {
+            if (currentUnit === 'ft-in') {
+                const feet = parseInt(feetInput.value) || 0;
+                const inches = parseInt(inchesInput.value) || 0;
+                nextButton.disabled = !(feet > 0 && inches >= 0 && inches <= 11);
+            } else {
+                const cm = parseInt(cmInputField.value) || 0;
+                nextButton.disabled = !(cm > 0 && cm <= 300);
+            }
+        }
+
+        feetInput.addEventListener('input', validateInputs);
+        inchesInput.addEventListener('input', validateInputs);
+        cmInputField.addEventListener('input', validateInputs);
+
+        // Prevent form submission on Enter key
+        feetInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                inchesInput.focus();
+            }
+        });
+
+        inchesInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentUnit === 'ft-in' && feetInput.value && this.value) {
+                    handleNext();
+                }
+            }
+        });
+
+        cmInputField.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentUnit === 'cm' && this.value) {
+                    handleNext();
+                }
+            }
+        });
+
+        function handleNext() {
+            let height = '';
+            
+            if (currentUnit === 'ft-in') {
+                const feet = feetInput.value;
+                const inches = inchesInput.value;
+                if (!feet || !inches) return;
+                height = `${feet}'${inches}"`;
+            } else {
+                const cm = cmInputField.value;
+                if (!cm) return;
+                height = `${cm} cm`;
+            }
+            
+            // Store height in localStorage
+            localStorage.setItem('athleteHeight', height);
+            
+            // Navigate to next step
+            window.location.href = 'weight.html';
+        }
+
+        function goBack() {
+            window.location.href = 'birthday.html';
+        }
+
+        // Auto-focus on first input
+        feetInput.focus();
+    </script>
+</body>
+</html>

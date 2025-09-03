@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warmup Program Customization Coach - Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Warm-up program summary">
+                    <div class="w-6 h-6"></div>
+                    
+                    <h1 class="text-center text-sm font-medium text-gray-600">Warmup Program Customization Coach -...</h1>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Basketball Court Image -->
+                <div class="mb-6">
+                    <div class="w-full h-48 bg-gray-300 rounded-lg flex items-center justify-center">
+                        <!-- Placeholder for basketball court image -->
+                        <div class="text-gray-500 text-center">
+                            <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <p class="text-sm">Basketball Court</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personalized Message -->
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4" id="personalizedMessage">Here's the personalized warm-up program for your team:</h2>
+                </div>
+
+                <!-- Program Details Card -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-center mb-3">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Warm-up program</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-sm text-gray-700">Goal 1: Activating neuromuscular system</p>
+                        <p class="text-sm text-gray-700">Goal 2: Preventing basketball-specific injuries</p>
+                        <p class="text-sm text-gray-700">Goal 3: Physical and mental preparation for training sessions</p>
+                    </div>
+                </div>
+
+                <!-- Exercises Section -->
+                <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Exercises</h3>
+                    <div class="w-full h-32 bg-gray-200 rounded flex items-center justify-center">
+                        <!-- Placeholder for exercises content -->
+                        <div class="text-gray-500 text-center">
+                            <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <p class="text-xs">Exercise List</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8 space-y-3">
+                <button onclick="beginProgram()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Begin warm-up program">
+                    Begin program
+                </button>
+                <button onclick="createAnotherProgram()" 
+                        class="w-full text-blue-600 font-medium py-2 px-6 hover:text-blue-700 transition-colors focus:outline-none"
+                        aria-label="Create another program">
+                    Create another program
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Load selected team and update the personalized message
+        window.addEventListener('load', function() {
+            const selectedTeam = localStorage.getItem('selectedTeamForProgram');
+            if (selectedTeam) {
+                const team = JSON.parse(selectedTeam);
+                const messageElement = document.getElementById('personalizedMessage');
+                messageElement.textContent = `Here's the personalized warm-up program for your ${team.name}:`;
+            }
+        });
+
+        function beginProgram() {
+            // Navigate to the coach dashboard or program execution page
+            window.location.href = '/coaches/home.html?t=' + Date.now();
+        }
+
+        function createAnotherProgram() {
+            // Navigate back to program type selection
+            window.location.href = 'program-type.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>

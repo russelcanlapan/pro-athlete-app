@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - Position</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+        
+        .position-option {
+            transition: all 0.3s ease;
+        }
+        .position-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Onboarding progress">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="6" aria-valuemin="1" aria-valuemax="6" aria-label="Step 6 of 6">
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Let's setup your profile!</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">What position do you play?</h2>
+                </div>
+
+                <!-- Position Options -->
+                <div id="positionOptions" class="space-y-4">
+                    <!-- Positions will be dynamically generated based on sport -->
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Continue to next step">
+                    Complete Setup
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedPosition = null;
+        const nextButton = document.getElementById('nextButton');
+
+                 // Sport-specific positions
+         const sportPositions = {
+             'basketball': [
+                 { id: 'point-guard', name: 'Point Guard', description: 'Playmaker and ball handler', icon: '⚡', color: 'purple' },
+                 { id: 'shooting-guard', name: 'Shooting Guard', description: 'Scorer and perimeter player', icon: '🎯', color: 'red' },
+                 { id: 'small-forward', name: 'Small Forward', description: 'Versatile wing player', icon: '🔄', color: 'green' },
+                 { id: 'power-forward', name: 'Power Forward', description: 'Strong inside player', icon: '💪', color: 'yellow' },
+                 { id: 'center', name: 'Center', description: 'Tallest player, rim protector', icon: '⭐', color: 'blue' }
+             ],
+             'soccer': [
+                 { id: 'goalkeeper', name: 'Goalkeeper', description: 'Defends the goal', icon: '🥅', color: 'yellow' },
+                 { id: 'defender', name: 'Defender', description: 'Defensive player', icon: '🛡️', color: 'blue' },
+                 { id: 'midfielder', name: 'Midfielder', description: 'Controls the game flow', icon: '⚽', color: 'green' },
+                 { id: 'forward', name: 'Forward', description: 'Attacking player', icon: '⚡', color: 'red' }
+             ],
+             'football': [
+                 { id: 'quarterback', name: 'Quarterback', description: 'Team leader and passer', icon: '🏈', color: 'blue' },
+                 { id: 'running-back', name: 'Running Back', description: 'Ball carrier', icon: '🏃', color: 'green' },
+                 { id: 'wide-receiver', name: 'Wide Receiver', description: 'Pass catcher', icon: '🎯', color: 'red' },
+                 { id: 'tight-end', name: 'Tight End', description: 'Blocking and receiving', icon: '🔗', color: 'purple' },
+                 { id: 'offensive-line', name: 'Offensive Line', description: 'Protects quarterback', icon: '🛡️', color: 'gray' },
+                 { id: 'defensive-line', name: 'Defensive Line', description: 'Rush defense', icon: '💪', color: 'orange' },
+                 { id: 'linebacker', name: 'Linebacker', description: 'Defensive leader', icon: '⚔️', color: 'yellow' },
+                 { id: 'defensive-back', name: 'Defensive Back', description: 'Pass coverage', icon: '🦅', color: 'indigo' },
+                 { id: 'kicker', name: 'Kicker', description: 'Field goals and kickoffs', icon: '👟', color: 'pink' },
+                 { id: 'punter', name: 'Punter', description: 'Punts the ball', icon: '🏈', color: 'brown' }
+             ],
+             'volleyball': [
+                 { id: 'setter', name: 'Setter', description: 'Sets up attacks', icon: '🤲', color: 'blue' },
+                 { id: 'outside-hitter', name: 'Outside Hitter', description: 'Primary attacker', icon: '💥', color: 'red' },
+                 { id: 'middle-blocker', name: 'Middle Blocker', description: 'Blocks and attacks', icon: '🛡️', color: 'green' },
+                 { id: 'opposite-hitter', name: 'Opposite Hitter', description: 'Right side attacker', icon: '⚡', color: 'purple' },
+                 { id: 'libero', name: 'Libero', description: 'Defensive specialist', icon: '🦎', color: 'yellow' }
+             ]
+         };
+
+        // Color mapping for backgrounds
+        const colorClasses = {
+            'blue': 'bg-blue-100 text-blue-600',
+            'red': 'bg-red-100 text-red-600',
+            'green': 'bg-green-100 text-green-600',
+            'yellow': 'bg-yellow-100 text-yellow-600',
+            'purple': 'bg-purple-100 text-purple-600',
+            'orange': 'bg-orange-100 text-orange-600',
+            'pink': 'bg-pink-100 text-pink-600',
+            'indigo': 'bg-indigo-100 text-indigo-600',
+            'gray': 'bg-gray-100 text-gray-600',
+            'brown': 'bg-amber-100 text-amber-600'
+        };
+
+        function generatePositionOptions() {
+            const athleteProfile = JSON.parse(localStorage.getItem('athleteProfile') || '{}');
+            const sport = athleteProfile.sport || 'basketball'; // Default to basketball if no sport selected
+            const positions = sportPositions[sport] || sportPositions['basketball'];
+            
+            const container = document.getElementById('positionOptions');
+            container.innerHTML = '';
+            
+            positions.forEach(position => {
+                const button = document.createElement('button');
+                button.className = 'position-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors';
+                button.setAttribute('data-position-id', position.id);
+                button.onclick = () => selectPosition(position.id);
+                
+                button.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 ${colorClasses[position.color]} rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">${position.icon}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${position.name}</h3>
+                            <p class="text-sm text-gray-600">${position.description}</p>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(button);
+            });
+        }
+
+        function selectPosition(position) {
+            selectedPosition = position;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.position-option').forEach(option => {
+                option.classList.remove('selected', 'border-blue-500', 'bg-blue-50');
+            });
+            
+            // Add selected class to clicked option
+            event.target.closest('.position-option').classList.add('selected', 'border-blue-500', 'bg-blue-50');
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        function handleNext() {
+            if (selectedPosition) {
+                // Save position to localStorage
+                const athleteProfile = JSON.parse(localStorage.getItem('athleteProfile') || '{}');
+                athleteProfile.position = selectedPosition;
+                localStorage.setItem('athleteProfile', JSON.stringify(athleteProfile));
+                
+                // Navigate to program customization
+                window.location.href = '/program-customization/athlete/welcome.html?fromSignup=true&t=' + Date.now();
+            }
+            // If no position is selected, do nothing
+        }
+
+        function goBack() {
+            window.location.href = 'team.html';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                if (selectedPosition) {
+                    // If a position is selected, complete the setup
+                    handleNext();
+                }
+                // If no position is selected, do nothing
+            }
+        }
+
+        // Generate position options when page loads
+        window.addEventListener('load', generatePositionOptions);
+        
+        // Add keydown event listener for Enter key
+        document.addEventListener('keydown', handleKeyPress);
+    </script>
+</body>
+</html>

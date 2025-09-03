@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobility Program - Work On</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .work-on-option {
+            transition: all 0.3s ease;
+        }
+        .work-on-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Mobility program customization">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex-1 mx-4"></div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Customize Mobility Program</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">What would you like to work on?</h2>
+                    <p class="text-sm text-gray-600 mb-6">Choose your first program. You will be able to create more programs later if desired.</p>
+                </div>
+
+                <!-- Work On Options -->
+                <div class="space-y-4">
+                    <!-- Full-body mobility -->
+                    <button onclick="selectWorkOn('full-body')" 
+                            class="work-on-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Full-body mobility</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="fullBodyRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Ankle -->
+                    <button onclick="selectWorkOn('ankle')" 
+                            class="work-on-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Ankle</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="ankleRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Knees -->
+                    <button onclick="selectWorkOn('knees')" 
+                            class="work-on-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Knees</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="kneesRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Hips -->
+                    <button onclick="selectWorkOn('hips')" 
+                            class="work-on-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Hips</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="hipsRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Lower back -->
+                    <button onclick="selectWorkOn('lower-back')" 
+                            class="work-on-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Lower back</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="lowerBackRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Continue to next step">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedWorkOn = null;
+        const nextButton = document.getElementById('nextButton');
+
+        function selectWorkOn(workOn) {
+            selectedWorkOn = workOn;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.work-on-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Hide all radio buttons
+            document.getElementById('fullBodyRadio').classList.add('hidden');
+            document.getElementById('ankleRadio').classList.add('hidden');
+            document.getElementById('kneesRadio').classList.add('hidden');
+            document.getElementById('hipsRadio').classList.add('hidden');
+            document.getElementById('lowerBackRadio').classList.add('hidden');
+            
+            // Add selected class to clicked option and show radio button
+            event.target.closest('.work-on-option').classList.add('selected');
+            
+            // Map workOn values to radio button IDs
+            let radioId = '';
+            if (workOn === 'full-body') {
+                radioId = 'fullBodyRadio';
+            } else if (workOn === 'ankle') {
+                radioId = 'ankleRadio';
+            } else if (workOn === 'knees') {
+                radioId = 'kneesRadio';
+            } else if (workOn === 'hips') {
+                radioId = 'hipsRadio';
+            } else if (workOn === 'lower-back') {
+                radioId = 'lowerBackRadio';
+            }
+            
+            if (radioId) {
+                document.getElementById(radioId).classList.remove('hidden');
+            }
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        function handleNext() {
+            if (!selectedWorkOn) return;
+            localStorage.setItem('mobilityWorkOn', selectedWorkOn);
+            window.location.href = 'mobility-equipment.html';
+        }
+
+        function goBack() {
+            window.location.href = 'mobility-experience.html';
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                if (selectedWorkOn) {
+                    // If work-on area is selected, proceed to next step
+                    handleNext();
+                } else {
+                    // If no work-on area is selected, select the first available option
+                    const firstWorkOn = document.querySelector('.work-on-option');
+                    if (firstWorkOn) {
+                        const workOnType = firstWorkOn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                        selectWorkOn(workOnType);
+                    }
+                }
+            }
+        }
+
+        // Add keydown event listener for Enter key
+        document.addEventListener('keydown', handleKeyPress);
+    </script>
+</body>
+</html>

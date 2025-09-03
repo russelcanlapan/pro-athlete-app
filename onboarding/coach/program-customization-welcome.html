@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Customization Coach - Begin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Program customization">
+                    <div class="w-6 h-6"></div>
+                    
+                    <h1 class="text-center text-sm font-medium text-gray-600">Program Customization Coach - Begin</h1>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Athletes Illustration -->
+                <div class="mb-8 text-center">
+                    <div class="w-48 h-48 mx-auto mb-6">
+                        <div class="w-full h-full bg-blue-100 rounded-full flex items-center justify-center">
+                            <!-- Two athletes illustration -->
+                            <div class="relative w-24 h-24">
+                                <!-- Female athlete sitting with resistance band -->
+                                <div class="absolute bottom-0 left-0 w-12 h-12 bg-pink-200 rounded-full flex items-center justify-center">
+                                    <div class="w-8 h-8 bg-pink-400 rounded-full"></div>
+                                </div>
+                                <!-- Male athlete standing with weights -->
+                                <div class="absolute top-0 right-0 w-12 h-12 bg-blue-200 rounded-full flex items-center justify-center">
+                                    <div class="w-8 h-8 bg-blue-400 rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6 text-center">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Let's create customized programs for your athletes!</h2>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button onclick="beginProgramCustomization()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Begin program customization">
+                    Begin
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function beginProgramCustomization() {
+            // Save all coach profile data
+            const coachProfile = {
+                // First team data
+                sport: localStorage.getItem('coachSport'),
+                teamName: localStorage.getItem('coachTeamName'),
+                teamAverageAge: localStorage.getItem('coachTeamAverageAge'),
+                teamDemographic: localStorage.getItem('coachTeamDemographic'),
+                teamSkillLevel: localStorage.getItem('coachTeamSkillLevel'),
+                
+                // Second team data
+                team2Name: localStorage.getItem('coachTeam2Name'),
+                team2AverageAge: localStorage.getItem('coachTeam2AverageAge'),
+                team2Demographic: localStorage.getItem('coachTeam2Demographic'),
+                team2SkillLevel: localStorage.getItem('coachTeam2SkillLevel'),
+                
+                // Profile completion
+                profileCompleted: true,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('coachProfile', JSON.stringify(coachProfile));
+            
+            // Navigate to program customization or dashboard
+            window.location.href = '/program-customization/coach/team-selection.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>

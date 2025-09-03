@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .section-content {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-200 z-40">
+            <div class="flex items-center justify-between p-4">
+                <button onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-bold text-gray-900" id="programTitle">Program Detail</h1>
+                <button class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="px-6 py-8 pb-32 max-w-4xl mx-auto">
+            <!-- Program Image -->
+            <div class="w-full h-64 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <span class="text-8xl" id="programIcon">🧘</span>
+            </div>
+            
+            <!-- Program Details -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Level</div>
+                    <div class="font-semibold text-gray-900" id="programLevel">Beginner</div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Type</div>
+                    <div class="font-semibold text-gray-900 capitalize" id="programType">Mobility</div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Duration</div>
+                    <div class="font-semibold text-gray-900">12-18 weeks</div>
+                </div>
+            </div>
+
+            <!-- Program Sections -->
+            <div class="space-y-4">
+                <!-- Section 1 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-sm shadow-sm">
+                    <button onclick="toggleSection(this)" class="w-full p-6 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+                                <div class="w-5 h-5 bg-white rounded-full"></div>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold text-gray-900 text-lg">Section 1 (4-6 weeks)</div>
+                                <div class="text-sm text-gray-600">Frequency: 3-4x/week</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500 font-medium">Not started</div>
+                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <div class="section-content hidden p-6 bg-white" id="section1-content">
+                        <!-- Body parts will be dynamically loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Section 2 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-sm shadow-sm">
+                    <button onclick="toggleSection(this)" class="w-full p-6 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+                                <div class="w-5 h-5 bg-white rounded-full"></div>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold text-gray-900 text-lg">Section 2 (4-6 weeks)</div>
+                                <div class="text-sm text-gray-600">Frequency: 3-4x/week</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500 font-medium">Not started</div>
+                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <div class="section-content hidden p-6 bg-white" id="section2-content">
+                        <!-- Body parts will be dynamically loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Section 3 -->
+                <div class="border border-gray-200 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-sm shadow-sm">
+                    <button onclick="toggleSection(this)" class="w-full p-6 bg-gray-50 flex items-center justify-between hover:bg-gray-100 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center">
+                                <div class="w-5 h-5 bg-white rounded-full"></div>
+                            </div>
+                            <div class="text-left">
+                                <div class="font-semibold text-gray-900 text-lg">Section 3 (4-6 weeks)</div>
+                                <div class="text-sm text-gray-600">Frequency: 3-4x/week</div>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-500 font-medium">Not started</div>
+                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                    <div class="section-content hidden p-6 bg-white" id="section3-content">
+                        <!-- Body parts will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-200">
+            <div class="flex justify-around py-3">
+                <a href="home.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Home</span>
+                </a>
+                            <a href="tracking.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <span class="text-xs font-medium">Tracking</span>
+            </a>
+                <a href="profile.html" class="flex flex-col items-center py-2 px-4 text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="text-xs font-medium">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let programData = null;
+
+        // Load program data from URL parameters
+        window.addEventListener('load', function() {
+            loadProgramData();
+        });
+        
+        // Refresh completion status when page becomes visible (when returning from exercise detail)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                // Page is now visible, refresh the completion status
+                setTimeout(() => {
+                    loadProgramData();
+                }, 100);
+            }
+        });
+
+        // Also refresh when the page gains focus (for better compatibility)
+        window.addEventListener('focus', function() {
+            setTimeout(() => {
+                loadProgramData();
+            }, 100);
+        });
+
+        function loadProgramData() {
+            // Get program type from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            const bodyPart = urlParams.get('bodyPart');
+            
+            // Load program data from localStorage based on type
+            let programData = null;
+            let programTitle = 'Program Detail';
+            let programIcon = '💪';
+            let programLevel = 'Beginner';
+            
+            if (programType === 'strength') {
+                const strengthProgram = localStorage.getItem('strengthProgram');
+                if (strengthProgram) {
+                    programData = JSON.parse(strengthProgram);
+                    programTitle = generateStrengthTitle(programData);
+                    programIcon = '💪';
+                    programLevel = programData.experience || 'Beginner';
+                }
+            } else if (programType === 'mobility') {
+                const mobilityProgram = localStorage.getItem('mobilityProgram');
+                if (mobilityProgram) {
+                    programData = JSON.parse(mobilityProgram);
+                    programTitle = generateMobilityTitle(programData);
+                    programIcon = '🧘';
+                    programLevel = programData.experience || 'Beginner';
+                }
+            } else if (programType === 'prehab') {
+                const prehabProgram = localStorage.getItem('prehabProgram');
+                if (prehabProgram) {
+                    programData = JSON.parse(prehabProgram);
+                    programTitle = generatePrehabTitle(programData);
+                    programIcon = '🛡️';
+                    programLevel = programData.experience || 'Beginner';
+                }
+            }
+            
+            // Set program details
+            document.getElementById('programTitle').textContent = programTitle;
+            document.getElementById('programIcon').textContent = programIcon;
+            document.getElementById('programLevel').textContent = programLevel;
+            document.getElementById('programType').textContent = programType || 'Program';
+            
+            // Load body parts for each section
+            document.getElementById('section1-content').innerHTML = renderBodyPartsForSection(1);
+            document.getElementById('section2-content').innerHTML = renderBodyPartsForSection(2);
+            document.getElementById('section3-content').innerHTML = renderBodyPartsForSection(3);
+            
+            // Update section status based on completion
+            updateSectionStatus();
+            
+            // Save program progress to session storage
+            saveProgramProgress(programType, bodyPart);
+        }
+
+        function generateStrengthTitle(program) {
+            let title = '';
+            if (program.season === 'in-season') {
+                title = 'In-season ';
+            } else {
+                title = 'Off-season ';
+            }
+            
+            if (program.experience === 'never' || program.experience === 'few-times') {
+                title += 'beginner ';
+            } else if (program.experience === 'frequently') {
+                title += 'intermediate ';
+            } else if (program.experience === 'advanced') {
+                title += 'advanced ';
+            }
+            
+            title += 'strength program';
+            return title;
+        }
+
+        function generateMobilityTitle(program) {
+            let experienceLevel = 'beginner';
+            if (program.experience === 'few-times') {
+                experienceLevel = 'intermediate';
+            } else if (program.experience === 'a-lot') {
+                experienceLevel = 'advanced';
+            }
+            
+            if (program.workOn === 'full-body') {
+                return `${experienceLevel} full-body mobility program`;
+            } else if (program.workOn === 'ankle') {
+                return `${experienceLevel} ankle mobility program`;
+            } else if (program.workOn === 'knees') {
+                return `${experienceLevel} knee mobility program`;
+            } else if (program.workOn === 'hips') {
+                return `${experienceLevel} hip mobility program`;
+            } else if (program.workOn === 'lower-back') {
+                return `${experienceLevel} lower back mobility program`;
+            }
+            return `${experienceLevel} mobility program`;
+        }
+
+        function generatePrehabTitle(program) {
+            let experienceLevel = 'beginner';
+            if (program.experience === 'few-times') {
+                experienceLevel = 'intermediate';
+            } else if (program.experience === 'a-lot') {
+                experienceLevel = 'advanced';
+            }
+            
+            if (program.workOn === 'best-program') {
+                return `${experienceLevel} basketball prehab program`;
+            } else if (program.workOn === 'ankle-strengthening') {
+                return `${experienceLevel} ankle strengthening prehab program`;
+            } else if (program.workOn === 'knee-stability') {
+                return `${experienceLevel} knee stability prehab program`;
+            }
+            return `${experienceLevel} prehab program`;
+        }
+
+        function toggleSection(button) {
+            // Get the section number from the button's content
+            const sectionText = button.textContent;
+            let sectionNumber = 1;
+            if (sectionText.includes('Section 2')) {
+                sectionNumber = 2;
+            } else if (sectionText.includes('Section 3')) {
+                sectionNumber = 3;
+            }
+            
+            // Check if previous section is completed
+            if (sectionNumber > 1) {
+                const previousSectionCompleted = isSectionCompleted(sectionNumber - 1);
+                if (!previousSectionCompleted) {
+                    showSectionLockedModal(sectionNumber);
+                    return;
+                }
+            }
+            
+            const sectionContent = button.nextElementSibling;
+            const arrow = button.querySelector('svg');
+            
+            if (sectionContent.classList.contains('hidden')) {
+                sectionContent.classList.remove('hidden');
+                arrow.style.transform = 'rotate(90deg)';
+            } else {
+                sectionContent.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function isSectionCompleted(sectionNumber) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            const bodyParts = getBodyPartsForSection(programType, sectionNumber);
+            
+            // Section is completed if all body parts are finished
+            return bodyParts.every(bp => bp.status === 'finished');
+        }
+
+        function showSectionLockedModal(sectionNumber) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 mx-4 max-w-sm w-full">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Section ${sectionNumber} Locked</h3>
+                        <p class="text-gray-600 mb-6">Complete Section ${sectionNumber - 1} first to unlock this section.</p>
+                        <button onclick="closeSectionModal()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700">Got it</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeSectionModal() {
+            const modal = document.querySelector('.fixed.inset-0');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function goToHome() {
+            window.location.href = 'home.html';
+        }
+
+        function openBodyPartDetail(bodyPartName, sectionNumber) {
+            // Check if previous section is completed before allowing access
+            if (sectionNumber > 1) {
+                const previousSectionCompleted = isSectionCompleted(sectionNumber - 1);
+                if (!previousSectionCompleted) {
+                    showSectionLockedModal(sectionNumber);
+                    return;
+                }
+            }
+            
+            // Get current program type from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            const programLevel = document.getElementById('programLevel').textContent.toLowerCase();
+            
+            // Mark this body part as in progress when clicked
+            markBodyPartAsInProgress(programType, bodyPartName, sectionNumber);
+            
+            // Get the first exercise from this body part
+            const bodyParts = getBodyPartsForSection(programType, sectionNumber);
+            const bodyPart = bodyParts.find(bp => bp.name === bodyPartName);
+            
+            if (bodyPart && bodyPart.exercises.length > 0) {
+                const firstExercise = bodyPart.exercises[0];
+                
+                // Navigate directly to exercise detail page with parameters
+                const params = new URLSearchParams({
+                    exercise: firstExercise.name,
+                    type: programType,
+                    level: programLevel,
+                    bodyPart: bodyPartName
+                });
+                
+                window.location.href = `exercise-detail.html?${params.toString()}`;
+            }
+        }
+
+        function markBodyPartAsInProgress(programType, bodyPartName, sectionNumber) {
+            // Save program progress when a body part is accessed
+            saveProgramProgress(programType, bodyPartName);
+        }
+
+        function openExerciseDetail(exerciseName, bodyPartName) {
+            // Get current program type from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            const programLevel = document.getElementById('programLevel').textContent.toLowerCase();
+            
+            // Navigate to exercise detail page with parameters
+            const params = new URLSearchParams({
+                exercise: exerciseName,
+                type: programType,
+                level: programLevel,
+                bodyPart: bodyPartName
+            });
+            
+            window.location.href = `exercise-detail.html?${params.toString()}`;
+        }
+
+        function getBodyPartsForSection(programType, sectionNumber) {
+            // Try to get the actual program data from localStorage
+            let programData = null;
+            
+            if (programType === 'strength') {
+                const strengthProgram = localStorage.getItem('strengthProgram');
+                if (strengthProgram) {
+                    programData = JSON.parse(strengthProgram);
+                }
+            } else if (programType === 'mobility') {
+                const mobilityProgram = localStorage.getItem('mobilityProgram');
+                if (mobilityProgram) {
+                    programData = JSON.parse(mobilityProgram);
+                }
+            } else if (programType === 'prehab') {
+                const prehabProgram = localStorage.getItem('prehabProgram');
+                if (prehabProgram) {
+                    programData = JSON.parse(prehabProgram);
+                }
+            }
+            
+            // If we have actual program data, use it to generate body parts
+            if (programData) {
+                return generateBodyPartsFromProgramData(programData, programType, sectionNumber);
+            }
+            
+            // Fallback to hardcoded data if no program data exists
+            const bodyPartsBySection = {
+                strength: {
+                    1: [
+                        {
+                            name: 'Legs',
+                            icon: '🦵',
+                            status: checkBodyPartCompletion(programType, 'Legs'),
+                            exercises: [
+                                { name: 'Squats', duration: '15 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Deadlifts', duration: '20 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Core',
+                            icon: '🫁',
+                            status: checkBodyPartCompletion(programType, 'Core'),
+                            exercises: [
+                                { name: 'Planks', duration: '10 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Russian Twists', duration: '8 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    2: [
+                        {
+                            name: 'Upper Body',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Upper Body'),
+                            exercises: [
+                                { name: 'Bench Press', duration: '18 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Pull-ups', duration: '12 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Shoulders',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Shoulders'),
+                            exercises: [
+                                { name: 'Overhead Press', duration: '15 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Lateral Raises', duration: '10 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    3: [
+                        {
+                            name: 'Back',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Back'),
+                            exercises: [
+                                { name: 'Rows', duration: '15 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Lat Pulldowns', duration: '12 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Arms',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Arms'),
+                            exercises: [
+                                { name: 'Bicep Curls', duration: '10 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Tricep Dips', duration: '8 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ]
+                },
+                mobility: {
+                    1: [
+                        {
+                            name: 'Lower Body',
+                            icon: '🦵',
+                            status: checkBodyPartCompletion(programType, 'Lower Body'),
+                            exercises: [
+                                { name: 'Ankle Mobility', duration: '10 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Hip Flexor Stretch', duration: '8 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Calves',
+                            icon: '🦵',
+                            status: checkBodyPartCompletion(programType, 'Calves'),
+                            exercises: [
+                                { name: 'Calf Stretch', duration: '5 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Foam Rolling', duration: '8 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    2: [
+                        {
+                            name: 'Upper Body',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Upper Body'),
+                            exercises: [
+                                { name: 'Thoracic Extension', duration: '10 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Shoulder Mobility', duration: '12 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Neck',
+                            icon: '🧘',
+                            status: checkBodyPartCompletion(programType, 'Neck'),
+                            exercises: [
+                                { name: 'Neck Stretches', duration: '8 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Head Rolls', duration: '5 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    3: [
+                        {
+                            name: 'Full Body',
+                            icon: '🧘',
+                            status: checkBodyPartCompletion(programType, 'Full Body'),
+                            exercises: [
+                                { name: 'Deep Squat Hold', duration: '15 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Pancake Stretch', duration: '10 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Spine',
+                            icon: '🧘',
+                            status: checkBodyPartCompletion(programType, 'Spine'),
+                            exercises: [
+                                { name: 'Cat-Cow Stretch', duration: '8 mins', sessions: 12, icon: '🧘', status: 'not-started' },
+                                { name: 'Child\'s Pose', duration: '6 mins', sessions: 12, icon: '🧘', status: 'not-started' }
+                            ]
+                        }
+                    ]
+                },
+                prehab: {
+                    1: [
+                        {
+                            name: 'Lower Body',
+                            icon: '🦵',
+                            status: checkBodyPartCompletion(programType, 'Lower Body'),
+                            exercises: [
+                                { name: 'Ankle Stability', duration: '12 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Knee Tracking', duration: '10 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Balance',
+                            icon: '🛡️',
+                            status: checkBodyPartCompletion(programType, 'Balance'),
+                            exercises: [
+                                { name: 'Single Leg Balance', duration: '8 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Heel-to-Toe Walk', duration: '6 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    2: [
+                        {
+                            name: 'Core & Hips',
+                            icon: '🫁',
+                            status: checkBodyPartCompletion(programType, 'Core & Hips'),
+                            exercises: [
+                                { name: 'Hip Stability', duration: '15 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Core Activation', duration: '12 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Glutes',
+                            icon: '🦵',
+                            status: checkBodyPartCompletion(programType, 'Glutes'),
+                            exercises: [
+                                { name: 'Glute Bridges', duration: '10 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Clamshells', duration: '8 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    3: [
+                        {
+                            name: 'Upper Body',
+                            icon: '💪',
+                            status: checkBodyPartCompletion(programType, 'Upper Body'),
+                            exercises: [
+                                { name: 'Shoulder Stability', duration: '12 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Scapular Retraction', duration: '10 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Posture',
+                            icon: '🛡️',
+                            status: checkBodyPartCompletion(programType, 'Posture'),
+                            exercises: [
+                                { name: 'Wall Angels', duration: '8 mins', sessions: 12, icon: '🛡️', status: 'not-started' },
+                                { name: 'Chin Tucks', duration: '6 mins', sessions: 12, icon: '🛡️', status: 'not-started' }
+                            ]
+                        }
+                    ]
+                }
+            };
+            
+            return bodyPartsBySection[programType]?.[sectionNumber] || [];
+        }
+
+        function checkBodyPartCompletion(programType, bodyPartName) {
+            // Check if this body part has been completed
+            const completionKey = `completed_${programType}_${bodyPartName}`;
+            const isCompleted = localStorage.getItem(completionKey) === 'true' || 
+                              sessionStorage.getItem(completionKey) === 'true';
+            
+            // Also check if any exercises in this body part have been completed
+            const exerciseCompletionKey = `exercises_completed_${programType}_${bodyPartName}`;
+            const exercisesCompleted = localStorage.getItem(exerciseCompletionKey) === 'true' || 
+                                     sessionStorage.getItem(exerciseCompletionKey) === 'true';
+            
+            return (isCompleted || exercisesCompleted) ? 'finished' : 'not-started';
+        }
+
+        function generateBodyPartsFromProgramData(programData, programType, sectionNumber) {
+            // Generate body parts based on the actual program data
+            const bodyParts = [];
+            
+            if (programType === 'strength') {
+                // For strength programs, use the selected body parts
+                const selectedBodyParts = programData.bodyParts || [];
+                
+                // Distribute body parts across sections
+                const bodyPartsPerSection = Math.ceil(selectedBodyParts.length / 3);
+                const startIndex = (sectionNumber - 1) * bodyPartsPerSection;
+                const endIndex = Math.min(startIndex + bodyPartsPerSection, selectedBodyParts.length);
+                const sectionBodyParts = selectedBodyParts.slice(startIndex, endIndex);
+                
+                sectionBodyParts.forEach(bodyPart => {
+                    const bodyPartData = {
+                        name: bodyPart,
+                        icon: getBodyPartIcon(bodyPart),
+                        status: checkBodyPartCompletion(programType, bodyPart),
+                        exercises: generateExercisesForBodyPart(bodyPart, programType, programData.experience)
+                    };
+                    bodyParts.push(bodyPartData);
+                });
+                
+                // If no body parts for this section, add default ones
+                if (bodyParts.length === 0) {
+                    const defaultBodyParts = getDefaultBodyPartsForSection(programType, sectionNumber);
+                    bodyParts.push(...defaultBodyParts);
+                }
+            } else if (programType === 'mobility') {
+                // For mobility programs, use the workOn area
+                const workOn = programData.workOn || 'full-body';
+                const bodyPartData = {
+                    name: getMobilityBodyPartName(workOn),
+                    icon: getBodyPartIcon(workOn),
+                    status: 'not-started',
+                    exercises: generateExercisesForBodyPart(workOn, programType, programData.experience)
+                };
+                bodyParts.push(bodyPartData);
+            } else if (programType === 'prehab') {
+                // For prehab programs, use the workOn area
+                const workOn = programData.workOn || 'best-program';
+                const bodyPartData = {
+                    name: getPrehabBodyPartName(workOn),
+                    icon: getBodyPartIcon(workOn),
+                    status: 'not-started',
+                    exercises: generateExercisesForBodyPart(workOn, programType, programData.experience)
+                };
+                bodyParts.push(bodyPartData);
+            }
+            
+            return bodyParts;
+        }
+
+        function getBodyPartIcon(bodyPart) {
+            const icons = {
+                'legs': '🦵',
+                'upper-body': '💪',
+                'core': '🫁',
+                'shoulders': '💪',
+                'back': '💪',
+                'arms': '💪',
+                'full-body': '🧘',
+                'ankle': '🦵',
+                'knees': '🦵',
+                'hips': '🦵',
+                'lower-back': '🫁',
+                'best-program': '🛡️',
+                'ankle-strengthening': '🛡️',
+                'knee-stability': '🛡️'
+            };
+            return icons[bodyPart.toLowerCase()] || '💪';
+        }
+
+        function getMobilityBodyPartName(workOn) {
+            const names = {
+                'full-body': 'Full Body',
+                'ankle': 'Ankle',
+                'knees': 'Knees',
+                'hips': 'Hips',
+                'lower-back': 'Lower Back'
+            };
+            return names[workOn] || 'Full Body';
+        }
+
+        function getPrehabBodyPartName(workOn) {
+            const names = {
+                'best-program': 'Basketball Prehab',
+                'ankle-strengthening': 'Ankle Strengthening',
+                'knee-stability': 'Knee Stability'
+            };
+            return names[workOn] || 'Basketball Prehab';
+        }
+
+        function generateExercisesForBodyPart(bodyPart, programType, experience) {
+            // Generate exercises based on body part, program type, and experience level
+            const exercises = [];
+            
+            if (programType === 'strength') {
+                const strengthExercises = {
+                    'legs': ['Squats', 'Deadlifts', 'Lunges', 'Leg Press'],
+                    'upper-body': ['Bench Press', 'Pull-ups', 'Push-ups', 'Rows'],
+                    'core': ['Planks', 'Russian Twists', 'Crunches', 'Leg Raises'],
+                    'shoulders': ['Overhead Press', 'Lateral Raises', 'Front Raises', 'Shrugs'],
+                    'back': ['Rows', 'Lat Pulldowns', 'Deadlifts', 'Pull-ups'],
+                    'arms': ['Bicep Curls', 'Tricep Dips', 'Hammer Curls', 'Skull Crushers']
+                };
+                
+                const bodyPartExercises = strengthExercises[bodyPart.toLowerCase()] || ['Exercise 1', 'Exercise 2'];
+                bodyPartExercises.forEach((exercise, index) => {
+                    exercises.push({
+                        name: exercise,
+                        duration: `${10 + (index * 5)} mins`,
+                        sessions: 12,
+                        icon: '💪',
+                        status: 'not-started'
+                    });
+                });
+            } else if (programType === 'mobility') {
+                const mobilityExercises = {
+                    'full-body': ['Deep Squat Hold', 'Pancake Stretch', 'Thoracic Extension', 'Hip Flexor Stretch'],
+                    'ankle': ['Ankle Mobility', 'Calf Stretch', 'Foam Rolling', 'Ankle Circles'],
+                    'knees': ['Knee Tracking', 'Wall Slides', 'Step-ups', 'Knee Extensions'],
+                    'hips': ['Hip Flexor Stretch', 'Hip Circles', 'Pigeon Pose', 'Butterfly Stretch'],
+                    'lower-back': ['Cat-Cow Stretch', 'Child\'s Pose', 'Pelvic Tilts', 'Bird Dogs']
+                };
+                
+                const bodyPartExercises = mobilityExercises[bodyPart.toLowerCase()] || ['Stretch 1', 'Stretch 2'];
+                bodyPartExercises.forEach((exercise, index) => {
+                    exercises.push({
+                        name: exercise,
+                        duration: `${8 + (index * 3)} mins`,
+                        sessions: 12,
+                        icon: '🧘',
+                        status: 'not-started'
+                    });
+                });
+            } else if (programType === 'prehab') {
+                const prehabExercises = {
+                    'best-program': ['Ankle Stability', 'Knee Tracking', 'Hip Stability', 'Core Activation'],
+                    'ankle-strengthening': ['Ankle Stability', 'Calf Raises', 'Balance Exercises', 'Proprioception'],
+                    'knee-stability': ['Knee Tracking', 'Wall Slides', 'Step-ups', 'Single Leg Balance']
+                };
+                
+                const bodyPartExercises = prehabExercises[bodyPart.toLowerCase()] || ['Prehab 1', 'Prehab 2'];
+                bodyPartExercises.forEach((exercise, index) => {
+                    exercises.push({
+                        name: exercise,
+                        duration: `${10 + (index * 3)} mins`,
+                        sessions: 12,
+                        icon: '🛡️',
+                        status: 'not-started'
+                    });
+                });
+            }
+            
+            return exercises;
+        }
+
+        function getDefaultBodyPartsForSection(programType, sectionNumber) {
+            // Default body parts if no custom data is available
+            const defaults = {
+                strength: {
+                    1: [
+                        {
+                            name: 'Legs',
+                            icon: '🦵',
+                            status: 'not-started',
+                            exercises: [
+                                { name: 'Squats', duration: '15 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Deadlifts', duration: '20 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        },
+                        {
+                            name: 'Core',
+                            icon: '🫁',
+                            status: 'not-started',
+                            exercises: [
+                                { name: 'Planks', duration: '10 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Russian Twists', duration: '8 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    2: [
+                        {
+                            name: 'Upper Body',
+                            icon: '💪',
+                            status: 'not-started',
+                            exercises: [
+                                { name: 'Bench Press', duration: '18 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Pull-ups', duration: '12 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ],
+                    3: [
+                        {
+                            name: 'Back',
+                            icon: '💪',
+                            status: 'not-started',
+                            exercises: [
+                                { name: 'Rows', duration: '15 mins', sessions: 12, icon: '💪', status: 'not-started' },
+                                { name: 'Lat Pulldowns', duration: '12 mins', sessions: 12, icon: '🏋️', status: 'not-started' }
+                            ]
+                        }
+                    ]
+                }
+            };
+            
+            return defaults[programType]?.[sectionNumber] || [];
+        }
+
+        function renderBodyPartsForSection(sectionNumber) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            const bodyParts = getBodyPartsForSection(programType, sectionNumber);
+            
+            let bodyPartsHTML = '';
+            
+            if (bodyParts.length === 0) {
+                bodyPartsHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="font-medium">No body parts available for this section</p>
+                    </div>
+                `;
+            } else {
+                bodyParts.forEach(bodyPart => {
+                    // Check if section is locked
+                    const isSectionLocked = sectionNumber > 1 && !isSectionCompleted(sectionNumber - 1);
+                    
+                    const statusText = isSectionLocked ? 'Locked' : 
+                                     bodyPart.status === 'finished' ? 'Finished' : 
+                                     bodyPart.status === 'in-progress' ? 'In Progress' : 'Not Started';
+                    const statusColor = isSectionLocked ? 'text-gray-400' :
+                                      bodyPart.status === 'finished' ? 'text-green-600' : 
+                                      bodyPart.status === 'in-progress' ? 'text-blue-600' : 'text-gray-500';
+                    
+                    const containerClasses = isSectionLocked ? 
+                        'bg-gray-50 rounded-xl border border-gray-200 p-6 shadow-sm cursor-not-allowed opacity-60 mb-4' :
+                        'bg-white rounded-xl border border-gray-200 p-6 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors mb-4';
+                    
+                    bodyPartsHTML += `
+                         <div class="${containerClasses}" ${!isSectionLocked ? `onclick="openBodyPartDetail('${bodyPart.name}', ${sectionNumber})"` : ''}>
+                             <div class="flex items-center space-x-4">
+                                 <div class="w-16 h-16 ${isSectionLocked ? 'bg-gray-200' : 'bg-gray-100'} rounded-xl flex items-center justify-center">
+                                     <span class="text-2xl ${isSectionLocked ? 'text-gray-400' : ''}">${bodyPart.icon}</span>
+                                 </div>
+                                 <div class="flex-1">
+                                     <div class="font-semibold ${isSectionLocked ? 'text-gray-400' : 'text-gray-900'} text-lg">${bodyPart.name}</div>
+                                     <div class="flex items-center space-x-6 text-sm ${isSectionLocked ? 'text-gray-400' : 'text-gray-600'} mt-2">
+                                         <div class="flex items-center space-x-2">
+                                             <svg class="w-5 h-5 ${isSectionLocked ? 'text-gray-400' : 'text-blue-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                             </svg>
+                                             <span class="font-medium">${bodyPart.exercises.length} exercises</span>
+                                         </div>
+                                         <div class="flex items-center space-x-2">
+                                             <svg class="w-5 h-5 ${isSectionLocked ? 'text-gray-400' : 'text-blue-600'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a4 4 0 014-4h6a4 4 0 014 4v4"></path>
+                                             </svg>
+                                             <span class="font-medium">3-4x/week</span>
+                                         </div>
+                                     </div>
+                                     <div class="${statusColor} text-sm font-medium mt-3">${statusText}</div>
+                                 </div>
+                             </div>
+                         </div>
+                     `;
+                });
+            }
+            
+            return bodyPartsHTML;
+        }
+
+        function updateSectionStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const programType = urlParams.get('type');
+            
+            // Calculate section completion based on body part status
+            const section1BodyParts = getBodyPartsForSection(programType, 1);
+            const section2BodyParts = getBodyPartsForSection(programType, 2);
+            const section3BodyParts = getBodyPartsForSection(programType, 3);
+            
+            // Section 1: All body parts finished = section finished
+            const section1Finished = section1BodyParts.every(bp => bp.status === 'finished');
+            const section1InProgress = section1BodyParts.some(bp => bp.status === 'in-progress');
+            
+            // Section 2: All body parts finished = section finished
+            const section2Finished = section2BodyParts.every(bp => bp.status === 'finished');
+            const section2InProgress = section2BodyParts.some(bp => bp.status === 'in-progress');
+            
+            // Section 3: All body parts finished = section finished
+            const section3Finished = section3BodyParts.every(bp => bp.status === 'finished');
+            const section3InProgress = section3BodyParts.some(bp => bp.status === 'in-progress');
+            
+            // Update section status display
+            updateSectionDisplay(1, section1Finished, section1InProgress);
+            updateSectionDisplay(2, section2Finished, section2InProgress);
+            updateSectionDisplay(3, section3Finished, section3InProgress);
+            
+            // Debug logging
+            console.log('Section 1 status:', { finished: section1Finished, inProgress: section1InProgress, bodyParts: section1BodyParts });
+            console.log('Section 2 status:', { finished: section2Finished, inProgress: section2InProgress, bodyParts: section2BodyParts });
+            console.log('Section 3 status:', { finished: section3Finished, inProgress: section3InProgress, bodyParts: section3BodyParts });
+        }
+
+        function updateSectionDisplay(sectionNumber, isFinished, isInProgress) {
+            // Find the specific section button by looking for the section number in the button's content
+            const sectionButtons = document.querySelectorAll(`button[onclick="toggleSection(this)"]`);
+            let sectionButton = null;
+            
+            for (let button of sectionButtons) {
+                if (button.textContent.includes(`Section ${sectionNumber}`)) {
+                    sectionButton = button;
+                    break;
+                }
+            }
+            
+            if (!sectionButton) return;
+            
+            const statusElement = sectionButton.querySelector('.text-sm');
+            const iconElement = sectionButton.querySelector('.w-10.h-10');
+            
+            // Check if section is locked (previous section not completed)
+            const isLocked = sectionNumber > 1 && !isSectionCompleted(sectionNumber - 1);
+            
+            if (isLocked) {
+                statusElement.textContent = 'Locked';
+                statusElement.className = 'text-sm text-gray-400 font-medium';
+                iconElement.className = 'w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center';
+                iconElement.innerHTML = '<svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>';
+                // Add locked styling to the button
+                sectionButton.classList.add('opacity-60', 'cursor-not-allowed');
+                sectionButton.classList.remove('hover:bg-gray-100');
+            } else if (isFinished) {
+                statusElement.textContent = 'Finished';
+                statusElement.className = 'text-sm text-green-600 font-medium';
+                iconElement.className = 'w-10 h-10 bg-green-500 rounded-full flex items-center justify-center';
+                iconElement.innerHTML = '<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                // Remove locked styling
+                sectionButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                sectionButton.classList.add('hover:bg-gray-100');
+            } else if (isInProgress) {
+                statusElement.textContent = 'In Progress';
+                statusElement.className = 'text-sm text-blue-600 font-medium';
+                iconElement.className = 'w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center';
+                iconElement.innerHTML = '<div class="w-5 h-5 bg-white rounded-full"></div>';
+                // Remove locked styling
+                sectionButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                sectionButton.classList.add('hover:bg-gray-100');
+            } else {
+                statusElement.textContent = 'Not started';
+                statusElement.className = 'text-sm text-gray-500 font-medium';
+                iconElement.className = 'w-10 h-10 bg-gray-400 rounded-full flex items-center justify-center';
+                iconElement.innerHTML = '<div class="w-5 h-5 bg-white rounded-full"></div>';
+                // Remove locked styling
+                sectionButton.classList.remove('opacity-60', 'cursor-not-allowed');
+                sectionButton.classList.add('hover:bg-gray-100');
+            }
+        }
+
+        function saveProgramProgress(programType, bodyPart) {
+            const userData = JSON.parse(sessionStorage.getItem('athleteUserData') || '{}');
+            
+            // Calculate overall program progress
+            const section1BodyParts = getBodyPartsForSection(programType, 1);
+            const section2BodyParts = getBodyPartsForSection(programType, 2);
+            const section3BodyParts = getBodyPartsForSection(programType, 3);
+            
+            const totalBodyParts = section1BodyParts.length + section2BodyParts.length + section3BodyParts.length;
+            const finishedBodyParts = [
+                ...section1BodyParts.filter(bp => bp.status === 'finished'),
+                ...section2BodyParts.filter(bp => bp.status === 'finished'),
+                ...section3BodyParts.filter(bp => bp.status === 'finished')
+            ].length;
+            
+            const inProgressBodyParts = [
+                ...section1BodyParts.filter(bp => bp.status === 'in-progress'),
+                ...section2BodyParts.filter(bp => bp.status === 'in-progress'),
+                ...section3BodyParts.filter(bp => bp.status === 'in-progress')
+            ].length;
+            
+            const progressPercentage = Math.round((finishedBodyParts / totalBodyParts) * 100);
+            const isInProgress = finishedBodyParts > 0 || inProgressBodyParts > 0;
+            
+            // Create or update program data
+            if (!userData.programs) {
+                userData.programs = { inProgress: [], completed: [] };
+            }
+            
+            const programData = {
+                id: `${programType}_${bodyPart || 'general'}_${Date.now()}`,
+                type: programType,
+                bodyPart: bodyPart || 'general',
+                title: document.getElementById('programTitle').textContent,
+                experience: document.getElementById('programLevel').textContent.toLowerCase(),
+                duration: '12-18 weeks',
+                sessions: 3, // 3 sections
+                completed: finishedBodyParts,
+                totalBodyParts: totalBodyParts,
+                progress: progressPercentage,
+                date: new Date().toLocaleDateString(),
+                icon: document.getElementById('programIcon').textContent,
+                inProgress: isInProgress,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            // Check if program already exists
+            const existingIndex = userData.programs.inProgress.findIndex(p => 
+                p.type === programType && p.bodyPart === (bodyPart || 'general')
+            );
+            
+            if (existingIndex >= 0) {
+                userData.programs.inProgress[existingIndex] = programData;
+            } else {
+                userData.programs.inProgress.push(programData);
+            }
+            
+            sessionStorage.setItem('athleteUserData', JSON.stringify(userData));
+        }
+    </script>
+</body>
+</html>

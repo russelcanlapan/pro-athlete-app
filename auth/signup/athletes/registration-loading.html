@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registering Account Loading athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .basketball-animation {
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8 text-center">
+            <!-- Basketball Animation -->
+            <div class="mb-8">
+                <div class="w-32 h-32 mx-auto mb-6">
+                    <div class="w-full h-full bg-orange-100 rounded-full flex items-center justify-center basketball-animation">
+                        <div class="text-8xl">🏀</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Text -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                    Just a moment as we register your account...
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(function() {
+            window.location.href = 'account-success.html?t=' + Date.now();
+        }, 3000);
+    </script>
+</body>
+</html>

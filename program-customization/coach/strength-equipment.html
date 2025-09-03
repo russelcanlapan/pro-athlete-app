@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strength Program - Equipment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .equipment-option {
+            transition: all 0.3s ease;
+        }
+        .equipment-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Strength program customization">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex-1 mx-4"></div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Strength Program</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">What equipment do you have access to?</h2>
+                </div>
+
+                <!-- Equipment Options -->
+                <div class="space-y-4">
+                    <!-- Minimal -->
+                    <button onclick="selectEquipment('minimal')" 
+                            class="equipment-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <!-- Minimal Icon -->
+                                <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Minimal</h3>
+                                <p class="text-sm text-gray-600">Basic equipment or bodyweight only</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Basic -->
+                    <button onclick="selectEquipment('basic')" 
+                            class="equipment-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <!-- Basic Icon -->
+                                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Basic</h3>
+                                <p class="text-sm text-gray-600">Dumbbells, resistance bands, basic gym</p>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Extensive -->
+                    <button onclick="selectEquipment('extensive')" 
+                            class="equipment-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <!-- Extensive Icon -->
+                                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Extensive</h3>
+                                <p class="text-sm text-gray-600">Full gym with all equipment available</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="createProgram()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Create strength program">
+                    Create Program
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedEquipment = null;
+        const nextButton = document.getElementById('nextButton');
+
+        function selectEquipment(equipment) {
+            selectedEquipment = equipment;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.equipment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.closest('.equipment-option').classList.add('selected');
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        function createProgram() {
+            if (!selectedEquipment) return;
+            localStorage.setItem('strengthEquipment', selectedEquipment);
+            window.location.href = 'strength-creating.html';
+        }
+
+        function goBack() {
+            window.location.href = 'strength-experience.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Coach - Second Team's Athlete Age</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Coach onboarding">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="3" aria-valuemin="1" aria-valuemax="6" aria-label="Step 3 of 6">
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Onboarding Coach - Second Team's Athlete...</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Athlete Illustration -->
+                <div class="mb-8 text-center">
+                    <div class="w-32 h-32 mx-auto mb-6">
+                        <div class="w-full h-full bg-blue-100 rounded-full flex items-center justify-center">
+                            <!-- Athlete illustration with split design -->
+                            <div class="relative w-16 h-16">
+                                <div class="absolute inset-0 bg-blue-600 rounded-full"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                                        <div class="w-8 h-8 bg-blue-600 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">What is the average age of the athletes on Canada U23 Men's Basketball?</h2>
+                </div>
+
+                <!-- Age Input -->
+                <form onsubmit="handleSubmit(event)" class="space-y-4">
+                    <div>
+                        <label for="averageAge2" class="block text-sm font-medium text-gray-700 mb-2">Average Age</label>
+                        <input type="number" 
+                               id="averageAge2" 
+                               name="averageAge2" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               placeholder="Enter average age"
+                               min="1"
+                               max="100"
+                               required
+                               aria-describedby="averageAgeHelp2">
+                        <p id="averageAgeHelp2" class="mt-2 text-sm text-gray-600">We will be able to better customize the programs for your team's players based on their age</p>
+                    </div>
+                </form>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button onclick="handleNext()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Continue to next step">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const averageAgeInput = document.getElementById('averageAge2');
+            
+            // Prevent form submission on Enter key in input field
+            averageAgeInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleNext();
+                }
+            });
+        });
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            handleNext();
+        }
+
+        function handleNext() {
+            const averageAge = document.getElementById('averageAge2').value.trim();
+            if (averageAge) {
+                localStorage.setItem('coachTeam2AverageAge', averageAge);
+                window.location.href = 'team-demographic-2.html?t=' + Date.now();
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'team-name-2.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>

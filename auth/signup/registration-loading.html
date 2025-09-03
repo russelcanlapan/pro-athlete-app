@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registering Account Loading athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8 text-center">
+
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Sign up progress">
+                    <div class="w-6 h-6"></div>
+                    
+                    <div class="flex-1"></div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Basketball Icon -->
+                <div class="mb-8">
+                    <div class="w-32 h-32 mx-auto mb-6">
+                        <div class="w-full h-full bg-orange-100 rounded-full flex items-center justify-center bounce">
+                            <div class="text-8xl">🏀</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading Message -->
+                <div class="mb-8">
+                    <h1 class="text-xl font-semibold text-gray-900 mb-4">Just a moment as we register your account...</h1>
+                    <p class="text-gray-600">Please wait while we set up your PRO ATHLETE experience</p>
+                </div>
+                
+                <!-- Loading Dots -->
+                <div class="flex justify-center space-x-2">
+                    <div class="w-3 h-3 bg-blue-600 rounded-full pulse" style="animation-delay: 0s;"></div>
+                    <div class="w-3 h-3 bg-blue-600 rounded-full pulse" style="animation-delay: 0.2s;"></div>
+                    <div class="w-3 h-3 bg-blue-600 rounded-full pulse" style="animation-delay: 0.4s;"></div>
+                </div>
+            </main>
+
+            <!-- Progress Info -->
+            <div class="text-center">
+                <p class="text-sm text-gray-500">This may take a few seconds</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate registration process
+        let progress = 0;
+        const progressSteps = [
+            'Validating your information...',
+            'Creating your account...',
+            'Setting up your profile...',
+            'Preparing your dashboard...',
+            'Almost done...'
+        ];
+        
+        const progressElement = document.querySelector('p.text-gray-600');
+        
+        function updateProgress() {
+            if (progress < progressSteps.length) {
+                progressElement.textContent = progressSteps[progress];
+                progress++;
+                setTimeout(updateProgress, 1500);
+            } else {
+                // Navigate to account success page after completion
+                setTimeout(() => {
+                    window.location.href = 'account-success.html?t=' + Date.now();
+                }, 1000);
+            }
+        }
+        
+        // Start progress updates after a short delay
+        setTimeout(updateProgress, 1000);
+        
+        // Auto-navigate after 8 seconds as fallback
+        setTimeout(() => {
+            window.location.href = 'account-success.html?t=' + Date.now();
+        }, 8000);
+    </script>
+</body>
+</html>

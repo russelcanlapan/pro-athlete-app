@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating Warm-up Training Program</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .basketball-animation {
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8 text-center">
+            <!-- Header -->
+            <header class="mb-8">
+                <h1 class="text-center text-sm font-medium text-gray-600">Creating Warm-up Training Program</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Sport Ball Animation -->
+                <div class="mb-8">
+                    <div class="w-24 h-24 mx-auto mb-6">
+                        <div id="sportBallContainer" class="w-full h-full bg-blue-600 rounded-full flex items-center justify-center basketball-animation">
+                            <!-- Sport Ball Icon will be set by JavaScript -->
+                            <div id="sportBallIcon" class="text-4xl text-white">🏀</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Creating your warm-up program</h2>
+                    <p class="text-gray-600">Please wait while we customize your program...</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Set sport ball based on coach's selected sport
+        function setSportBall() {
+            const coachProfile = localStorage.getItem('coachProfile');
+            const sportBallIcon = document.getElementById('sportBallIcon');
+            const sportBallContainer = document.getElementById('sportBallContainer');
+            
+            let coachSport = 'basketball'; // default
+            
+            if (coachProfile) {
+                const profile = JSON.parse(coachProfile);
+                coachSport = profile.sport || 'basketball';
+            }
+            
+            // Define sport ball mappings
+            const sportBalls = {
+                'basketball': { emoji: '🏀', bgColor: 'bg-blue-600' },
+                'volleyball': { emoji: '🏐', bgColor: 'bg-blue-600' },
+                'football': { emoji: '🏈', bgColor: 'bg-blue-600' },
+                'soccer': { emoji: '⚽', bgColor: 'bg-blue-600' }
+            };
+            
+            // Get the sport ball data or default to basketball
+            const sportBall = sportBalls[coachSport] || sportBalls['basketball'];
+            
+            // Update the icon and background color
+            sportBallIcon.textContent = sportBall.emoji;
+            sportBallContainer.className = `w-full h-full ${sportBall.bgColor} rounded-full flex items-center justify-center basketball-animation`;
+        }
+        
+        // Set sport ball when page loads
+        window.addEventListener('load', setSportBall);
+        
+        // Automatically redirect to summary page after 3 seconds
+        setTimeout(function() {
+            window.location.href = 'warmup-summary.html?t=' + Date.now();
+        }, 3000);
+    </script>
+</body>
+</html>

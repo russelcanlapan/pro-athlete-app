@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Customization Coach - Team Selection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .team-option {
+            transition: all 0.3s ease;
+        }
+        .team-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Program customization">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <h1 class="text-center text-sm font-medium text-gray-600">Program Customization Coach</h1>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">What team do you want to create a program for?</h2>
+                </div>
+
+                <!-- Team Options -->
+                <div class="space-y-4" id="teamOptions">
+                    <!-- Team options will be dynamically generated -->
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Continue to next step">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedTeam = null;
+        const nextButton = document.getElementById('nextButton');
+
+        // Load coach profile and generate team options
+        window.addEventListener('load', function() {
+            const coachProfile = localStorage.getItem('coachProfile');
+            if (coachProfile) {
+                const profile = JSON.parse(coachProfile);
+                generateTeamOptions(profile);
+            }
+        });
+
+        function generateTeamOptions(profile) {
+            const teamOptionsContainer = document.getElementById('teamOptions');
+            
+            // Add Team 1
+            if (profile.teamName) {
+                const team1Option = createTeamOption('team1', profile.teamName, 'Team 1');
+                teamOptionsContainer.appendChild(team1Option);
+            }
+            
+            // Add Team 2 if it exists
+            if (profile.team2Name) {
+                const team2Option = createTeamOption('team2', profile.team2Name, 'Team 2');
+                teamOptionsContainer.appendChild(team2Option);
+            }
+        }
+
+        function createTeamOption(teamId, teamName, teamLabel) {
+            const div = document.createElement('div');
+            div.className = 'team-option w-full p-4 border-2 border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-pointer';
+            div.onclick = () => selectTeam(teamId, teamName);
+            
+            div.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900 mb-1">${teamLabel}</p>
+                        <p class="text-xs text-gray-600">${teamName}</p>
+                    </div>
+                    <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                        <div id="${teamId}Radio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function selectTeam(teamId, teamName) {
+            selectedTeam = { id: teamId, name: teamName };
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.team-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Hide all radio buttons
+            document.querySelectorAll('[id$="Radio"]').forEach(radio => {
+                radio.classList.add('hidden');
+            });
+            
+            // Add selected class to clicked option and show radio button
+            event.target.closest('.team-option').classList.add('selected');
+            document.getElementById(teamId + 'Radio').classList.remove('hidden');
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        function handleNext() {
+            if (!selectedTeam) return;
+            localStorage.setItem('selectedTeamForProgram', JSON.stringify(selectedTeam));
+            window.location.href = 'program-type.html?t=' + Date.now();
+        }
+
+        function goBack() {
+            window.location.href = '/onboarding/coach/program-customization-welcome.html?t=' + Date.now();
+        }
+    </script>
+</body>
+</html>

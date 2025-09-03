@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Coach - Select Team Demographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .demographic-option {
+            transition: all 0.3s ease;
+        }
+        .demographic-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Coach onboarding">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="4" aria-valuemin="1" aria-valuemax="6" aria-label="Step 4 of 6">
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                        <div class="flex-1 h-1 bg-gray-200 rounded"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Select team demographic</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Do you coach a women's or men's basketball team?</h2>
+                </div>
+
+                <!-- Demographic Options -->
+                <div class="space-y-4">
+                    <!-- Women's Team -->
+                    <button onclick="selectDemographic('womens')" 
+                            class="demographic-option w-full p-6 border-2 border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-center space-x-4">
+                            <div class="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center">
+                                <!-- Women's basketball player illustration -->
+                                <svg class="w-8 h-8 text-pink-600" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                                    <path d="M12 12c-2.2 0-4 1.8-4 4v4h8v-4c0-2.2-1.8-4-4-4z" fill="currentColor"/>
+                                    <circle cx="12" cy="16" r="2" fill="white"/>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-medium text-gray-900">Women's</span>
+                        </div>
+                    </button>
+
+                    <!-- Men's Team -->
+                    <button onclick="selectDemographic('mens')" 
+                            class="demographic-option w-full p-6 border-2 border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-center space-x-4">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                                <!-- Men's basketball player illustration -->
+                                <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                                    <path d="M12 12c-2.2 0-4 1.8-4 4v4h8v-4c0-2.2-1.8-4-4-4z" fill="currentColor"/>
+                                    <rect x="10" y="14" width="4" height="2" fill="white"/>
+                                </svg>
+                            </div>
+                            <span class="text-lg font-medium text-gray-900">Men's</span>
+                        </div>
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="nextButton" onclick="handleNext()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Continue to next step">
+                    Next
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedDemographic = null;
+        const nextButton = document.getElementById('nextButton');
+
+        function selectDemographic(demographic) {
+            selectedDemographic = demographic;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.demographic-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            event.target.closest('.demographic-option').classList.add('selected');
+            
+            // Enable next button
+            nextButton.disabled = false;
+        }
+
+        function handleNext() {
+            if (!selectedDemographic) return;
+            localStorage.setItem('coachTeamDemographic', selectedDemographic);
+            window.location.href = 'skill-level.html?t=' + Date.now();
+        }
+
+        function goBack() {
+            window.location.href = 'athlete-age.html?t=' + Date.now();
+        }
+
+        // Add Enter key support
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && selectedDemographic) {
+                handleNext();
+            }
+        });
+    </script>
+</body>
+</html>

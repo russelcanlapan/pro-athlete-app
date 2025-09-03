@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-up - Activation Key for Athlete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Sign up progress">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="6" aria-valuemin="1" aria-valuemax="6" aria-label="Step 6 of 6">
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                        <div class="progress-step flex-1 h-1 bg-gray-200 rounded overflow-hidden completed"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Provide your key</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Enter the activation key</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Activation Key Input -->
+                    <div>
+                        <label for="activationKey" class="block text-sm font-medium text-gray-700 mb-2">Activation Key</label>
+                        <input type="text" 
+                               id="activationKey" 
+                               name="activationKey"
+                               placeholder="Enter your activation key"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               required>
+                    </div>
+
+                    <p class="text-sm text-gray-600">
+                        The key should already be in your email inbox or provided by your coach or health professional
+                    </p>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8 space-y-4">
+                <button id="createAccountBtn" onclick="handleCreateAccount()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Create account
+                </button>
+                
+                <div class="text-center">
+                    <a href="#" onclick="handleFreeTrial()" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        Don't have a key? Get a free trial
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function handleCreateAccount() {
+            const activationKey = document.getElementById('activationKey').value.trim();
+            
+            if (!activationKey) {
+                alert('Please enter your activation key');
+                return;
+            }
+            
+            // Store activation key
+            localStorage.setItem('signupActivationKey', activationKey);
+            
+            // Show loading state
+            const btn = document.getElementById('createAccountBtn');
+            btn.textContent = 'Creating...';
+            btn.disabled = true;
+            
+            // Navigate to registration loading page
+            setTimeout(() => {
+                window.location.href = 'registration-loading.html?t=' + Date.now();
+            }, 1000);
+        }
+
+        function handleFreeTrial() {
+            // Navigate directly to free trial info page
+            window.location.href = 'free-trial-info.html';
+        }
+
+        function goBack() {
+            window.location.href = 'account-type.html';
+        }
+
+        // Enable enter key to submit
+        document.getElementById('activationKey').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleCreateAccount();
+            }
+        });
+    </script>
+</body>
+</html>

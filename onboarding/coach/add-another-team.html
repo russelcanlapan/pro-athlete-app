@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding Coach - Add Another Team</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .team-option {
+            transition: all 0.3s ease;
+        }
+        .team-option.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+            <!-- Header -->
+            <header class="mb-8">
+                <nav class="flex items-center justify-between mb-4" role="navigation" aria-label="Coach onboarding">
+                    <button type="button" onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Go back">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5M12 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="flex items-center gap-1.5 flex-1 mx-4" role="progressbar" aria-valuenow="6" aria-valuemin="1" aria-valuemax="6" aria-label="Step 6 of 6">
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                        <div class="flex-1 h-1 bg-blue-600 rounded"></div>
+                    </div>
+                    
+                    <div class="w-6 h-6"></div>
+                </nav>
+
+                <h1 class="text-center text-sm font-medium text-gray-600">Add another team</h1>
+            </header>
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Do you want to add another team?</h2>
+                </div>
+
+                <!-- Team Options -->
+                <div class="space-y-4">
+                    <!-- Add Another Team -->
+                    <button onclick="selectTeamOption('add-another')" 
+                            class="team-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">Yes, I'd like to add another team and create programs for the athletes on that team</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="addAnotherRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- One Team Only -->
+                    <button onclick="selectTeamOption('one-team')" 
+                            class="team-option w-full p-4 border-2 border-gray-200 rounded-lg text-left hover:border-gray-300 transition-colors">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-900">I only want to add one team for now.</p>
+                            </div>
+                            <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center">
+                                <div id="oneTeamRadio" class="w-3 h-3 bg-blue-600 rounded-full hidden"></div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Info Text -->
+                <div class="mt-6 text-center">
+                    <p class="text-xs text-gray-500">You can add up to three team's under a Coach's profile</p>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8">
+                <button id="submitButton" onclick="handleSubmit()" disabled
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        aria-label="Complete coach setup">
+                    Submit
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        let selectedTeamOption = null;
+        const submitButton = document.getElementById('submitButton');
+
+        function selectTeamOption(option) {
+            selectedTeamOption = option;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.team-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Hide all radio buttons
+            document.getElementById('addAnotherRadio').classList.add('hidden');
+            document.getElementById('oneTeamRadio').classList.add('hidden');
+            
+            // Add selected class to clicked option and show radio button
+            event.target.closest('.team-option').classList.add('selected');
+            
+            // Map option values to radio button IDs
+            let radioId = '';
+            if (option === 'add-another') {
+                radioId = 'addAnotherRadio';
+            } else if (option === 'one-team') {
+                radioId = 'oneTeamRadio';
+            }
+            
+            if (radioId) {
+                document.getElementById(radioId).classList.remove('hidden');
+            }
+            
+            // Enable submit button
+            submitButton.disabled = false;
+        }
+
+        // Add keyboard support for Enter key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                if (selectedTeamOption) {
+                    handleSubmit();
+                } else {
+                    // If no option selected, select the first one
+                    selectTeamOption('one-team');
+                }
+            }
+        });
+
+        function handleSubmit() {
+            if (!selectedTeamOption) return;
+            
+            // Save all coach profile data
+            const coachProfile = {
+                sport: localStorage.getItem('coachSport'),
+                teamName: localStorage.getItem('coachTeamName'),
+                experience: localStorage.getItem('coachExperience'),
+                specialization: localStorage.getItem('coachSpecialization'),
+                teamAverageAge: localStorage.getItem('coachTeamAverageAge'),
+                teamDemographic: localStorage.getItem('coachTeamDemographic'),
+                teamSkillLevel: localStorage.getItem('coachTeamSkillLevel'),
+                addAnotherTeam: selectedTeamOption,
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('coachProfile', JSON.stringify(coachProfile));
+            
+            // Navigate based on selection
+            if (selectedTeamOption === 'add-another') {
+                // Navigate to add another team flow
+                window.location.href = 'team-name-2.html';
+            } else {
+                // Navigate to coach dashboard
+                window.location.href = '/coaches/home.html';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'skill-level.html';
+        }
+    </script>
+</body>
+</html>

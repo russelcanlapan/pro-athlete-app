@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Injury Statistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .injury-button {
+            cursor: pointer;
+        }
+    </style>
+</head> 
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="sticky top-0 bg-white/90 backdrop-blur-md border-b border-gray-200 z-40">
+        <div class="flex items-center justify-between p-4">
+            <button onclick="goBack()" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            <div class="flex items-center space-x-2">
+                <h1 class="text-xl font-bold text-gray-900">Injury Statistics</h1>
+                <button id="infoButton" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </button>
+            </div>
+            <button onclick="addInjury()" class="text-blue-600 font-semibold text-sm hover:text-blue-700">
+                + Add an Injury
+            </button> 
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="px-6 py-8 max-w-4xl mx-auto pb-32">
+        <!-- View Toggle -->
+        <div class="flex bg-white rounded-lg p-1 mb-8 shadow-sm">
+            <button onclick="switchView('front')" id="frontViewBtn" class="flex-1 py-3 px-6 rounded-lg font-semibold text-sm bg-blue-600 text-white">
+                Front View
+            </button>
+            <button onclick="switchView('back')" id="backViewBtn" class="flex-1 py-3 px-6 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-100">
+                Back View
+            </button>
+        </div>
+
+                 <!-- Body Diagram Container -->
+         <div class="bg-white rounded-xl p-8 shadow-sm mb-4">
+            <div class="relative max-w-md mx-auto">
+                <!-- Left/Right Labels -->
+                <div class="absolute top-0 left-0 right-0 flex justify-between text-sm font-medium text-gray-900">
+                    <span id="rightLabel">Right</span>
+                    <span id="leftLabel">Left</span>
+                </div>
+                
+                <!-- Body Diagram -->
+                <div class="mt-8 relative">
+                    <!-- Front View Body -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <div id="frontBody" class="relative">
+                            <svg class="w-full h-auto max-w-md mx-auto" viewBox="0 0 240 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Front View - Anatomical Body -->
+                                <!-- Head -->
+                                <path d="M 95 10 Q 120 0 145 10 Q 150 30 150 50 Q 150 70 145 80 Q 120 90 95 80 Q 90 70 90 50 Q 90 30 95 10 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Neck -->
+                                <path d="M 105 80 L 135 80 L 130 100 L 110 100 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Torso -->
+                                <path d="M 90 100 L 150 100 Q 160 120 156 140 L 156 220 Q 160 240 150 250 L 90 250 Q 80 240 84 220 L 84 140 Q 80 120 90 100 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Arms -->
+                                <!-- Right Arm -->
+                                <path d="M 150 100 Q 170 110 176 140 Q 180 170 176 200 L 164 190 Q 160 170 156 150 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <!-- Left Arm -->
+                                <path d="M 90 100 Q 70 110 64 140 Q 60 170 64 200 L 76 190 Q 80 170 84 150 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Hands -->
+                                <ellipse cx="170" cy="210" rx="10" ry="16" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <ellipse cx="70" cy="210" rx="10" ry="16" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Legs -->
+                                <!-- Right Leg -->
+                                <path d="M 130 250 Q 140 260 144 300 Q 148 340 144 380 L 136 370 Q 132 340 128 310 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <!-- Left Leg -->
+                                <path d="M 110 250 Q 100 260 96 300 Q 92 340 96 380 L 104 370 Q 108 340 112 310 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Feet -->
+                                <ellipse cx="140" cy="390" rx="16" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <ellipse cx="100" cy="390" rx="16" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                                                 <!-- Injury Markers as Clickable Buttons -->
+                                 <!-- Right Shoulder (Left side of diagram) -->
+                                 <circle cx="170" cy="100" r="12" fill="#ef4444"/>
+                                 <text x="170" y="105" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(1)" style="cursor: pointer;">1</text>
+                                 
+                                 <!-- Left Elbow (Right side of diagram) -->
+                                 <circle cx="70" cy="140" r="12" fill="#6b7280"/>
+                                 <text x="70" y="145" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(2)" style="cursor: pointer;">2</text>
+                                 
+                                 <!-- Right Knee (Left side of diagram) -->
+                                 <circle cx="140" cy="320" r="12" fill="#ef4444"/>
+                                 <text x="140" y="325" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(3)" style="cursor: pointer;">3</text>
+                                 
+                                 <!-- Left Hip (Right side of diagram) -->
+                                 <circle cx="100" cy="250" r="12" fill="#6b7280"/>
+                                 <text x="100" y="255" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(4)" style="cursor: pointer;">4</text>
+                            </svg>
+                       </div>
+                    
+                    <!-- Back View Body (Hidden by default) -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <div id="backBody" class="relative hidden">
+                            <svg class="w-full h-auto max-w-md mx-auto" viewBox="0 0 240 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Back View - Anatomical Body -->
+                                <!-- Head -->
+                                <path d="M 95 10 Q 120 0 145 10 Q 150 30 150 50 Q 150 70 145 80 Q 120 90 95 80 Q 90 70 90 50 Q 90 30 95 10 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Neck -->
+                                <path d="M 105 80 L 135 80 L 130 100 L 110 100 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Torso -->
+                                <path d="M 90 100 L 150 100 Q 160 120 156 140 L 156 220 Q 160 240 150 250 L 90 250 Q 80 240 84 220 L 84 140 Q 80 120 90 100 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Arms -->
+                                <!-- Right Arm -->
+                                <path d="M 150 100 Q 170 110 176 140 Q 180 170 176 200 L 164 190 Q 160 170 156 150 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <!-- Left Arm -->
+                                <path d="M 90 100 Q 70 110 64 140 Q 60 170 64 200 L 76 190 Q 80 170 84 150 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Hands -->
+                                <ellipse cx="170" cy="210" rx="10" ry="16" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <ellipse cx="70" cy="210" rx="10" ry="16" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Legs -->
+                                <!-- Right Leg -->
+                                <path d="M 130 250 Q 140 260 144 300 Q 148 340 144 380 L 136 370 Q 132 340 128 310 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <!-- Left Leg -->
+                                <path d="M 110 250 Q 100 260 96 300 Q 92 340 96 380 L 104 370 Q 108 340 112 310 Z" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                <!-- Feet -->
+                                <ellipse cx="140" cy="390" rx="16" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                <ellipse cx="100" cy="390" rx="16" ry="8" stroke="#1e40af" stroke-width="2" fill="#dbeafe"/>
+                                
+                                                                 <!-- Back Injury Markers -->
+                                 <!-- Lower Back -->
+                                 <circle cx="120" cy="220" r="12" fill="#ef4444"/>
+                                 <text x="120" y="225" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(5)" style="cursor: pointer;">1</text>
+                                 
+                                 <!-- Upper Back/Neck -->
+                                 <circle cx="120" cy="140" r="12" fill="#6b7280"/>
+                                 <text x="120" y="145" text-anchor="middle" fill="white" font-size="12" font-weight="bold" class="injury-button" onclick="showInjuryDetails(6)" style="cursor: pointer;">2</text>
+                            </svg>
+                       </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Injury Info Tooltip -->
+        <div id="injuryTooltip" class="hidden fixed bg-white rounded-2xl shadow-xl border border-gray-100 z-50 max-w-sm">
+            <div class="absolute top-1/2 -left-2 transform -translate-y-1/2">
+                <div class="w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-white"></div>
+            </div>
+            <p class="text-gray-700 mb-4 font-medium">Click a mark to check the injuries on this position!</p>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-4 h-4 bg-red-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-gray-700">Severity - How bad is the injury?</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="w-4 h-4 bg-gray-500 rounded-full"></div>
+                    <span class="text-sm font-medium text-gray-700">Duration - Total amount of pain in the area.</span>
+                </div>
+            </div>
+        </div>
+
+                 <!-- All Injury Reports -->
+         <div class="text-left mb-4">
+             <p class="text-sm text-gray-500">All Injury Reports</p>
+         </div>
+
+        <!-- Injury Reports List -->
+        <div id="injuryReportsList" class="space-y-4">
+            <!-- Injury reports will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+        <div class="flex justify-around py-3">
+            <a href="home.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7m7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                <span class="text-xs mt-1">Home</span>
+            </a>
+            <a href="tracking.html" class="flex flex-col items-center text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <span class="text-xs mt-1">Tracking</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="text-xs mt-1">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentView = 'front';
+
+        // Info tooltip functionality
+        const infoButton = document.getElementById('infoButton');
+        const injuryTooltip = document.getElementById('injuryTooltip');
+
+        infoButton.addEventListener('click', function() {
+            if (injuryTooltip.classList.contains('hidden')) {
+                // Position tooltip to the right of the info button
+                const buttonRect = infoButton.getBoundingClientRect();
+                injuryTooltip.style.left = (buttonRect.right + 10) + 'px';
+                injuryTooltip.style.top = (buttonRect.top + 20) + 'px';
+                injuryTooltip.classList.remove('hidden');
+            } else {
+                injuryTooltip.classList.add('hidden');
+            }
+        });
+
+        // Close tooltip when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!infoButton.contains(event.target) && !injuryTooltip.contains(event.target)) {
+                injuryTooltip.classList.add('hidden');
+            }
+        });
+
+        function switchView(view) {
+            currentView = view;
+            
+            // Update button styles
+            document.getElementById('frontViewBtn').className = 'flex-1 py-3 px-6 rounded-lg font-semibold text-sm ' + (view === 'front' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100');
+            document.getElementById('backViewBtn').className = 'flex-1 py-3 px-6 rounded-lg font-semibold text-sm ' + (view === 'back' ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100');
+            
+            // Update left/right labels based on view
+            const rightLabel = document.getElementById('rightLabel');
+            const leftLabel = document.getElementById('leftLabel');
+            
+            if (view === 'front') {
+                rightLabel.textContent = 'Right';
+                leftLabel.textContent = 'Left';
+            } else {
+                // For back view, swap the labels since we're looking from behind
+                rightLabel.textContent = 'Left';
+                leftLabel.textContent = 'Right';
+            }
+            
+            // Show/hide body views
+            if (view === 'front') {
+                document.getElementById('frontBody').classList.remove('hidden');
+                document.getElementById('backBody').classList.add('hidden');
+            } else {
+                document.getElementById('frontBody').classList.add('hidden');
+                document.getElementById('backBody').classList.remove('hidden');
+            }
+        }
+
+        function showInjuryDetails(injuryId) {
+            const injuryDetails = {
+                1: { location: 'Right Shoulder', type: 'Rotator Cuff Strain', date: '2024-01-15', status: 'Current', severity: 'Moderate' },
+                2: { location: 'Left Elbow', type: 'Tendonitis', date: '2023-11-20', status: 'Past', severity: 'Mild' },
+                3: { location: 'Right Knee', type: 'ACL Sprain', date: '2024-02-10', status: 'Current', severity: 'Severe' },
+                4: { location: 'Left Hip', type: 'Bursitis', date: '2023-09-05', status: 'Past', severity: 'Moderate' },
+                5: { location: 'Lower Back', type: 'Muscle Strain', date: '2024-01-30', status: 'Current', severity: 'Mild' },
+                6: { location: 'Upper Back', type: 'Tension', date: '2023-12-15', status: 'Past', severity: 'Mild' }
+            };
+            
+            const injury = injuryDetails[injuryId];
+            if (injury) {
+                const statusColor = injury.status === 'Current' ? 'text-red-600' : 'text-gray-600';
+                const severityColor = injury.severity === 'Severe' ? 'text-red-600' : 
+                                    injury.severity === 'Moderate' ? 'text-orange-600' : 'text-green-600';
+                
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                modal.innerHTML = `
+                    <div class="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">${injury.location}</h3>
+                            <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Type:</span>
+                                <span class="text-sm text-gray-900 ml-2">${injury.type}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Date:</span>
+                                <span class="text-sm text-gray-900 ml-2">${injury.date}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Status:</span>
+                                <span class="text-sm font-medium ${statusColor} ml-2">${injury.status}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Severity:</span>
+                                <span class="text-sm font-medium ${severityColor} ml-2">${injury.severity}</span>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex space-x-3">
+                            <button onclick="this.closest('.fixed').remove()" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                                Close
+                            </button>
+                            <button onclick="editInjury(${injuryId})" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // Close modal when clicking outside
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+            }
+        }
+
+        function editInjury(injuryId) {
+            // Close the current modal
+            document.querySelector('.fixed').remove();
+            // Navigate to edit injury page or show edit modal
+            alert(`Edit injury ${injuryId} functionality would be implemented here`);
+        }
+
+        function addInjury() {
+            // Navigate to add injury page
+            window.location.href = 'add-injury.html';
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // Sample injury data based on the injury markers
+        const injuryData = {
+            1: { 
+                location: 'Right Shoulder', 
+                type: 'Rotator Cuff Strain', 
+                date: '2024-01-15', 
+                status: 'Current', 
+                severity: 'Moderate',
+                description: 'Pain and limited range of motion in right shoulder during overhead movements.',
+                recoveryPeriod: '3 months',
+                allowedActivities: 'Light stretching, swimming',
+                restrictions: 'No overhead lifting, no throwing sports',
+                otherInstructions: 'Apply ice for 20 minutes, 3 times daily',
+                rehabExercises: 'Shoulder blade squeezes, wall slides, pendulum exercises'
+            },
+            2: { 
+                location: 'Left Elbow', 
+                type: 'Tendonitis', 
+                date: '2023-11-20', 
+                status: 'Past', 
+                severity: 'Mild',
+                description: 'Inflammation of the elbow tendons causing pain during gripping activities.',
+                recoveryPeriod: '6 weeks',
+                allowedActivities: 'Light gripping exercises, stretching',
+                restrictions: 'No heavy lifting, no repetitive gripping',
+                otherInstructions: 'Use elbow brace during activities',
+                rehabExercises: 'Wrist curls, forearm stretches, grip strengthening'
+            },
+            3: { 
+                location: 'Right Knee', 
+                type: 'ACL Sprain', 
+                date: '2024-02-10', 
+                status: 'Current', 
+                severity: 'Severe',
+                description: 'Partial tear of the anterior cruciate ligament causing instability.',
+                recoveryPeriod: '6 months',
+                allowedActivities: 'Stationary cycling, swimming, light walking',
+                restrictions: 'No running, jumping, or cutting movements',
+                otherInstructions: 'Wear knee brace during all activities',
+                rehabExercises: 'Quad sets, straight leg raises, wall sits'
+            },
+            4: { 
+                location: 'Left Hip', 
+                type: 'Bursitis', 
+                date: '2023-09-05', 
+                status: 'Past', 
+                severity: 'Moderate',
+                description: 'Inflammation of the hip bursa causing pain during movement.',
+                recoveryPeriod: '8 weeks',
+                allowedActivities: 'Gentle stretching, walking',
+                restrictions: 'No running, no prolonged sitting',
+                otherInstructions: 'Use cushion when sitting',
+                rehabExercises: 'Hip flexor stretches, glute bridges, clamshells'
+            },
+            5: { 
+                location: 'Lower Back', 
+                type: 'Muscle Strain', 
+                date: '2024-01-30', 
+                status: 'Current', 
+                severity: 'Mild',
+                description: 'Strain of the lower back muscles causing discomfort.',
+                recoveryPeriod: '4 weeks',
+                allowedActivities: 'Gentle walking, light stretching',
+                restrictions: 'No heavy lifting, no bending',
+                otherInstructions: 'Maintain good posture, use lumbar support',
+                rehabExercises: 'Cat-cow stretches, bird dogs, pelvic tilts'
+            },
+            6: { 
+                location: 'Upper Back', 
+                type: 'Tension', 
+                date: '2023-12-15', 
+                status: 'Past', 
+                severity: 'Mild',
+                description: 'Muscle tension in the upper back and neck area.',
+                recoveryPeriod: '2 weeks',
+                allowedActivities: 'Light stretching, massage',
+                restrictions: 'No heavy lifting, avoid poor posture',
+                otherInstructions: 'Use heat therapy, maintain good posture',
+                rehabExercises: 'Shoulder rolls, neck stretches, thoracic extensions'
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial view
+            switchView('front');
+            
+            // Load and display injury reports
+            loadInjuryReports();
+        });
+
+        function loadInjuryReports() {
+            const reportsContainer = document.getElementById('injuryReportsList');
+            const savedInjuries = JSON.parse(sessionStorage.getItem('userInjuries') || '[]');
+            
+            // Combine sample data with saved injuries
+            const allInjuries = [...Object.values(injuryData), ...savedInjuries];
+            
+            if (allInjuries.length === 0) {
+                reportsContainer.innerHTML = `
+                    <div class="bg-white rounded-xl p-6 shadow-sm text-center">
+                        <p class="text-gray-500">No injury reports found</p>
+                        <button onclick="addInjury()" class="mt-4 text-blue-600 font-medium hover:text-blue-700">
+                            + Add your first injury
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Order injuries to match the body diagram numbering (1-6)
+            const orderedInjuries = [];
+            
+            // Add injuries in the order they appear on the body diagram
+            const injuryOrder = [
+                { id: 1, location: 'Right Shoulder' },
+                { id: 2, location: 'Left Elbow' },
+                { id: 3, location: 'Right Knee' },
+                { id: 4, location: 'Left Hip' },
+                { id: 5, location: 'Lower Back' },
+                { id: 6, location: 'Upper Back' }
+            ];
+            
+            // First add the sample injuries in the correct order
+            injuryOrder.forEach(orderItem => {
+                const injury = allInjuries.find(inj => inj.location === orderItem.location);
+                if (injury) {
+                    orderedInjuries.push(injury);
+                }
+            });
+            
+            // Then add any saved injuries that aren't in the sample data
+            savedInjuries.forEach(savedInjury => {
+                const isSampleInjury = Object.values(injuryData).some(sample => 
+                    sample.location === savedInjury.location
+                );
+                if (!isSampleInjury) {
+                    orderedInjuries.push(savedInjury);
+                }
+            });
+            
+            reportsContainer.innerHTML = orderedInjuries.map((injury, index) => {
+                const statusColor = injury.status === 'Current' ? 'text-red-600' : 'text-gray-600';
+                const severityColor = injury.severity === 'Severe' ? 'text-red-600' : 
+                                    injury.severity === 'Moderate' ? 'text-orange-600' : 'text-green-600';
+                const statusBgColor = injury.status === 'Current' ? 'bg-red-100' : 'bg-gray-100';
+                
+                return `
+                    <div class="bg-white rounded-xl p-6 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">${injury.location}</h3>
+                                <p class="text-sm text-gray-600">${injury.type || injury.description}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium ${statusBgColor} ${statusColor}">
+                                ${injury.status}
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <span class="text-xs text-gray-500">Date</span>
+                                <p class="text-sm font-medium text-gray-900">${injury.date || injury.startDay}</p>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Severity</span>
+                                <p class="text-sm font-medium ${severityColor}">${injury.severity}</p>
+                            </div>
+                        </div>
+                        
+                        ${injury.recoveryPeriod ? `
+                        <div class="mb-4">
+                            <span class="text-xs text-gray-500">Recovery Period</span>
+                            <p class="text-sm font-medium text-gray-900">${injury.recoveryPeriod}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${injury.allowedActivities ? `
+                        <div class="mb-4">
+                            <span class="text-xs text-gray-500">Allowed Activities</span>
+                            <p class="text-sm text-gray-900">${injury.allowedActivities}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${injury.restrictions ? `
+                        <div class="mb-4">
+                            <span class="text-xs text-gray-500">Restrictions</span>
+                            <p class="text-sm text-gray-900">${injury.restrictions}</p>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="flex space-x-3">
+                            <button onclick="viewInjuryDetails(${index})" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                                View Details
+                            </button>
+                            <button onclick="editInjuryReport(${index})" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function viewInjuryDetails(injuryIndex) {
+            const savedInjuries = JSON.parse(sessionStorage.getItem('userInjuries') || '[]');
+            const allInjuries = [...Object.values(injuryData), ...savedInjuries];
+            const injury = allInjuries[injuryIndex];
+            
+            if (!injury) return;
+            
+            const statusColor = injury.status === 'Current' ? 'text-red-600' : 'text-gray-600';
+            const severityColor = injury.severity === 'Severe' ? 'text-red-600' : 
+                                injury.severity === 'Moderate' ? 'text-orange-600' : 'text-green-600';
+            
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl p-6 mx-4 max-w-lg w-full max-h-[80vh] overflow-y-auto">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">${injury.location}</h3>
+                        <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Type:</span>
+                            <span class="text-sm text-gray-900 ml-2">${injury.type || 'Not specified'}</span>
+                        </div>
+                        
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Description:</span>
+                            <p class="text-sm text-gray-900 mt-1">${injury.description || 'No description provided'}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Date:</span>
+                                <span class="text-sm text-gray-900 ml-2">${injury.date || injury.startDay}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Status:</span>
+                                <span class="text-sm font-medium ${statusColor} ml-2">${injury.status}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Severity:</span>
+                                <span class="text-sm font-medium ${severityColor} ml-2">${injury.severity}</span>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-600">Recovery Period:</span>
+                                <span class="text-sm text-gray-900 ml-2">${injury.recoveryPeriod || 'Not specified'}</span>
+                            </div>
+                        </div>
+                        
+                        ${injury.allowedActivities ? `
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Allowed Activities:</span>
+                            <p class="text-sm text-gray-900 mt-1">${injury.allowedActivities}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${injury.restrictions ? `
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Restrictions:</span>
+                            <p class="text-sm text-gray-900 mt-1">${injury.restrictions}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${injury.otherInstructions ? `
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Other Instructions:</span>
+                            <p class="text-sm text-gray-900 mt-1">${injury.otherInstructions}</p>
+                        </div>
+                        ` : ''}
+                        
+                        ${injury.rehabExercises ? `
+                        <div>
+                            <span class="text-sm font-medium text-gray-600">Rehab Exercises:</span>
+                            <p class="text-sm text-gray-900 mt-1">${injury.rehabExercises}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="mt-6 flex space-x-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">
+                            Close
+                        </button>
+                        <button onclick="editInjuryReport(${injuryIndex})" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+
+        function editInjuryReport(injuryIndex) {
+            // Close any open modals
+            const existingModal = document.querySelector('.fixed');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // For now, just show an alert. In a real app, this would navigate to an edit page
+            alert(`Edit injury report ${injuryIndex + 1} functionality would be implemented here`);
+        }
+    </script>
+</body>
+</html>

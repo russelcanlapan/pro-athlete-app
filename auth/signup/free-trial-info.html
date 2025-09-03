@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Registration Success Athlete [skip]</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .progress-step {
+            transition: all 0.3s ease;
+        }
+        .progress-step.completed {
+            background-color: #2563eb;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+        
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .plan-card {
+            transition: all 0.2s ease;
+        }
+        
+        .plan-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plan-card.selected {
+            border-color: #2563eb;
+            background-color: #f0f7ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-md mx-auto px-6 py-8">
+
+            <!-- Main Content -->
+            <main class="mb-8">
+                <!-- Blue Gradient Section -->
+                <div class="gradient-bg rounded-t-2xl p-6 mb-6">
+                    <h1 class="text-2xl font-bold text-white mb-6">How your free trial works</h1>
+                    
+                    <!-- Trial Steps Card -->
+                    <div class="bg-white rounded-xl p-6 space-y-6">
+                        <!-- Today -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Today</h3>
+                                <p class="text-sm text-gray-600">Get instant, free access and see how PRO ATHLETE can improve your performance.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Day 7 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-2H4v2zM4 15h6v-2H4v2zM4 11h6V9H4v2zM4 7h6V5H4v2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Day 7</h3>
+                                <p class="text-sm text-gray-600">We'll remind you with a notification that your trial is ending soon.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Day 14 -->
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Day 14</h3>
+                                <p class="text-sm text-gray-600">Your subscription will begin so cancel before the day to avoid payment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pricing Information -->
+                <div class="text-center mb-6">
+                    <p class="text-lg font-semibold text-gray-900">14 days free, then $129.99 per year</p>
+                    <p class="text-sm text-gray-600">That's only $10.83/month, billed annually</p>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="mt-8 space-y-4">
+                <button id="startTrialBtn" onclick="handleStartTrial()" 
+                        class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Start trial and subscribe
+                </button>
+                
+                <div class="text-center">
+                    <button onclick="showAllPlans()" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        See all plans
+                    </button>
+                    <button onclick="alert('Button works!')" class="text-red-600 hover:text-red-700 text-sm font-medium ml-4">
+                        Test Button
+                    </button>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Subscription Plans Modal -->
+    <div id="plansModal" class="modal-overlay fixed inset-0 z-50 hidden" style="display: none;" onclick="closeModal()">
+        <div class="min-h-screen flex items-center justify-center p-4" onclick="event.stopPropagation()">
+            <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4">
+                <!-- Modal Handle -->
+                <div class="flex justify-center pt-4 pb-2">
+                    <div class="w-12 h-1 bg-gray-300 rounded-full"></div>
+                </div>
+                
+                <!-- Header -->
+                <div class="px-6 pb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">Choose a plan</h2>
+                </div>
+
+                <!-- Plan Options -->
+                <div class="px-6 pb-6">
+                    <div class="space-y-4">
+                        <!-- 1 Month Plan -->
+                        <button id="monthlyPlan" onclick="selectPlan('monthly')" 
+                                class="plan-card w-full p-6 border-2 border-gray-200 rounded-lg bg-gray-50 text-center hover:border-gray-300 transition-all">
+                            <div class="text-xl font-bold text-gray-900 mb-2">1 month</div>
+                            <div class="text-sm text-gray-700 mb-1">$19.99 per month</div>
+                            <div class="text-xs text-gray-500">14 days free</div>
+                        </button>
+
+                        <!-- 12 Months Plan -->
+                        <button id="yearlyPlan" onclick="selectPlan('yearly')" 
+                                class="plan-card w-full p-6 border-2 border-gray-200 rounded-lg bg-gray-50 text-center hover:border-gray-300 transition-all">
+                            <div class="text-xl font-bold text-gray-900 mb-2">12 months</div>
+                            <div class="text-sm text-gray-700 mb-1">$129.99 per year</div>
+                            <div class="text-xs text-gray-500">14 days free</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer Text -->
+                <div class="px-6 pb-6">
+                    <p class="text-sm text-gray-600">
+                        Try 14 days for free, then $129.99/year. You can cancel anytime.
+                    </p>
+                </div>
+
+                <!-- Call to Action -->
+                <div class="px-6 pb-6">
+                    <button id="subscribeBtn" onclick="handleSubscribe()" 
+                            class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        Start trial and subscribe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = '';
+
+        function handleStartTrial() {
+            // Show loading state
+            const btn = document.getElementById('startTrialBtn');
+            btn.textContent = 'Starting...';
+            btn.disabled = true;
+            
+            // Navigate to registration loading page
+            setTimeout(() => {
+                window.location.href = 'registration-loading.html';
+            }, 1000);
+        }
+
+        function skipTrial() {
+            // Skip directly to registration loading page
+            window.location.href = 'registration-loading.html';
+        }
+
+        function showAllPlans() {
+            console.log('showAllPlans called');
+            const modal = document.getElementById('plansModal');
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+        }
+
+        function selectPlan(plan) {
+            selectedPlan = plan;
+            
+            // Remove selected class from all plans
+            document.getElementById('monthlyPlan').classList.remove('selected');
+            document.getElementById('yearlyPlan').classList.remove('selected');
+            
+            // Add selected class to chosen plan
+            if (plan === 'monthly') {
+                document.getElementById('monthlyPlan').classList.add('selected');
+            } else if (plan === 'yearly') {
+                document.getElementById('yearlyPlan').classList.add('selected');
+            }
+            
+            // Enable subscribe button
+            document.getElementById('subscribeBtn').disabled = false;
+        }
+
+        function handleSubscribe() {
+            if (!selectedPlan) return;
+            
+            // Store selected plan
+            localStorage.setItem('selectedPlan', selectedPlan);
+            
+            // Show loading state
+            const btn = document.getElementById('subscribeBtn');
+            btn.textContent = 'Starting...';
+            btn.disabled = true;
+            
+            // Close modal and navigate to registration loading
+            setTimeout(() => {
+                document.getElementById('plansModal').classList.add('hidden');
+                window.location.href = 'registration-loading.html';
+            }, 1000);
+        }
+
+        function goBack() {
+            window.location.href = 'activation-key.html';
+        }
+
+        function closeModal() {
+            console.log('closeModal called');
+            const modal = document.getElementById('plansModal');
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('plansModal');
+            
+            // Only handle clicks when modal is visible
+            if (!modal.classList.contains('hidden')) {
+                // Check if click is on the modal overlay (the blurred background)
+                if (event.target === modal) {
+                    closeModal();
+                }
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

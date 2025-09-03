@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach Program Detail</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .expanded {
+            max-height: 500px;
+        }
+        
+        .program-card {
+            transition: all 0.2s ease;
+        }
+        
+        .program-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-white min-h-screen">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <div class="sticky top-0 bg-white z-10 shadow-sm py-4 px-6 flex items-center justify-between">
+            <button onclick="goBack()" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            </button>
+            <h1 class="text-xl font-semibold text-gray-900" id="programTitle">Ankle Mobility Program</h1>
+            <div class="w-6 h-6"></div> <!-- Placeholder for alignment -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="px-6 py-8 max-w-4xl mx-auto pb-32">
+
+            <!-- Program Image -->
+            <div class="w-full h-64 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
+                <span class="text-8xl" id="programIcon">🦵</span>
+            </div>
+            
+            <!-- Program Details -->
+            <div class="grid grid-cols-3 gap-4 mb-8">
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Level</div>
+                    <div class="font-semibold text-gray-900" id="programLevel">Beginner</div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Type</div>
+                    <div class="font-semibold text-gray-900 capitalize" id="programType">Mobility</div>
+                </div>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm">
+                    <div class="text-sm text-gray-600 mb-1">Duration</div>
+                    <div class="font-semibold text-gray-900">12-18 weeks</div>
+                </div>
+            </div>
+
+            <!-- Program Sections -->
+            <div class="space-y-4">
+                <!-- Section 1 (4-6 weeks) -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900">Section 1 (4-6 weeks)</h3>
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">(Finished)</span>
+                        </div>
+                        <button onclick="toggleSection('section1')" class="text-gray-500 hover:text-gray-700">
+                            <svg id="section1Arrow" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Expandable Content -->
+                    <div id="section1Content" class="expandable-content">
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="mb-4">
+                                <span class="text-sm font-medium text-gray-700">Frequency: 3-4/week</span>
+                            </div>
+                            
+                            <!-- Exercise Card -->
+                            <div class="program-card bg-gray-50 rounded-xl p-4 cursor-pointer" onclick="openExercise('calves1')">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                                        <span class="text-2xl">🦵</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 mb-1">Calves 1</h4>
+                                        <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                            <span>10 mins</span>
+                                            <span>12 sessions</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <span class="text-green-600 font-medium text-sm">Finished</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 2 (4-6 weeks) -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-sm">2</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900">Section 2 (4-6 weeks)</h3>
+                        </div>
+                        <button onclick="toggleSection('section2')" class="text-gray-500 hover:text-gray-700">
+                            <svg id="section2Arrow" class="w-5 h-5 transform transition-transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Expandable Content -->
+                    <div id="section2Content" class="expandable-content expanded">
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="mb-4">
+                                <span class="text-sm font-medium text-gray-700">Frequency: 3-4/week</span>
+                            </div>
+                            
+                            <!-- Exercise Card -->
+                            <div class="program-card bg-gray-50 rounded-xl p-4 cursor-pointer" onclick="openExercise('calves2')">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl flex items-center justify-center">
+                                        <span class="text-2xl">🦵</span>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 mb-1">Calves 2</h4>
+                                        <div class="flex items-center space-x-4 text-sm text-gray-600">
+                                            <span>10 mins</span>
+                                            <span>12 sessions</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                            <span class="text-white font-bold text-xs">9/12</span>
+                                        </div>
+                                        <div class="w-20 bg-gray-200 rounded-full h-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3 (4-6 weeks) -->
+                <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                                <span class="text-gray-600 font-bold text-sm">3</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900">Section 3 (4-6 weeks)</h3>
+                            <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">(Not started)</span>
+                        </div>
+                        <button onclick="toggleSection('section3')" class="text-gray-500 hover:text-gray-700">
+                            <svg id="section3Arrow" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Expandable Content -->
+                    <div id="section3Content" class="expandable-content">
+                        <div class="border-t border-gray-200 pt-4">
+                            <div class="text-center py-8 text-gray-500">
+                                <p>This section will be available after completing Section 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+            <div class="flex justify-around py-3">
+                <a href="home.html" class="flex flex-col items-center text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7m7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    <span class="text-xs mt-1">Home</span>
+                </a>
+                <a href="teams.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    <span class="text-xs mt-1">Tracking</span>
+                </a>
+                <a href="profile.html" class="flex flex-col items-center text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    <span class="text-xs mt-1">Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load program data from URL parameters
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const programId = urlParams.get('program');
+            
+            if (programId) {
+                loadProgramData(programId);
+            }
+        });
+
+        function loadProgramData(programId) {
+            // Load program data from localStorage or sessionStorage
+            const userData = JSON.parse(sessionStorage.getItem('coachUserData') || '{}');
+            const programs = userData.programs || { inProgress: [], completed: [] };
+            
+            // Find the program
+            const program = [...programs.inProgress, ...programs.completed].find(p => p.id === programId);
+            
+            if (program) {
+                document.getElementById('programTitle').textContent = program.title;
+            }
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId + 'Content');
+            const arrow = document.getElementById(sectionId + 'Arrow');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('expanded');
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function openExercise(exerciseId) {
+            // Navigate to exercise detail page
+            window.location.href = `exercise-detail.html?exercise=${exerciseId}`;
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

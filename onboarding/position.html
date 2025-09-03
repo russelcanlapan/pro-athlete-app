@@ -1,0 +1,106 @@
+    <script>
+        let userData = {
+            profile: {
+                firstName: '',
+                lastName: '',
+                email: '',
+                password: '',
+                userType: 'athlete'
+            },
+            onboarding: {
+                birthday: '',
+                height: '',
+                weight: '',
+                sport: '',
+                teamType: '',
+                position: ''
+            }
+        };
+
+        // Initialize user data from session storage or use defaults
+        function initializeUserData() {
+            const savedData = sessionStorage.getItem('athleteUserData');
+            if (savedData) {
+                const existingData = JSON.parse(savedData);
+                userData = { ...userData, ...existingData };
+            }
+        }
+
+        // Save user data to session storage
+        function saveUserData() {
+            sessionStorage.setItem('athleteUserData', JSON.stringify(userData));
+        }
+
+        // Update onboarding data
+        function updateOnboardingData(field, value) {
+            userData.onboarding[field] = value;
+            saveUserData();
+        }
+
+        function selectPosition(position) {
+            // Remove active class from all position cards
+            document.querySelectorAll('.position-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Add active class to selected position card
+            event.currentTarget.classList.add('active');
+
+            // Save position selection
+            updateOnboardingData('position', position);
+        }
+
+        function completeOnboarding() {
+            if (!userData.onboarding.position) {
+                showError('Please select a position.');
+                return;
+            }
+
+            // Update profile with onboarding data
+            userData.profile.initials = (userData.profile.firstName.charAt(0) + userData.profile.lastName.charAt(0)).toUpperCase();
+            userData.profile.sport = userData.onboarding.sport;
+            userData.profile.role = userData.onboarding.position;
+            userData.metrics = {
+                height: parseInt(userData.onboarding.height),
+                weight: parseInt(userData.onboarding.weight),
+                heightUnit: 'cm',
+                weightUnit: 'lb'
+            };
+
+            // Save complete user data
+            saveUserData();
+
+            // Navigate to athlete home
+            window.location.href = '/athletes/home.html';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                completeOnboarding();
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUserData();
+            
+            // Highlight previously selected position if available
+            if (userData.onboarding.position) {
+                const positionCards = document.querySelectorAll('.position-card');
+                positionCards.forEach(card => {
+                    if (card.getAttribute('onclick').includes(userData.onboarding.position)) {
+                        card.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
