@@ -55,7 +55,17 @@ class RobustVideoSystem {
     async initializeSampleVideos() {
         try {
             const existingVideos = await this.getAllVideos();
-            if (existingVideos.length === 0) {
+            // Always reinitialize sample videos to ensure they have the correct flags
+            if (existingVideos.length === 0 || existingVideos.some(v => !v.isSample)) {
+                console.log('Clearing and reinitializing sample videos with correct flags...');
+                
+                // Clear existing videos
+                const transaction = this.db.transaction([this.storeName], 'readwrite');
+                const store = transaction.objectStore(this.storeName);
+                await new Promise((resolve) => {
+                    const clearRequest = store.clear();
+                    clearRequest.onsuccess = () => resolve();
+                });
                 console.log('Initializing sample videos...');
                 
                 // Create sample video data for ID 450 and 451
@@ -67,14 +77,15 @@ class RobustVideoSystem {
                         sport: 'general',
                         difficulty: 'beginner',
                         description: 'Professional dumbbell squat demonstration with proper form',
-                        fileName: 'dumbbell-squats.mp4',
-                        fileSize: 2048000, // 2MB
+                        fileName: 'sample-dumbbell-squats.mp4',
+                        fileSize: 1024, // Small size to trigger demo mode
                         fileType: 'video/mp4',
                         fileData: this.createSampleVideoBuffer('450'),
                         uploadedAt: new Date().toISOString(),
                         bothSide: true,
                         online: true,
-                        freeContent: true
+                        freeContent: true,
+                        isSample: true // Flag to identify sample videos
                     },
                     {
                         videoId: '451',
@@ -83,14 +94,15 @@ class RobustVideoSystem {
                         sport: 'general',
                         difficulty: 'intermediate',
                         description: 'Dumbbell curtsy lunge exercise with detailed form instruction',
-                        fileName: 'db-curtsy-lunge.mp4',
-                        fileSize: 2304000, // 2.3MB
+                        fileName: 'sample-db-curtsy-lunge.mp4',
+                        fileSize: 1024, // Small size to trigger demo mode
                         fileType: 'video/mp4',
                         fileData: this.createSampleVideoBuffer('451'),
                         uploadedAt: new Date().toISOString(),
                         bothSide: true,
                         online: true,
-                        freeContent: true
+                        freeContent: true,
+                        isSample: true // Flag to identify sample videos
                     }
                 ];
                 
@@ -292,8 +304,8 @@ class RobustVideoSystem {
     createRobustPlayer(videoData, container) {
         console.log(`Creating robust player for video ${videoData.videoId}`);
         
-        // For sample videos, show enhanced demo instead of trying to play minimal buffer
-        if (videoData.fileSize < 10000) { // Sample video threshold
+        // For sample videos (our system-generated ones), always show enhanced demo
+        if (videoData.isSample || videoData.fileSize < 10000 || videoData.fileName.includes('sample-')) {
             console.log(`Sample video detected for ${videoData.videoId}, using enhanced demo`);
             return this.createEnhancedVideoDemo(videoData, container);
         }
