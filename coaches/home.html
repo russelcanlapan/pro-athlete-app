@@ -440,13 +440,15 @@
             loadTeamData(teamName);
         }
 
-        // Close dropdown when clicking outside
+        // Close dropdown when clicking outside (only if elements exist)
         document.addEventListener('click', function(event) {
             const dropdown = document.getElementById('teamDropdown');
             const dropdownBtn = document.getElementById('teamDropdownBtn');
             
-            if (!dropdownBtn.contains(event.target) && !dropdown.contains(event.target)) {
-                dropdown.classList.add('hidden');
+            if (dropdown && dropdownBtn) {
+                if (!dropdownBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.classList.add('hidden');
+                }
             }
         });
 
@@ -464,8 +466,10 @@
 
         // Close tooltip when clicking outside
         document.addEventListener('click', function(event) {
-            if (!performanceInfo.contains(event.target) && !performanceTooltip.contains(event.target)) {
-                performanceTooltip.classList.add('hidden');
+            if (performanceInfo && performanceTooltip) {
+                if (!performanceInfo.contains(event.target) && !performanceTooltip.contains(event.target)) {
+                    performanceTooltip.classList.add('hidden');
+                }
             }
         });
 
@@ -620,13 +624,25 @@
                 coachFirstName = coachProfile.firstName;
             }
             
-            // Get team name
-            if (coachUserData.teamName) {
+            // Get team name from multiple sources
+            if (coachUserData.teamName && coachUserData.teamName.trim()) {
                 teamName = coachUserData.teamName;
-            } else if (coachProfile.teamName) {
+            } else if (coachUserData.profile?.teamName && coachUserData.profile.teamName.trim()) {
+                teamName = coachUserData.profile.teamName;
+            } else if (coachProfile.teamName && coachProfile.teamName.trim()) {
                 teamName = coachProfile.teamName;
+            } else if (coachProfile.profile?.teamName && coachProfile.profile.teamName.trim()) {
+                teamName = coachProfile.profile.teamName;
             } else {
-                teamName = `${coachFirstName}'s Team`;
+                // Check if coach has been assigned to a team from admin panel
+                const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                const coachInRegistry = registeredUsers.find(u => u.id === coachUserData.id || u.email === coachUserData.email);
+                
+                if (coachInRegistry && coachInRegistry.teamName && coachInRegistry.teamName.trim()) {
+                    teamName = coachInRegistry.teamName;
+                } else {
+                    teamName = `${coachFirstName}'s Team`;
+                }
             }
             
             // Update UI elements
