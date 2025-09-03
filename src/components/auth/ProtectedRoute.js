@@ -2,7 +2,7 @@ import React from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../store/AuthContext.js'
 
-export const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth()
   const location = useLocation()
 
@@ -18,3 +18,5 @@ export const ProtectedRoute = ({ children }) => {
 
   return children
 }
+
+export default ProtectedRoute
