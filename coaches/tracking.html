@@ -32,7 +32,7 @@
                         </svg>
                     </button>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Team XXX</h1>
+                        <h1 id="teamNameHeader" class="text-2xl font-bold text-gray-900">Team XXX</h1>
                         <p class="text-sm text-gray-600">Created 12/15/2024</p>
                     </div>
                 </div>
@@ -64,11 +64,11 @@
             <div class="bg-white rounded-2xl p-6 mb-8 border border-gray-100">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-700 mb-1"><span class="font-semibold">Coach:</span> John Brown</p>
-                        <p class="text-gray-700 mb-2"><span class="font-semibold">Level:</span> Intermediate</p>
+                        <p class="text-gray-700 mb-1"><span class="font-semibold">Coach:</span> <span id="coachName">John Brown</span></p>
+                        <p class="text-gray-700 mb-2"><span class="font-semibold">Level:</span> <span id="teamLevel">Intermediate</span></p>
                         <div class="flex items-center space-x-2">
                             <span class="text-2xl">🏀</span>
-                            <span class="text-gray-700">Women's Basketball</span>
+                            <span id="teamSport" class="text-gray-700">Women's Basketball</span>
                         </div>
                     </div>
                     <div class="text-right">
@@ -467,267 +467,120 @@
     </div>
 
     <script>
-        let currentTeam = 'Team XXX';
+        let currentTeam = null;
+        let teamMembers = [];
 
-                 // Get team from URL parameter
-         const urlParams = new URLSearchParams(window.location.search);
-         const teamParam = urlParams.get('team');
-         if (teamParam) {
-             currentTeam = teamParam;
-             document.querySelector('h1').textContent = teamParam;
-             
-                                                       // Update members count and show/hide appropriate content based on team
-               if (teamParam === 'Team XXX') {
-                   document.getElementById('membersCount').textContent = 'Members (0)';
-                   currentMemberCount = 0;
-                   document.getElementById('memberCards').classList.add('hidden');
-               } else if (teamParam === 'Team YYY') {
-                   document.getElementById('membersCount').textContent = 'Members (11)';
-                   currentMemberCount = 11;
-                   document.getElementById('memberCards').classList.remove('hidden');
-               } else {
-                   // Default: show members for current team
-                   document.getElementById('membersCount').textContent = 'Members (11)';
-                   currentMemberCount = 11;
-                   document.getElementById('memberCards').classList.remove('hidden');
-               }
-         }
+        // Load team data on page load
+        window.addEventListener('load', function() {
+            loadTeamData();
+        });
 
-        function goBack() {
-            window.history.back();
+        function loadTeamData() {
+            // Get team name from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const teamName = urlParams.get('team');
+            
+            // Get coach data from session storage
+            const coachUserData = JSON.parse(sessionStorage.getItem('coachUserData') || '{}');
+            
+            // Update team name in header
+            if (teamName) {
+                document.getElementById('teamNameHeader').textContent = teamName;
+                currentTeam = teamName;
+            } else if (coachUserData.teamName) {
+                document.getElementById('teamNameHeader').textContent = coachUserData.teamName;
+                currentTeam = coachUserData.teamName;
+            }
+            
+            // Update coach name
+            if (coachUserData.firstName && coachUserData.lastName) {
+                document.getElementById('coachName').textContent = `${coachUserData.firstName} ${coachUserData.lastName}`;
+            }
+            
+            // Update team sport 
+            const sport = coachUserData.sport || coachUserData.profile?.sport || 'Basketball';
+            document.getElementById('teamSport').textContent = sport;
+            
+            // Load team members
+            loadTeamMembers();
         }
 
-                 function toggleMembersTooltip() {
-             // Show/hide the info box when clicking the tooltip icon
-             const infoBox = document.getElementById('membersInfoBox');
-             if (infoBox.style.display === 'none') {
-                 infoBox.style.display = 'flex';
-             } else {
-                 infoBox.style.display = 'none';
-             }
-         }
-
-         function togglePerformanceTooltip() {
-             // Tooltip functionality for performance section
-             alert('Performance tooltip: Track your team\'s strength, mobility, and prehab performance metrics.');
-         }
-
-         function toggleHealthTooltip() {
-             // Tooltip functionality for health section
-             alert('Health tooltip: Monitor your team\'s injury status and overall health metrics.');
-         }
-
-                   function toggleAddOptions() {
-              const memberCards = document.getElementById('memberCards');
-              memberCards.classList.toggle('hidden');
-          }
-
-         function dismissInfoBox() {
-             document.getElementById('membersInfoBox').style.display = 'none';
-         }
-
-                 function addInPerson() {
-             // Show location access modal
-             document.getElementById('locationAccessModal').classList.remove('hidden');
-         }
-
-                 function addManually() {
-             alert('Add Manually functionality coming soon!');
-         }
-
-                 function showAddMembersModal() {
-             // Request browser location first
-             if (navigator.geolocation) {
-                 navigator.geolocation.getCurrentPosition(
-                     function(position) {
-                         // Location access granted, show the modal
-                         document.getElementById('addMembersModal').classList.remove('hidden');
-                     },
-                     function(error) {
-                         // Location access denied, show access denied modal
-                         document.getElementById('accessDeniedModal').classList.remove('hidden');
-                     },
-                     {
-                         enableHighAccuracy: true,
-                         timeout: 10000,
-                         maximumAge: 300000
-                     }
-                 );
-             } else {
-                 // Geolocation not supported, show access denied modal
-                 document.getElementById('accessDeniedModal').classList.remove('hidden');
-             }
-         }
-
-        function closeAddMembersModal() {
-            document.getElementById('addMembersModal').classList.add('hidden');
-        }
-
-                 function shareTeamCode() {
-             // Generate a random team code and store it
-             const teamCode = Math.floor(1000 + Math.random() * 9000);
-             // Store the team code in sessionStorage so it can be accessed on the face-to-face page
-             sessionStorage.setItem('teamCode', teamCode);
-             closeAddMembersModal();
-             // Navigate to the face-to-face page
-             window.location.href = 'face-to-face.html';
-         }
-
-        function inviteDirectly() {
-            const email = prompt('Enter email address to invite:');
-            if (email) {
-                alert(`Invitation sent to ${email}`);
-                closeAddMembersModal();
+        function loadTeamMembers() {
+            // Get all users and filter for team members
+            const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            
+            // Combine both arrays and filter for athletes on this team
+            const combinedUsers = [...allUsers, ...registeredUsers];
+            teamMembers = combinedUsers.filter(user => 
+                (user.accountType === 'athlete' || user.profile?.userType === 'athlete') &&
+                (user.teamName === currentTeam || user.profile?.teamName === currentTeam)
+            );
+            
+            // Update member count
+            document.getElementById('membersCount').textContent = `Members (${teamMembers.length})`;
+            
+            // Update member cards with real data if we have members
+            if (teamMembers.length > 0) {
+                updateMemberCards();
             }
         }
 
-                 function viewAnalytics() {
-             // Get current team name
-             const teamName = document.querySelector('h1').textContent;
-             // Navigate to team performance page with team parameter
-             window.location.href = `team-performance.html?team=${encodeURIComponent(teamName)}`;
-         }
+        function updateMemberCards() {
+            // Update the member cards with real team member data
+            const memberCardsContainer = document.getElementById('memberCards');
+            if (!memberCardsContainer) return;
+            
+            if (teamMembers.length === 0) {
+                // Show placeholder if no members
+                return;
+            }
+            
+            // Update first few member cards with real data
+            const memberElements = memberCardsContainer.querySelectorAll('.flex-shrink-0.text-center.relative');
+            
+            teamMembers.slice(0, 4).forEach((member, index) => {
+                if (memberElements[index]) {
+                    const nameElement = memberElements[index].querySelector('.font-semibold');
+                    const positionElement = memberElements[index].querySelector('.text-xs');
+                    
+                    if (nameElement) {
+                        nameElement.textContent = member.firstName || member.profile?.firstName || 'Unknown';
+                    }
+                    if (positionElement) {
+                        positionElement.textContent = member.position || member.profile?.position || 'Player';
+                    }
+                }
+            });
+            
+            console.log(`Updated member cards for ${teamMembers.length} team members:`, teamMembers);
+        }
 
-                                   function viewHealth() {
-              // Get current team name
-              const teamName = document.querySelector('h1').textContent;
-              // Navigate to team injury tracking page with team parameter
-              window.location.href = `team-injury-tracking.html?team=${encodeURIComponent(teamName)}`;
-          }
+        function goBack() {
+            window.location.href = 'teams.html';
+        }
 
-         function allowLocationWhileUsing() {
-             // Simulate location access granted
-             document.getElementById('locationAccessModal').classList.add('hidden');
-             // Navigate to face-to-face team code page
-             window.location.href = 'face-to-face.html';
-         }
+        function toggleOptionsMenu() {
+            const menu = document.getElementById('optionsMenu');
+            menu.classList.toggle('hidden');
+        }
 
-         // Delete functionality
-         let isDeleteMode = false;
-         let currentMemberCount = 11;
+        function viewAnalytics() {
+            alert('Analytics functionality coming soon!');
+        }
 
-         function toggleOptionsMenu() {
-             const menu = document.getElementById('optionsMenu');
-             menu.classList.toggle('hidden');
-         }
-
-         function enterDeleteMode() {
-             isDeleteMode = true;
-             // Show delete badges on all members
-             for (let i = 1; i <= 4; i++) {
-                 const badge = document.getElementById(`deleteBadge${i}`);
-                 if (badge) {
-                     badge.classList.remove('hidden');
-                 }
-             }
-             // Hide options menu
-             document.getElementById('optionsMenu').classList.add('hidden');
-         }
-
-         function exitDeleteMode() {
-             isDeleteMode = false;
-             // Hide delete badges on all members
-             for (let i = 1; i <= 4; i++) {
-                 const badge = document.getElementById(`deleteBadge${i}`);
-                 if (badge) {
-                     badge.classList.add('hidden');
-                 }
-             }
-         }
-
-         function confirmDeleteMember(memberName, memberId) {
-             // Show confirmation modal
-             document.getElementById('deleteConfirmationModal').classList.remove('hidden');
-             // Store member info for deletion
-             document.getElementById('deleteConfirmationModal').setAttribute('data-member-id', memberId);
-             document.getElementById('deleteConfirmationModal').setAttribute('data-member-name', memberName);
-         }
-
-         function deleteMember() {
-             const modal = document.getElementById('deleteConfirmationModal');
-             const memberId = modal.getAttribute('data-member-id');
-             const memberName = modal.getAttribute('data-member-name');
-             
-             // Hide the member card
-             const memberCard = document.querySelector(`#deleteBadge${memberId}`).closest('.flex-shrink-0');
-             memberCard.style.display = 'none';
-             
-             // Update member count
-             currentMemberCount--;
-             document.getElementById('membersCount').textContent = `Members (${currentMemberCount})`;
-             
-             // Exit delete mode
-             exitDeleteMode();
-             
-             // Hide modal
-             modal.classList.add('hidden');
-             
-             // Show success message
-             alert(`${memberName} has been removed from the team.`);
-         }
-
-         function cancelDelete() {
-             document.getElementById('deleteConfirmationModal').classList.add('hidden');
-         }
-
-         function editTeam() {
-             alert('Edit team functionality coming soon!');
-             document.getElementById('optionsMenu').classList.add('hidden');
-         }
-
-         function closeAccessDeniedModal() {
-             document.getElementById('accessDeniedModal').classList.add('hidden');
-         }
-
-         function dontAllowLocation() {
-             document.getElementById('locationAccessModal').classList.add('hidden');
-             alert('Location access denied. Face to face feature will not be available.');
-         }
-
-         // Close options menu when clicking outside
-         document.addEventListener('click', function(event) {
-             if (!event.target.closest('.relative')) {
-                 document.getElementById('optionsMenu').classList.add('hidden');
-             }
-         });
-
-         function allowLocationOnce() {
-             // Simulate location access granted for once
-             document.getElementById('locationAccessModal').classList.add('hidden');
-             // Navigate to face-to-face team code page
-             window.location.href = 'face-to-face.html';
-         }
-
-         function dontAllowLocation() {
-             // Show access denied modal
-             document.getElementById('locationAccessModal').classList.add('hidden');
-             document.getElementById('accessDeniedModal').classList.remove('hidden');
-         }
-
-         function closeAccessDeniedModal() {
-             document.getElementById('accessDeniedModal').classList.add('hidden');
-         }
-
-
-
-                 // Close modal when clicking outside
-         document.addEventListener('click', function(event) {
-             const addMembersModal = document.getElementById('addMembersModal');
-             const locationAccessModal = document.getElementById('locationAccessModal');
-             const accessDeniedModal = document.getElementById('accessDeniedModal');
-             
-             if (event.target === addMembersModal) {
-                 closeAddMembersModal();
-             }
-             if (event.target === locationAccessModal) {
-                 document.getElementById('locationAccessModal').classList.add('hidden');
-             }
-             if (event.target === accessDeniedModal) {
-                 closeAccessDeniedModal();
-             }
-             
-
-         });
+        // Close options menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('optionsMenu');
+            const button = event.target.closest('button[onclick="toggleOptionsMenu()"]');
+            
+            if (!button && !menu.contains(event.target)) {
+                menu.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
+                   document.getElementById('membersCount').textContent = 'Members (11)';
+                   currentMemberCount = 11;
+                   document.getElementById('memberCards').classList.remove('hidden');
