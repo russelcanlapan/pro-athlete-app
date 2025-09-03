@@ -1078,22 +1078,86 @@
             // In production, this would connect to actual video storage
             const video = videoContainer.querySelector('video');
             
-            // Check for admin uploaded videos
-            const adminVideos = localStorage.getItem('adminUploadedVideos');
+            // Check for admin uploaded videos from multiple storage locations
+            const adminVideosOld = localStorage.getItem('adminUploadedVideos');
+            const adminVideosNew = localStorage.getItem('adminVideos');
             let actualVideo = null;
             
-            if (adminVideos) {
-                const videos = JSON.parse(adminVideos);
-                actualVideo = videos.find(v => v.videoId === '451');
-                console.log('Found admin video with ID 451:', actualVideo);
+            // Try new storage format first
+            if (adminVideosNew) {
+                try {
+                    const videos = JSON.parse(adminVideosNew);
+                    actualVideo = videos.find(v => v.videoId === '451');
+                    console.log('Found admin video with ID 451:', actualVideo);
+                } catch (e) {
+                    console.log('Error parsing new admin videos:', e);
+                }
+            }
+            
+            // Fallback to old storage format
+            if (!actualVideo && adminVideosOld) {
+                try {
+                    const videos = JSON.parse(adminVideosOld);
+                    actualVideo = videos.find(v => v.videoId === '451');
+                    console.log('Found admin video with ID 451 (old format):', actualVideo);
+                } catch (e) {
+                    console.log('Error parsing old admin videos:', e);
+                }
             }
             
             // Try to use locally uploaded video if available and valid
-            if (actualVideo && actualVideo.videoURL && actualVideo.videoURL !== null) {
-                video.src = actualVideo.videoURL;
+            if (actualVideo) {
                 console.log('Using locally uploaded video with ID 451');
-                // Auto-play the video
-                video.play().catch(e => console.log('Auto-play prevented by browser:', e));
+                
+                // Try multiple video sources
+                const videoSources = [];
+                
+                if (actualVideo.videoURL && !actualVideo.videoURL.includes('null')) {
+                    videoSources.push(actualVideo.videoURL);
+                }
+                
+                if (actualVideo.videoLink && !actualVideo.videoLink.includes('null')) {
+                    videoSources.push(actualVideo.videoLink);
+                }
+                
+                // Try each source until one works
+                let sourceIndex = 0;
+                
+                function tryNextSource() {
+                    if (sourceIndex < videoSources.length) {
+                        video.src = videoSources[sourceIndex];
+                        console.log(`Trying video source ${sourceIndex + 1}:`, videoSources[sourceIndex]);
+                        sourceIndex++;
+                        
+                        video.load(); // Force reload
+                        
+                        // Try to play the video
+                        video.play().catch(e => {
+                            console.log('Auto-play prevented or source failed:', e);
+                            // Try next source after a short delay
+                            setTimeout(tryNextSource, 1000);
+                        });
+                        
+                    } else {
+                        console.log('All video sources failed, showing animated demo');
+                        showAnimatedDemo(video);
+                    }
+                }
+                
+                // Handle successful video load
+                video.addEventListener('canplay', () => {
+                    console.log('Video loaded successfully!');
+                }, { once: true });
+                
+                // Handle video errors
+                video.addEventListener('error', () => {
+                    console.log('Video source failed, trying next...');
+                    tryNextSource();
+                }, { once: true });
+                
+                // Start trying sources
+                tryNextSource();
+                
             } else {
                 // Show working video demonstration
                 console.log('Using demo video content for ID 451');
@@ -1189,6 +1253,84 @@
             });
         }
         
+        function showAnimatedDemo(videoElement) {
+            if (videoElement) {
+                videoElement.style.display = 'none';
+            }
+            
+            const videoContainer = document.querySelector('.relative.bg-gray-900');
+            const existingVideo = videoContainer.querySelector('video');
+            if (existingVideo) {
+                existingVideo.style.display = 'none';
+            }
+            
+            // Remove any existing demo overlays
+            const existingDemo = videoContainer.querySelector('.absolute.inset-0.bg-gradient-to-br');
+            if (existingDemo) {
+                existingDemo.remove();
+            }
+            
+            // Create animated demo overlay
+            const demoOverlay = document.createElement('div');
+            demoOverlay.className = 'absolute inset-0 bg-gradient-to-br from-blue-900 to-gray-900 flex flex-col items-center justify-center';
+            demoOverlay.innerHTML = `
+                <div class="text-center text-white">
+                    <!-- Exercise Animation -->
+                    <div class="relative mb-6">
+                        <div class="w-40 h-40 mx-auto relative">
+                            <div class="exercise-animation">
+                                <!-- Body -->
+                                <div class="absolute top-12 left-1/2 transform -translate-x-1/2 w-10 h-16 bg-blue-400 rounded-full animate-pulse"></div>
+                                <!-- Head -->
+                                <div class="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-300 rounded-full animate-bounce"></div>
+                                <!-- Arms -->
+                                <div class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-1 w-16 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+                                <!-- Front Leg -->
+                                <div class="absolute top-28 left-1/2 transform -translate-x-1/2 translate-x-3 w-3 h-12 bg-blue-400 rounded-full animate-pulse"></div>
+                                <!-- Back Leg (Curtsy) -->
+                                <div class="absolute top-28 left-1/2 transform -translate-x-1/2 -translate-x-6 rotate-45 w-3 h-10 bg-blue-400 rounded-full animate-bounce"></div>
+                            </div>
+                        </div>
+                        <div class="absolute -top-2 -right-2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
+                            ● LIVE DEMO
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold mb-3">DB Curtsy Lunge</h3>
+                    <p class="text-blue-200 text-lg mb-4">Professional Exercise Demonstration</p>
+                    
+                    <!-- Exercise Steps -->
+                    <div class="bg-black bg-opacity-40 rounded-lg p-4 max-w-md mx-auto mb-4">
+                        <div class="text-sm space-y-2">
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
+                                <span class="text-blue-200">Cross one leg behind the other</span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-ping" style="animation-delay: 0.5s"></div>
+                                <span class="text-blue-200">Bend your knee into a lunge position</span>
+                            </div>
+                            <div class="flex items-center justify-center space-x-2">
+                                <div class="w-2 h-2 bg-blue-400 rounded-full animate-ping" style="animation-delay: 1s"></div>
+                                <span class="text-blue-200">Return to starting position</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Info -->
+                    <div class="text-xs text-gray-400 mb-4">
+                        Video ID: 451 • From your personalized training program
+                    </div>
+                    
+                    <button onclick="playVideo()" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm transition-colors">
+                        Try Loading Video Again
+                    </button>
+                </div>
+            `;
+            
+            videoContainer.appendChild(demoOverlay);
+        }
+
         function resetVideo() {
             const videoContainer = document.querySelector('.relative.bg-gray-900');
             const placeholder = videoContainer.querySelector('.absolute.inset-0');
