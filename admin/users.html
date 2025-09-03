@@ -126,15 +126,57 @@
             window.location.href = 'login.html';
         }
 
-        // Load users from Firebase (mock data for now)
+        // Load users from localStorage
         async function loadUsers() {
             try {
-                // In a real implementation, this would fetch from Firebase Firestore
-                // For now, we'll use mock data
-                allUsers = [
-                    // Mock data will be populated when real users register
-                ];
+                // Get all registered users from localStorage (same logic as dashboard)
+                const allUserData = [];
+                
+                // Check for users in different storage locations
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('UserData') || key === 'currentUser')) {
+                        try {
+                            const userData = JSON.parse(localStorage.getItem(key));
+                            if (userData && userData.email && userData.accountType) {
+                                // Make sure we have proper user data structure
+                                const normalizedUser = {
+                                    id: userData.id || key,
+                                    firstName: userData.firstName || 'Unknown',
+                                    lastName: userData.lastName || 'User',
+                                    email: userData.email,
+                                    accountType: userData.accountType,
+                                    createdAt: userData.createdAt || new Date().toISOString(),
+                                    updatedAt: userData.updatedAt || new Date().toISOString(),
+                                    isActive: userData.isActive !== false,
+                                    activationCode: userData.activationCode || 'N/A',
+                                    // Additional fields for user details
+                                    phone: userData.phone || '',
+                                    dateOfBirth: userData.dateOfBirth || '',
+                                    sport: userData.sport || '',
+                                    position: userData.position || '',
+                                    height: userData.height || '',
+                                    weight: userData.weight || '',
+                                    skillLevel: userData.skillLevel || '',
+                                    teamName: userData.teamName || '',
+                                    organization: userData.organization || '',
+                                    coachingExperience: userData.coachingExperience || ''
+                                };
+                                allUserData.push(normalizedUser);
+                            }
+                        } catch (e) {
+                            // Skip invalid data
+                            console.log('Skipping invalid user data:', key, e);
+                        }
+                    }
+                }
 
+                // Remove duplicates based on email
+                allUsers = allUserData.filter((user, index, self) => 
+                    index === self.findIndex(u => u.email === user.email)
+                );
+
+                console.log('Loaded users for admin panel:', allUsers);
                 displayUsers(allUsers);
             } catch (error) {
                 console.error('Error loading users:', error);
