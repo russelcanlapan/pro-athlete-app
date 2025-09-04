@@ -7,34 +7,99 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        
+        :root {
+            --apple-gray-50: #fafafa;
+            --apple-gray-100: #f5f5f5;
+            --apple-gray-200: #e5e5e5;
+            --apple-blue-500: #007aff;
+            --apple-blue-400: #5ac8fa;
+            --apple-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+            --apple-shadow-hover: 0 10px 40px rgba(0, 0, 0, 0.15);
+            --apple-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .apple-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: var(--apple-shadow);
+            transition: var(--apple-transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .apple-input {
+            border-radius: 16px;
+            border: 1px solid var(--apple-gray-200);
+            transition: var(--apple-transition);
+            background: var(--apple-gray-50);
+        }
+        
+        .apple-input:focus {
+            outline: none;
+            border-color: var(--apple-blue-500);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.08);
+            background: white;
+        }
+        
+        .apple-btn {
+            border-radius: 9999px;
+            transition: var(--apple-transition);
+            font-weight: 500;
+            border: none;
+        }
+        
+        .apple-btn-primary {
+            background: linear-gradient(135deg, var(--apple-blue-500), var(--apple-blue-400));
+            color: white;
+            box-shadow: var(--apple-shadow);
+        }
+        
+        .apple-btn-primary:hover {
+            box-shadow: var(--apple-shadow-hover);
+            transform: scale(1.02);
+        }
+        
+        .apple-back-btn {
+            border-radius: 12px;
+            transition: var(--apple-transition);
+        }
+        
+        .apple-back-btn:hover {
+            background: rgba(0, 122, 255, 0.08);
+        }
     </style>
 </head>
 <body>
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 py-12 px-4">
-        <div class="max-w-md w-full">
-            <div class="bg-white rounded-xl shadow-xl p-8 relative">
+    <div class="min-h-screen flex items-center justify-center py-16 px-6">
+        <div class="max-w-lg w-full">
+            <div class="apple-card p-12 relative">
                 <!-- Back Button -->
                 <button onclick="goBack()" 
-                        class="absolute top-4 left-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="apple-back-btn absolute top-6 left-6 p-3 text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
-                <div class="text-center mb-8">
+                <div class="text-center mb-12">
                     <!-- Logo -->
-                    <div class="flex justify-center mb-6">
-                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-                            <img src="../../images/PA-logo_blanc.png" alt="PRO ATHLETE" class="w-16 h-16 rounded-full">
+                    <div class="flex justify-center mb-8">
+                        <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full flex items-center justify-center shadow-lg">
+                            <img src="../../images/PA-logo_blanc.png" alt="PRO ATHLETE" class="w-20 h-20 rounded-full">
                         </div>
                     </div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Log In</h1>
-                    <p class="text-2xl font-bold text-gray-900">Welcome back!</p>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-3">Log In</h1>
+                    <p class="text-xl text-gray-600">Welcome back!</p>
                 </div>
 
-                <form class="space-y-6" onsubmit="handleLogin(event)">
+                <form class="space-y-8" onsubmit="handleLogin(event)">
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="email" class="block text-base font-medium text-gray-700 mb-3">
                             Email address
                         </label>
                         <input
@@ -42,13 +107,13 @@
                             id="email"
                             name="email"
                             required
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                            class="apple-input w-full px-6 py-4 text-lg"
                             placeholder="Enter your email"
                         />
                     </div>
 
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        <label for="password" class="block text-base font-medium text-gray-700 mb-3">
                             Password
                         </label>
                         <div class="relative">
@@ -57,13 +122,13 @@
                                 id="password"
                                 name="password"
                                 required
-                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pr-12"
+                                class="apple-input w-full px-6 py-4 pr-16 text-lg"
                                 placeholder="Enter your password"
                             />
                             <button
                                 type="button"
                                 onclick="togglePassword()"
-                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                                class="apple-back-btn absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 p-2"
                             >
                                 <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -74,24 +139,24 @@
                     </div>
 
                     <div class="text-center">
-                        <a href="forgot-password.html" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                        <a href="forgot-password.html" class="text-blue-500 hover:text-blue-600 text-base font-medium">
                             Forgot password?
                         </a>
                     </div>
 
                     <button
                         type="submit"
-                        class="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        class="apple-btn apple-btn-primary w-full py-5 px-8 text-lg font-semibold"
                         id="loginBtn"
                     >
                         Log in
                     </button>
                 </form>
 
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600">
+                <div class="mt-10 text-center">
+                    <p class="text-gray-600 text-lg">
                         Don't have an account? 
-                                                 <a href="../signup/email.html" class="text-blue-600 hover:text-blue-700 font-medium">
+                                                 <a href="../signup/email.html" class="text-blue-500 hover:text-blue-600 font-medium">
                             Sign up
                         </a>
                     </p>
