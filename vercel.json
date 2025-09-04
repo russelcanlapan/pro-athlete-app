@@ -32,6 +32,18 @@
     {
       "src": "images/**/*",
       "use": "@vercel/static"
+    },
+    {
+      "src": "admin/**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/**/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
