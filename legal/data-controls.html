@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Controls - Pro Athlete</title>
+    <link rel="shortcut icon" type="image/jpg" href="../images/PA-logo_blanc.png"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/firebase-config.js"></script>
+    <style>
+        :root {
+            --apple-blue-primary: #005F83;
+            --apple-blue-secondary: #007BA3;
+        }
+        
+        .apple-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div id="loadingScreen" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+        <div class="apple-card p-8 text-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#005F83] mx-auto mb-4"></div>
+            <p class="text-gray-700">Loading your data controls...</p>
+        </div>
+    </div>
+
+    <div id="mainContent" class="container mx-auto px-4 py-8 max-w-4xl hidden">
+        <!-- Header -->
+        <div class="apple-card p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gradient-to-r from-[#005F83] to-[#007BA3] rounded-full flex items-center justify-center">
+                        <img src="../images/PA-logo_blanc.png" alt="PRO ATHLETE" class="w-16 h-16 rounded-full">
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Data Controls</h1>
+                        <p class="text-gray-600">Manage your privacy preferences and data</p>
+                    </div>
+                </div>
+                <button onclick="goBack()" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
+                    ← Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Current Consent Status -->
+        <div class="apple-card p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Current Consent Status</h2>
+            <div id="consentStatus" class="grid md:grid-cols-2 gap-4">
+                <!-- Will be populated by JavaScript -->
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <button onclick="updateConsent()" class="bg-[#005F83] text-white px-4 py-2 rounded-lg hover:bg-[#007BA3] mr-4">
+                    Update Consent
+                </button>
+                <button onclick="withdrawConsent()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                    Withdraw All Consent
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Export -->
+        <div class="apple-card p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Export Your Data</h2>
+            <p class="text-gray-700 mb-6">
+                Download a complete copy of all your personal data in machine-readable format. This includes your profile information, health data, training records, and more.
+            </p>
+            
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                <h3 class="font-semibold text-gray-900 mb-2">What's Included:</h3>
+                <ul class="text-gray-700 ml-4 list-disc">
+                    <li>Personal profile and account information</li>
+                    <li>Health data (injuries, measurements, progress)</li>
+                    <li>Training programs and workout sessions</li>
+                    <li>Communication logs with coaches</li>
+                    <li>Consent and preference records</li>
+                </ul>
+            </div>
+
+            <div id="exportStatus" class="mb-4"></div>
+            
+            <button onclick="requestDataExport()" id="exportButton" class="bg-[#005F83] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#007BA3]">
+                Request Data Export
+            </button>
+            
+            <div id="exportProgress" class="hidden mt-4">
+                <div class="bg-gray-200 rounded-full h-2">
+                    <div id="progressBar" class="bg-[#005F83] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p class="text-gray-600 mt-2 text-sm">Preparing your data export...</p>
+            </div>
+        </div>
+
+        <!-- Data Correction -->
+        <div class="apple-card p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Correct Your Data</h2>
+            <p class="text-gray-700 mb-6">
+                Found incorrect information in your profile or health records? Request corrections to ensure your data is accurate.
+            </p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">What needs to be corrected?</label>
+                    <select id="correctionType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#005F83] focus:border-[#005F83]">
+                        <option value="">Select data type...</option>
+                        <option value="profile">Personal Profile Information</option>
+                        <option value="health">Health & Fitness Data</option>
+                        <option value="injury">Injury Reports</option>
+                        <option value="measurements">Body Measurements</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Describe the correction needed:</label>
+                    <textarea id="correctionDetails" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#005F83] focus:border-[#005F83]" placeholder="Please provide details about what information is incorrect and how it should be corrected..."></textarea>
+                </div>
+                
+                <button onclick="submitCorrection()" class="bg-[#005F83] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#007BA3]">
+                    Submit Correction Request
+                </button>
+            </div>
+        </div>
+
+        <!-- Account Deletion -->
+        <div class="apple-card p-8 mb-8 border-2 border-red-200">
+            <h2 class="text-2xl font-bold text-red-800 mb-6">Delete Your Account</h2>
+            <div class="bg-red-50 p-4 rounded-lg mb-6">
+                <h3 class="font-semibold text-red-800 mb-2">⚠️ Permanent Action Warning</h3>
+                <p class="text-red-700 text-sm">
+                    Account deletion is permanent and cannot be undone. This will permanently delete:
+                </p>
+                <ul class="text-red-700 text-sm mt-2 ml-4 list-disc">
+                    <li>All personal and health data</li>
+                    <li>Training programs and progress records</li>
+                    <li>Communication history with coaches</li>
+                    <li>Photos, videos, and uploaded content</li>
+                    <li>Account access and login credentials</li>
+                </ul>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Reason for deletion (optional):</label>
+                    <select id="deletionReason" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-[#005F83] focus:border-[#005F83]">
+                        <option value="">Select a reason...</option>
+                        <option value="privacy">Privacy concerns</option>
+                        <option value="notUseful">Service not useful</option>
+                        <option value="switching">Switching to another service</option>
+                        <option value="technical">Technical issues</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="confirmDeletion" class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                    <label for="confirmDeletion" class="text-gray-700">
+                        I understand that this action is permanent and cannot be reversed
+                    </label>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <input type="checkbox" id="confirmBackup" class="w-5 h-5 text-red-600 border-gray-300 rounded focus:ring-red-500">
+                    <label for="confirmBackup" class="text-gray-700">
+                        I have exported my data if I wanted to keep a copy
+                    </label>
+                </div>
+                
+                <button onclick="deleteAccount()" id="deleteButton" class="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                    Delete My Account Permanently
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="apple-card p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Need Help?</h3>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-gray-700 mb-2"><strong>Privacy Officer:</strong></p>
+                    <p class="text-gray-600">privacy@proathlete.com</p>
+                    <p class="text-gray-600">1-800-PRO-ATHLETE</p>
+                </div>
+                <div>
+                    <p class="text-gray-700 mb-2"><strong>Support Team:</strong></p>
+                    <p class="text-gray-600">support@proathlete.com</p>
+                    <p class="text-gray-600">Response within 24 hours</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let consentData = null;
+
+        // Initialize page
+        window.addEventListener('load', function() {
+            firebase.auth().onAuthStateChanged(function(user) {
+                if (user) {
+                    currentUser = user;
+                    loadUserData();
+                } else {
+                    window.location.href = '../auth/signin/login.html';
+                }
+            });
+        });
+
+        async function loadUserData() {
+            try {
+                // Load consent data
+                const consentDoc = await firebase.firestore().collection('consent').doc(currentUser.uid).get();
+                if (consentDoc.exists) {
+                    consentData = consentDoc.data();
+                    displayConsentStatus();
+                }
+                
+                // Check for existing export requests
+                checkExportStatus();
+                
+                // Show main content
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                alert('Error loading data. Please refresh the page.');
+            }
+        }
+
+        function displayConsentStatus() {
+            const statusContainer = document.getElementById('consentStatus');
+            const consents = [
+                { key: 'basicHealthData', label: 'Basic Health Data' },
+                { key: 'injuryData', label: 'Injury Reports' },
+                { key: 'performanceData', label: 'Performance Data' },
+                { key: 'coachSharing', label: 'Coach Data Sharing' }
+            ];
+
+            statusContainer.innerHTML = consents.map(consent => {
+                const status = consentData[consent.key] ? 'Enabled' : 'Disabled';
+                const color = consentData[consent.key] ? 'text-green-600' : 'text-red-600';
+                return `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-medium text-gray-900">${consent.label}</h4>
+                        <p class="${color} font-semibold">${status}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function requestDataExport() {
+            try {
+                document.getElementById('exportButton').disabled = true;
+                document.getElementById('exportProgress').classList.remove('hidden');
+                
+                // Simulate progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    if (progress >= 100) clearInterval(interval);
+                }, 500);
+
+                // Create export request
+                const exportRequest = {
+                    userId: currentUser.uid,
+                    requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'processing',
+                    includeHealthData: consentData?.basicHealthData || false,
+                    includeInjuryData: consentData?.injuryData || false,
+                    includePerformanceData: consentData?.performanceData || false
+                };
+
+                await firebase.firestore().collection('dataExports').doc(currentUser.uid).set(exportRequest);
+                
+                // Log the export request
+                await firebase.firestore().collection('auditLogs').add({
+                    userId: currentUser.uid,
+                    action: 'DATA_EXPORT_REQUESTED',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    details: 'User requested complete data export'
+                });
+
+                setTimeout(() => {
+                    alert('Data export request submitted! You will receive an email with download instructions within 24-48 hours.');
+                    document.getElementById('exportProgress').classList.add('hidden');
+                    document.getElementById('exportButton').disabled = false;
+                    document.getElementById('exportButton').textContent = 'Export Requested';
+                    document.getElementById('exportButton').className = 'bg-green-600 text-white px-6 py-3 rounded-lg font-semibold';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Error requesting export:', error);
+                alert('Error submitting export request. Please try again.');
+                document.getElementById('exportButton').disabled = false;
+                document.getElementById('exportProgress').classList.add('hidden');
+            }
+        }
+
+        async function submitCorrection() {
+            const type = document.getElementById('correctionType').value;
+            const details = document.getElementById('correctionDetails').value;
+
+            if (!type || !details) {
+                alert('Please select a data type and provide correction details.');
+                return;
+            }
+
+            try {
+                // Submit correction request
+                await firebase.firestore().collection('correctionRequests').add({
+                    userId: currentUser.uid,
+                    type: type,
+                    details: details,
+                    requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'pending'
+                });
+
+                // Log the correction request
+                await firebase.firestore().collection('auditLogs').add({
+                    userId: currentUser.uid,
+                    action: 'DATA_CORRECTION_REQUESTED',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    details: `Correction requested for ${type}: ${details.substring(0, 100)}...`
+                });
+
+                alert('Correction request submitted successfully! We will review and respond within 30 days.');
+                document.getElementById('correctionType').value = '';
+                document.getElementById('correctionDetails').value = '';
+
+            } catch (error) {
+                console.error('Error submitting correction:', error);
+                alert('Error submitting correction request. Please try again.');
+            }
+        }
+
+        async function withdrawConsent() {
+            if (!confirm('Are you sure you want to withdraw all consent? This will limit your access to Pro Athlete features.')) {
+                return;
+            }
+
+            try {
+                // Update consent to all false
+                await firebase.firestore().collection('consent').doc(currentUser.uid).update({
+                    basicHealthData: false,
+                    injuryData: false,
+                    performanceData: false,
+                    coachSharing: false,
+                    withdrawnAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Log consent withdrawal
+                await firebase.firestore().collection('auditLogs').add({
+                    userId: currentUser.uid,
+                    action: 'CONSENT_WITHDRAWN',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    details: 'User withdrew all data processing consent'
+                });
+
+                alert('All consent has been withdrawn. Your data processing has been stopped.');
+                location.reload();
+
+            } catch (error) {
+                console.error('Error withdrawing consent:', error);
+                alert('Error withdrawing consent. Please try again.');
+            }
+        }
+
+        async function deleteAccount() {
+            const confirmed = document.getElementById('confirmDeletion').checked;
+            const backupConfirmed = document.getElementById('confirmBackup').checked;
+
+            if (!confirmed || !backupConfirmed) {
+                alert('Please confirm both checkboxes before proceeding with deletion.');
+                return;
+            }
+
+            const finalConfirm = prompt('Type "DELETE MY ACCOUNT" to confirm permanent deletion:');
+            if (finalConfirm !== 'DELETE MY ACCOUNT') {
+                alert('Account deletion cancelled.');
+                return;
+            }
+
+            try {
+                const reason = document.getElementById('deletionReason').value;
+
+                // Create deletion request
+                await firebase.firestore().collection('deletionRequests').add({
+                    userId: currentUser.uid,
+                    reason: reason,
+                    requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'pending'
+                });
+
+                // Log deletion request
+                await firebase.firestore().collection('auditLogs').add({
+                    userId: currentUser.uid,
+                    action: 'ACCOUNT_DELETION_REQUESTED',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    details: `Account deletion requested. Reason: ${reason || 'Not specified'}`
+                });
+
+                alert('Account deletion request submitted. Your account will be permanently deleted within 30 days. You will receive a confirmation email.');
+                
+                // Sign out user
+                await firebase.auth().signOut();
+                window.location.href = '../index.html';
+
+            } catch (error) {
+                console.error('Error requesting account deletion:', error);
+                alert('Error submitting deletion request. Please try again.');
+            }
+        }
+
+        function updateConsent() {
+            window.location.href = 'consent-form.html';
+        }
+
+        function goBack() {
+            history.back();
+        }
+
+        // Enable delete button only when both checkboxes are checked
+        document.getElementById('confirmDeletion').addEventListener('change', updateDeleteButton);
+        document.getElementById('confirmBackup').addEventListener('change', updateDeleteButton);
+
+        function updateDeleteButton() {
+            const confirmed = document.getElementById('confirmDeletion').checked;
+            const backupConfirmed = document.getElementById('confirmBackup').checked;
+            document.getElementById('deleteButton').disabled = !(confirmed && backupConfirmed);
+        }
+
+        async function checkExportStatus() {
+            try {
+                const exportDoc = await firebase.firestore().collection('dataExports').doc(currentUser.uid).get();
+                if (exportDoc.exists) {
+                    const data = exportDoc.data();
+                    if (data.status === 'processing') {
+                        document.getElementById('exportButton').textContent = 'Export In Progress';
+                        document.getElementById('exportButton').className = 'bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold';
+                        document.getElementById('exportButton').disabled = true;
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking export status:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,18 +2,119 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
+    
+    // Helper functions for role checking and data validation
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function hasRole(role) {
+      return request.auth.token.role == role;
+    }
+    
+    function isCoachOrOwner(userId) {
+      return request.auth.uid == userId || hasRole('coach');
+    }
+    
+    function isValidHealthData() {
+      // Ensure PHI fields are present and valid
+      return request.resource.data.keys().hasAll(['userId', 'timestamp', 'dataType']) &&
+             request.resource.data.userId is string &&
+             request.resource.data.timestamp is timestamp;
+    }
+    
+    // User profiles with strict access control
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || hasRole('coach') || hasRole('admin'));
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUserProfile();
+      allow update: if isAuthenticated() && (isOwner(userId) || hasRole('admin'));
+      allow delete: if isAuthenticated() && hasRole('admin');
+      
+      function isValidUserProfile() {
+        return request.resource.data.keys().hasAll(['email', 'role', 'createdAt']) &&
+               request.resource.data.email is string &&
+               request.resource.data.role in ['athlete', 'coach'] &&
+               request.resource.data.createdAt is timestamp;
+      }
+    }
+    
+    // Teams - coaches can manage their teams
+    match /teams/{teamId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && hasRole('coach');
+      allow update: if isAuthenticated() && (hasRole('coach') || hasRole('admin'));
+      allow delete: if isAuthenticated() && hasRole('admin');
+    }
+    
+    // Protected Health Information (PHI) - Strict HIPAA compliance
+    match /healthData/{userId} {
+      allow read: if isAuthenticated() && isCoachOrOwner(userId);
+      allow create, update: if isAuthenticated() && isOwner(userId) && isValidHealthData();
+      allow delete: if isAuthenticated() && (isOwner(userId) || hasRole('admin'));
+      
+      // Injury reports - sensitive medical data
+      match /injuries/{injuryId} {
+        allow read: if isAuthenticated() && isCoachOrOwner(userId);
+        allow write: if isAuthenticated() && isOwner(userId) && isValidHealthData();
+        allow delete: if isAuthenticated() && isOwner(userId);
+      }
+      
+      // Body measurements and fitness metrics
+      match /measurements/{measurementId} {
+        allow read: if isAuthenticated() && isCoachOrOwner(userId);
+        allow write: if isAuthenticated() && isOwner(userId) && isValidHealthData();
+        allow delete: if isAuthenticated() && isOwner(userId);
+      }
+    }
+    
+    // Training programs - coaches can create, athletes can view assigned programs
+    match /programs/{programId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && hasRole('coach');
+      allow update: if isAuthenticated() && hasRole('coach');
+      allow delete: if isAuthenticated() && (hasRole('coach') || hasRole('admin'));
+    }
+    
+    // Workout sessions and progress tracking
+    match /workouts/{userId} {
+      allow read: if isAuthenticated() && isCoachOrOwner(userId);
+      allow write: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && isOwner(userId);
+      
+      match /sessions/{sessionId} {
+        allow read: if isAuthenticated() && isCoachOrOwner(userId);
+        allow write: if isAuthenticated() && isOwner(userId);
+        allow delete: if isAuthenticated() && isOwner(userId);
+      }
+    }
+    
+    // Audit logs - admin only, immutable after creation
+    match /auditLogs/{logId} {
+      allow read: if isAuthenticated() && hasRole('admin');
+      allow create: if isAuthenticated(); // System can create audit logs
+      allow update, delete: if false; // Audit logs are immutable
+    }
+    
+    // Data processing consent and preferences
+    match /consent/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || hasRole('admin'));
+      allow write: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+    
+    // Data export requests
+    match /dataExports/{userId} {
+      allow read, write: if isAuthenticated() && isOwner(userId);
+      allow delete: if isAuthenticated() && (isOwner(userId) || hasRole('admin'));
+    }
+    
+    // Deny all other access
     match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 9, 17);
+      allow read, write: if false;
     }
   }
 }

@@ -16,18 +16,18 @@
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div class="w-10 h-10 bg-[#005F83] rounded-full flex items-center justify-center">
                         <img src="images/PA-logo_blanc.png" alt="PRO ATHLETE" class="w-10 h-10 rounded-full">
                     </div>
                     <span class="text-xl font-bold text-gray-900">Pro Athlete</span>
                 </div>
                 <div class="flex space-x-4">
                     <button onclick="window.location.href='auth/signin/login.html'" 
-                            class="text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                            class="text-[#005F83] font-medium hover:text-[#007BA3] transition-colors">
                         Sign In
                     </button>
                     <button onclick="window.location.href='auth/signup/email.html'" 
-                            class="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            class="bg-[#005F83] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#007BA3] transition-colors">
                         Get Started
                     </button>
                 </div>
@@ -41,7 +41,7 @@
             <h1 class="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Less injuries,
                 <br>
-                <span class="text-blue-600">better performance</span>
+                <span class="text-[#005F83]">better performance</span>
             </h1>
             
             <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -51,11 +51,11 @@
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                 <button onclick="window.location.href='auth/signup/email.html'" 
-                        class="bg-blue-600 text-white font-semibold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 transition-colors duration-200">
+                        class="bg-[#005F83] text-white font-semibold py-4 px-8 rounded-lg text-lg hover:bg-[#007BA3] transition-colors duration-200">
                     Start Free Trial
                 </button>
                 <button onclick="tryDemo()" 
-                        class="border-2 border-blue-600 text-blue-600 font-semibold py-4 px-8 rounded-lg text-lg hover:bg-blue-50 transition-colors duration-200">
+                        class="border-2 border-[#005F83] text-[#005F83] font-semibold py-4 px-8 rounded-lg text-lg hover:bg-[#005F83]/10 transition-colors duration-200">
                     Try Demo
                 </button>
             </div>
@@ -131,10 +131,35 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t mt-20">
+    <!-- Compliance Notice -->
+    <div class="bg-gray-50 border-t">
+        <div class="container mx-auto px-4 py-8">
+            <div class="text-center">
+                <div class="flex justify-center items-center space-x-2 mb-4">
+                    <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900">HIPAA & PIPEDA Compliant</h3>
+                </div>
+                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+                    Your health data is protected by industry-leading security measures and compliance with international privacy regulations. We prioritize your privacy and data security above all else.
+                </p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm">
+                    <a href="legal/privacy-policy.html" class="text-[#005F83] hover:text-[#007BA3] hover:underline font-medium">Privacy Policy</a>
+                    <a href="legal/terms-of-service.html" class="text-[#005F83] hover:text-[#007BA3] hover:underline font-medium">Terms of Service</a>
+                    <a href="legal/compliance-dashboard.html" class="text-[#005F83] hover:text-[#007BA3] hover:underline font-medium">Compliance Center</a>
+                    <a href="legal/data-controls.html" class="text-[#005F83] hover:text-[#007BA3] hover:underline font-medium">Data Controls</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t">
         <div class="container mx-auto px-4 py-8">
             <div class="text-center text-gray-600">
-                <p>&copy; 2024 Pro Athlete. All rights reserved.</p>
+                <p>&copy; 2025 Pro Athlete. All rights reserved.</p>
                 <div class="mt-4">
                     <a href="admin/login.html" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">Admin</a>
                 </div>
