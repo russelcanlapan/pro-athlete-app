@@ -12,8 +12,8 @@
             --apple-gray-50: #fafafa;
             --apple-gray-100: #f5f5f5;
             --apple-gray-200: #e5e5e5;
-            --apple-blue-500: #007aff;
-            --apple-blue-400: #5ac8fa;
+            --apple-blue-500: #005F83;
+            --apple-blue-400: #007BA3;
             --apple-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
             --apple-shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.12);
             --apple-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -81,7 +81,7 @@
             </div>
 
             <!-- Add Team Section -->
-            <div class="apple-card team-card border-2 border-dashed border-gray-200 p-12 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50" onclick="addNewTeam()">
+            <div class="apple-card team-card border-2 border-dashed border-gray-200 p-12 text-center cursor-pointer hover:border-[#007BA3] hover:bg-[#005F83]/5" onclick="addNewTeam()">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -101,7 +101,7 @@
                     </svg>
                     <span class="text-xs font-medium">Home</span>
                 </a>
-                <a href="teams.html" class="apple-nav-item flex flex-col items-center text-blue-500">
+                <a href="teams.html" class="apple-nav-item flex flex-col items-center text-[#005F83]">
                     <svg class="w-7 h-7 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                     </svg>
@@ -196,7 +196,7 @@
             }
             
             const teamsHTML = coachTeams.map(team => `
-                <div class="apple-card team-card p-8 cursor-pointer bg-gradient-to-r from-blue-500 to-blue-400 text-white" onclick="selectTeam('${team.name}')">
+                <div class="apple-card team-card p-8 cursor-pointer bg-gradient-to-r from-[#005F83] to-[#007BA3] text-white" onclick="selectTeam('${team.name}')">
                     <div class="flex items-center space-x-6">
                         <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
                             <span class="text-3xl">${team.icon}</span>
