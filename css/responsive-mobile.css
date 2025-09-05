@@ -1,0 +1,429 @@
+/* Mobile-First Responsive Design for Pro Athlete App */
+/* Optimized for iOS Safari, Android Chrome, and all device sizes */
+
+:root {
+  /* Apple Design System Colors */
+  --apple-blue-primary: #005F83;
+  --apple-blue-secondary: #007BA3;
+  --apple-blue-tertiary: #2A95B8;
+  
+  /* Mobile-optimized spacing */
+  --mobile-padding: 16px;
+  --mobile-margin: 12px;
+  --desktop-padding: 24px;
+  --desktop-margin: 20px;
+  
+  /* Touch-friendly sizes */
+  --touch-target-min: 44px; /* Apple's minimum touch target */
+  --button-height-mobile: 48px;
+  --button-height-desktop: 40px;
+  
+  /* Typography scale for mobile */
+  --text-xs-mobile: 12px;
+  --text-sm-mobile: 14px;
+  --text-base-mobile: 16px;
+  --text-lg-mobile: 18px;
+  --text-xl-mobile: 20px;
+  --text-2xl-mobile: 24px;
+  --text-3xl-mobile: 28px;
+  
+  /* Safe area insets for iOS devices with notch */
+  --safe-area-top: env(safe-area-inset-top);
+  --safe-area-bottom: env(safe-area-inset-bottom);
+  --safe-area-left: env(safe-area-inset-left);
+  --safe-area-right: env(safe-area-inset-right);
+}
+
+/* Base mobile-first styles */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  /* Prevent zoom on input focus in iOS */
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  /* Account for safe areas on iOS devices */
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+  padding-left: var(--safe-area-left);
+  padding-right: var(--safe-area-right);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile container improvements */
+.container {
+  width: 100%;
+  padding-left: var(--mobile-padding);
+  padding-right: var(--mobile-padding);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive container sizes */
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+    padding-left: var(--desktop-padding);
+    padding-right: var(--desktop-padding);
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+/* Mobile-optimized Apple cards */
+.apple-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Prevent content from touching edges on mobile */
+  margin: var(--mobile-margin);
+  padding: var(--mobile-padding);
+}
+
+@media (min-width: 768px) {
+  .apple-card {
+    margin: var(--desktop-margin);
+    padding: var(--desktop-padding);
+    border-radius: 20px;
+  }
+}
+
+/* Touch-optimized buttons */
+.apple-btn {
+  min-height: var(--touch-target-min);
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: var(--text-base-mobile);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  /* Prevent text selection on double-tap */
+  user-select: none;
+  -webkit-user-select: none;
+  /* Improve touch response */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.apple-btn:active {
+  transform: scale(0.98);
+}
+
+.apple-btn-primary {
+  background: linear-gradient(135deg, var(--apple-blue-primary), var(--apple-blue-secondary));
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 95, 131, 0.3);
+}
+
+.apple-btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(0, 95, 131, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Mobile-optimized form inputs */
+.apple-input {
+  min-height: var(--touch-target-min);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  font-size: 16px; /* Prevent zoom on iOS */
+  background: #fafafa;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.apple-input:focus {
+  outline: none;
+  border-color: var(--apple-blue-primary);
+  box-shadow: 0 0 0 4px rgba(0, 95, 131, 0.1);
+  background: white;
+}
+
+/* Mobile navigation optimizations */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  /* Account for iOS home indicator */
+  padding-bottom: calc(8px + var(--safe-area-bottom));
+  z-index: 1000;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  min-height: var(--touch-target-min);
+  text-decoration: none;
+  color: #666;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  margin: 0 4px;
+}
+
+.mobile-nav-item:active {
+  background: rgba(0, 95, 131, 0.1);
+}
+
+.mobile-nav-item.active {
+  color: var(--apple-blue-primary);
+}
+
+.mobile-nav-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+.mobile-nav-text {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* Grid system optimizations */
+.responsive-grid {
+  display: grid;
+  gap: var(--mobile-margin);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--desktop-margin);
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Typography responsive scaling */
+.text-responsive-xs { font-size: var(--text-xs-mobile); }
+.text-responsive-sm { font-size: var(--text-sm-mobile); }
+.text-responsive-base { font-size: var(--text-base-mobile); }
+.text-responsive-lg { font-size: var(--text-lg-mobile); }
+.text-responsive-xl { font-size: var(--text-xl-mobile); }
+.text-responsive-2xl { font-size: var(--text-2xl-mobile); }
+.text-responsive-3xl { font-size: var(--text-3xl-mobile); }
+
+@media (min-width: 768px) {
+  .text-responsive-xs { font-size: 12px; }
+  .text-responsive-sm { font-size: 14px; }
+  .text-responsive-base { font-size: 16px; }
+  .text-responsive-lg { font-size: 18px; }
+  .text-responsive-xl { font-size: 20px; }
+  .text-responsive-2xl { font-size: 28px; }
+  .text-responsive-3xl { font-size: 36px; }
+}
+
+@media (min-width: 1024px) {
+  .text-responsive-2xl { font-size: 32px; }
+  .text-responsive-3xl { font-size: 48px; }
+}
+
+/* iOS-specific optimizations */
+@supports (-webkit-overflow-scrolling: touch) {
+  /* Smooth scrolling for iOS */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+  
+  /* Fix iOS Safari viewport units */
+  .full-height-mobile {
+    height: -webkit-fill-available;
+  }
+}
+
+/* Android-specific optimizations */
+@media screen and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {
+  /* Android portrait optimizations */
+  .android-optimize {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* Loading states for mobile */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Modal optimizations for mobile */
+.mobile-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+}
+
+.mobile-modal-content {
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 24px;
+  padding-bottom: calc(24px + var(--safe-area-bottom));
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.mobile-modal.active .mobile-modal-content {
+  transform: translateY(0);
+}
+
+@media (min-width: 768px) {
+  .mobile-modal {
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .mobile-modal-content {
+    border-radius: 20px;
+    max-width: 500px;
+    max-height: 90vh;
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  
+  .mobile-modal.active .mobile-modal-content {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Utility classes for device-specific hiding */
+.hide-mobile {
+  display: none;
+}
+
+.hide-desktop {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .hide-mobile {
+    display: block;
+  }
+  
+  .hide-desktop {
+    display: none;
+  }
+}
+
+/* Performance optimizations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .apple-card {
+    background: rgba(28, 28, 30, 0.95);
+    border: 1px solid rgba(84, 84, 88, 0.6);
+    color: white;
+  }
+  
+  .apple-input {
+    background: rgba(28, 28, 30, 1);
+    border-color: rgba(84, 84, 88, 0.6);
+    color: white;
+  }
+  
+  .mobile-nav {
+    background: rgba(28, 28, 30, 0.95);
+    border-top-color: rgba(84, 84, 88, 0.6);
+  }
+}
+
+/* Print styles */
+@media print {
+  .mobile-nav,
+  .apple-btn,
+  .hide-print {
+    display: none !important;
+  }
+  
+  .apple-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .apple-btn-primary {
+    background: #000;
+    border: 2px solid #000;
+  }
+  
+  .apple-card {
+    border: 2px solid #000;
+  }
+}

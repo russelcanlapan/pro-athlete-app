@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pro Athlete - Fitness App</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Pro Athlete">
+    <meta name="theme-color" content="#005F83">
+    <meta name="description" content="Professional fitness app for athletes and coaches with injury prevention, training programs, and progress tracking.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/responsive-mobile.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -51,18 +57,18 @@
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
                 <button onclick="window.location.href='auth/signup/email.html'" 
-                        class="bg-[#005F83] text-white font-semibold py-4 px-8 rounded-lg text-lg hover:bg-[#007BA3] transition-colors duration-200">
+                        class="apple-btn apple-btn-primary text-responsive-lg px-8 py-4">
                     Start Free Trial
                 </button>
                 <button onclick="tryDemo()" 
-                        class="border-2 border-[#005F83] text-[#005F83] font-semibold py-4 px-8 rounded-lg text-lg hover:bg-[#005F83]/10 transition-colors duration-200">
+                        class="apple-btn border-2 border-[#005F83] text-[#005F83] text-responsive-lg px-8 py-4 hover:bg-[#005F83]/10">
                     Try Demo
                 </button>
             </div>
         </div>
 
         <!-- Features Section -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-20">
+        <div class="responsive-grid mt-20">
             <!-- For Athletes -->
             <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow">
                 <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
@@ -167,6 +173,7 @@
         </div>
     </footer>
 
+    <script src="js/mobile-optimizations.js"></script>
     <script>
         function tryDemo() {
             // Demo button that doesn't work - just shows a message
